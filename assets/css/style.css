@@ -6,6 +6,7 @@
    ========================================================================== */
 
 :root {
+  color-scheme: dark;
   /* Palette */
   --void: #030508;          /* page canvas */
   --panel: #0A0F1C;         /* raised surfaces */
