@@ -11,6 +11,14 @@ python3 -m http.server 8000
 
 Any static host works (Netlify, Vercel, GitHub Pages, S3, Nginx).
 
+## Single-file version
+
+```bash
+python3 tools/build_single.py   # writes dist/oritec.html
+```
+
+Bundles the stylesheet, script and images into one HTML file that opens directly on a phone or tablet, or can be emailed or shared as one file.
+
 ## Structure
 
 ```
