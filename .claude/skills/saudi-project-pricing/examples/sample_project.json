@@ -1,0 +1,164 @@
+{
+  "_note": "مثال توضيحي فقط — الأسعار افتراضية لتوضيح طريقة الإدخال ويجب استبدالها بعروض موردين وأسعار سوق حديثة.",
+  "project": {
+    "name": "مثال: الهيكل الخرساني لمبنى سكني (قبو + أرضي + 3 أدوار)",
+    "location": "الرياض",
+    "currency": "ر.س",
+    "duration_months": 6,
+    "vat_rate": 0.15
+  },
+  "boq": [
+    {
+      "code": "02-01",
+      "description": "حفر في تربة عادية حتى منسوب التأسيس شاملاً النقل",
+      "unit": "م³",
+      "qty": 3000,
+      "components": [
+        {
+          "type": "equipment",
+          "name": "حفار + مشغل + وقود",
+          "key": "equipment",
+          "daily_cost": 1800,
+          "productivity": 250
+        },
+        {
+          "type": "equipment",
+          "name": "قلاب نقل",
+          "key": "equipment",
+          "daily_cost": 900,
+          "productivity": 120
+        },
+        {
+          "type": "labor",
+          "name": "عامل مساعد",
+          "key": "labor",
+          "daily_cost": 160,
+          "productivity": 125
+        }
+      ]
+    },
+    {
+      "code": "03-01",
+      "description": "خرسانة مسلحة للقواعد والأعمدة والأسقف C30 شاملة الشدات والمعالجة (بدون الحديد)",
+      "unit": "م³",
+      "qty": 1100,
+      "components": [
+        {
+          "type": "material",
+          "name": "خرسانة جاهزة C30 مع المضخة",
+          "key": "concrete",
+          "qty": 1,
+          "rate": 285,
+          "waste": 0.03
+        },
+        {
+          "type": "material",
+          "name": "شدات خشبية (استهلاك)",
+          "key": "formwork",
+          "qty": 1.2,
+          "rate": 18
+        },
+        {
+          "type": "labor",
+          "name": "فريق نجارة وصب (6 أفراد)",
+          "key": "labor",
+          "daily_cost": 1150,
+          "productivity": 22
+        }
+      ]
+    },
+    {
+      "code": "03-02",
+      "description": "حديد تسليح عالي المقاومة Grade 60 توريد وقص وتركيب",
+      "unit": "طن",
+      "qty": 120,
+      "components": [
+        {
+          "type": "material",
+          "name": "حديد تسليح",
+          "key": "rebar",
+          "qty": 1,
+          "rate": 2650,
+          "waste": 0.05
+        },
+        {
+          "type": "material",
+          "name": "سلك رباط وكراسي",
+          "key": "rebar",
+          "qty": 1,
+          "rate": 45
+        },
+        {
+          "type": "labor",
+          "name": "فريق حدادة (5 أفراد)",
+          "key": "labor",
+          "daily_cost": 950,
+          "productivity": 1.6
+        }
+      ]
+    },
+    {
+      "code": "04-01",
+      "description": "عزل مائي للقواعد والرقاب (مقاول باطن)",
+      "unit": "م²",
+      "qty": 2500,
+      "components": [
+        {
+          "type": "subcontract",
+          "name": "مقاول عزل (أقل عرض من 3 عروض)",
+          "key": "subcontract",
+          "qty": 1,
+          "rate": 38
+        },
+        {
+          "type": "subcontract",
+          "name": "إشراف وتنسيق 5%",
+          "key": "subcontract",
+          "qty": 0.05,
+          "rate": 38
+        }
+      ]
+    }
+  ],
+  "site_overheads": [
+    {
+      "name": "مهندس موقع (دوام جزئي مشترك مع مشروع آخر)",
+      "count": 0.5,
+      "monthly_cost": 14000
+    },
+    {
+      "name": "مراقب سلامة (دوام جزئي مشترك مع مشروع آخر)",
+      "count": 0.5,
+      "monthly_cost": 7000
+    },
+    {
+      "name": "سيارة موقع",
+      "count": 1,
+      "monthly_cost": 3500
+    },
+    {
+      "name": "مكتب موقع ومرافق (كهرباء، مياه، اتصالات)",
+      "count": 1,
+      "monthly_cost": 4000
+    },
+    {
+      "name": "التعبئة والتسريح",
+      "lump_sum": 15000
+    },
+    {
+      "name": "اختبارات المختبر",
+      "lump_sum": 12000
+    },
+    {
+      "name": "التسوير واللوحات",
+      "lump_sum": 9000
+    }
+  ],
+  "markups": {
+    "head_office": 0.05,
+    "finance": 0.01,
+    "bonds_insurance": 0.01,
+    "contingency": 0.03,
+    "profit": 0.08
+  }
+}
