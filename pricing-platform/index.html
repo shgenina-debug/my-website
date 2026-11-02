@@ -76,6 +76,7 @@ tr.sec td{background:var(--accent-soft);color:var(--accent);font-weight:600}
 .toast{position:fixed;bottom:16px;left:16px;right:16px;margin:auto;max-width:520px;background:var(--text);color:var(--bg);padding:10px 14px;border-radius:8px;z-index:20;white-space:pre-line}
 .ask{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;z-index:30;padding:16px}
 .ask[hidden],.toast[hidden]{display:none}
+.ask .box.wide{max-width:1100px;max-height:92vh;overflow:auto}
 .ask .box{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;max-width:420px;width:100%}
 @media (max-width:760px){.two{grid-template-columns:minmax(0,1fr)}.item .head{grid-template-columns:1fr 1fr}}
 @media print{header,nav,.sticky-actions,section.tab:not(#t-results){display:none!important}section.tab{border:none}#t-results{display:block!important}body{background:#fff;color:#000}}
@@ -89,6 +90,8 @@ tr.sec td{background:var(--accent-soft);color:var(--accent);font-weight:600}
   </div>
   <div class="toolbar">
     <button class="primary" onclick="newProject()">＋ مشروع جديد</button>
+    <button onclick="document.getElementById('xlsfile').click()">📊 استيراد Excel</button>
+    <input id="xlsfile" type="file" accept=".xlsx,.xlsm,.csv,.xls" hidden>
     <button onclick="document.getElementById('file').click()">📂 استيراد JSON</button>
     <input id="file" type="file" accept=".json,application/json" hidden>
     <button onclick="exportSource()">💾 حفظ المشروع</button>
@@ -101,6 +104,7 @@ tr.sec td{background:var(--accent-soft);color:var(--accent);font-weight:600}
 </header>
 <div id="toast" class="toast" role="status" hidden></div>
 <div id="ask" class="ask" hidden><div class="box"><p></p><div class="extra"></div><div class="toolbar"><button class="primary yes">موافق</button><button class="no">إلغاء</button></div></div></div>
+<div id="imp" class="ask" hidden><div class="box wide"><div class="body"></div></div></div>
 <nav id="tabs"></nav>
 <main>
   <section class="tab" id="t-project"></section>
@@ -325,6 +329,7 @@ function addFromLibrary(){
 function renderBoq(){
   const groups={}; S.boq.forEach((it,i)=>{(groups[disciplineOf(it)] ||= []).push(i);});
   const resOpts=[...new Set([...Object.keys(S.resources),...Object.keys(LIBRARY.resources)])].map(k=>`<option value="${k}">${esc(resInfo(k).name||k)} (${esc(resInfo(k).unit||"")})</option>`).join("");
+  const tplOptions=Object.keys(LIBRARY.disciplines).map(d=>`<optgroup label="${esc(dname(d))}">${LIBRARY.templates.filter(t=>t.d===d).map(t=>`<option value="${t.id}">${esc(t.description.slice(0,70))} (${esc(t.unit)})</option>`).join("")}</optgroup>`).join("");
   const card=i=>{const it=S.boq[i], P=`boq.${i}`, miss=new Set(), rc=(it.components||[]).map(c=>resolveComp(c,it.code,miss));
     const u=rc.every(Boolean)?itemUnit({components:rc}).unit:NaN;
     const comps=(it.components||[]).map((c,j)=>{const C=`${P}.components.${j}`, prod="productivity" in c;
@@ -339,15 +344,18 @@ function renderBoq(){
         <td>${inp(C+".waste")}</td><td class="n">${fmt(compCost(c))}</td><td><button class="del" onclick="delComp(${i},${j})">×</button></td></tr>`;}).join("");
     return `<div class="item"><div class="head"><label class="f">الرمز${inp(P+".code","text")}</label><label class="f">الوصف${inp(P+".description","text","wide")}</label>
     <label class="f">الوحدة${inp(P+".unit","text")}</label><label class="f">الكمية${inp(P+".qty")}</label><button class="del" onclick="delItem(${i})">حذف البند</button></div>
+    ${it.template?`<div class="note">التفكيك من القالب: ${esc((TPL[it.template]||{}).description||it.template)} ${it.match_score&&it.match_score!=="يدوي"?`<span class="tag">مطابقة تلقائية ${esc(it.match_score)} — راجعها</span>`:""}</div>`:""}
+    ${(it.components||[]).length?"":`<div class="warn">⚠️ بند بدون تفكيك — اختر قالباً من المكتبة بالأسفل أو أضف مكوناته يدوياً.</div>`}
     <div class="tw"><table><thead><tr><th>النوع</th><th>المورد / المكوّن</th><th>الطريقة</th><th>الكمية / الإنتاجية</th><th>السعر / اليومية</th><th>الهالك</th><th class="n">التكلفة للوحدة</th><th></th></tr></thead><tbody>${comps}
     <tr class="total"><td colspan="6">التكلفة المباشرة للوحدة ${miss.size?'<span class="note">(أسعار ناقصة)</span>':""}</td><td class="n">${fmt(u)}</td><td></td></tr></tbody></table></div>
-    <div class="toolbar"><select style="width:auto;max-width:260px" id="addres-${i}"><option value="">مورد…</option>${resOpts}</select>
+    <div class="toolbar"><select style="width:auto;max-width:300px" onchange="applyTemplate(${i},this.value)"><option value="">${it.components&&it.components.length?"استبدال التفكيك بقالب من المكتبة…":"⚠️ اختر تفكيكاً من المكتبة…"}</option>${tplOptions}</select>
+      <select style="width:auto;max-width:260px" id="addres-${i}"><option value="">مورد…</option>${resOpts}</select>
       <button onclick="addResComp(${i},'q')">+ مورد بالكمية</button><button onclick="addResComp(${i},'p')">+ مورد بالإنتاجية</button><button onclick="addComp(${i})">+ مكوّن حر</button></div></div>`;};
   const body=Object.entries(groups).map(([d,idx])=>`<h3>${esc(dname(d))} (${idx.length})</h3>${idx.map(card).join("")}`).join("");
   document.getElementById("t-boq").innerHTML=`<h2>جدول الكميات وتفكيك البنود</h2>
   <p class="note">تحليل سعر الوحدة = Σ مواد (كمية × سعر × (1 + هالك)) + Σ عمالة ومعدات (اليومية ÷ الإنتاجية) + مقاولو الباطن. سعر المورد يُعدّل هنا أو في «أسعار الموارد» وينعكس على كل البنود.</p>
-  ${body||'<p class="warn">الجدول فارغ — ابدأ من «مكتبة البنود».</p>'}
-  <div class="sticky-actions"><button class="primary" onclick="go('library')">+ من المكتبة</button><button onclick="addItem()">+ بند حر</button></div>`;
+  ${body||'<p class="warn">الجدول فارغ — ابدأ من «مكتبة البنود» أو استورد جدول كميات المالك من Excel.</p>'}
+  <div class="sticky-actions"><button class="primary" onclick="go('library')">+ من المكتبة</button><button onclick="document.getElementById('xlsfile').click()">📊 استيراد Excel</button><button onclick="addItem()">+ بند حر</button></div>`;
 }
 function addItem(){S.boq.push({code:nextCode("X"),description:"",unit:"عدد",qty:1,section:"بنود أخرى",components:[]}); changed();}
 async function delItem(i){ if(await ask("حذف البند؟")){S.boq.splice(i,1); changed();} }
@@ -489,6 +497,130 @@ function renderResults(){
   <p class="note">الأسعار غير شاملة الضريبة في الجدول. الأرقام من مدخلات المستخدم، ومعدلات الاستهلاك والإنتاجية في المكتبة إرشادية — راجع قائمة التحقق قبل التسليم.</p>`;
 }
 
+/* ===================== Excel / CSV BOQ import (mirrors boq_import.py) ===================== */
+const HEADER_KEYS={desc:["الوصف","وصف","البيان","بيان","description","desc"],qty:["الكمية","كمية","الكميه","qty","quantity","qnty"],unit:["الوحدة","وحدة","وحده","unit","uom"],code:["رقم البند","البند","رقم","مسلسل","م","item","no","code","ref","s/n"]};
+const STOPW=new Set("من في على مع الى الي او و ب ل حسب المواصفات المخططات المواصفه كامل كامله جميع اعمال عمل شامل شاملا شامله توريد تركيب وتركيب وتوريد بما ذلك يلزم اللازمه اللازم وغيرها الخ the and of with to for in on by supply install including incl all complete as per".split(" "));
+const UNIT_MAP=[["m2",["م2","م²","m2","sqm","متر مربع","مترمربع"]],["m3",["م3","م³","m3","cum","متر مكعب","مترمكعب"]],["m",["م.ط","مط","م ط","متر طولي","lm","m","ml","rm","م"]],["t",["طن","ton","t","tonne"]],["no",["عدد","no","nr","nos","each","ea","pcs","حبة","قطعة"]],["pt",["نقطة","نقطه","point","pt"]],["ls",["مقطوع","ls","l.s","lump sum","lot"]]];
+const MATCH_THRESHOLD=0.30;
+const arDigits=s=>String(s).replace(/[٠-٩]/g,d=>"٠١٢٣٤٥٦٧٨٩".indexOf(d)).replace(/٫/g,".").replace(/٬/g,",");
+function toNumber(s){ if(s==null) return null; const t=arDigits(s).replace(/[, ]/g,"").trim(); if(t==="") return null; const x=Number(t); return Number.isFinite(x)?x:null; }
+const normHeader=s=>String(s).toLowerCase().replace(/[^\p{L}\p{N}_\s/]/gu," ").replace(/\s+/g," ").trim();
+function detectHeader(rows,scan=25){
+  let best=[null,{},0];
+  rows.slice(0,scan).forEach((row,i)=>{ const cols={};
+    row.forEach((cell,j)=>{ const h=normHeader(cell); if(!h) return;
+      for(const [f,keys] of Object.entries(HEADER_KEYS)){ if(f in cols) continue; if(keys.some(k=>h===k||(k.length>2&&h.includes(k)))){cols[f]=j;break;} } });
+    const sc=Object.keys(cols).length+("desc" in cols?1:0)+("qty" in cols?1:0); if(sc>best[2]) best=[i,cols,sc]; });
+  return (best[0]==null||!("desc" in best[1]))?[null,{}]:[best[0],best[1]];
+}
+function rowsToItems(rows,header,cols){
+  const items=[]; let section=""; const get=(r,f)=>(f in cols && cols[f]<r.length? String(r[cols[f]]??""):"").trim();
+  for(const r of rows.slice(header+1)){ const desc=get(r,"desc"), code=get(r,"code"), unit=get(r,"unit"), qty=toNumber(get(r,"qty"));
+    if(!desc&&!code) continue; if(qty==null){ if(desc) section=desc; continue; }
+    items.push({code:code||`I-${String(items.length+1).padStart(3,"0")}`,description:desc,unit,qty,section}); }
+  return items;
+}
+const normText=s=>arDigits(String(s).toLowerCase()).replace(/[ً-ْـ]/g,"").replace(/[إأآ]/g,"ا").replace(/ى/g,"ي").replace(/ة/g,"ه").replace(/[^\p{L}\p{N}_]+/gu," ");
+function stemAr(t){ for(const suf of ["ات","يه","ين","ون"]) if(t.endsWith(suf)&&t.length>4) return t.slice(0,-2); if((t.endsWith("ه")||t.endsWith("ي"))&&t.length>3) return t.slice(0,-1); return t; }
+function tokensAr(s){ const out=new Set(); for(let t of normText(s).split(/\s+/)){ if(!t) continue;
+  for(const pre of ["وال","بال","كال","فال","لل","ال"]) if(t.startsWith(pre)&&t.length>pre.length+2){t=t.slice(pre.length);break;}
+  if(t.length>=2&&!STOPW.has(t)) out.add(stemAr(t)); } return out; }
+function normUnit(u){ u=String(u).trim().toLowerCase().replace(/²/g,"2").replace(/³/g,"3"); for(const [k,alts] of UNIT_MAP) if(alts.map(a=>a.replace(/²/g,"2").replace(/³/g,"3")).includes(u)) return k; return u; }
+const TPL_TOKENS=Object.fromEntries(LIBRARY.templates.map(t=>[t.id,tokensAr(t.description)]));
+function matchScore(it,t){ const a=tokensAr(it.description), b=TPL_TOKENS[t.id]; if(!a.size||!b.size) return 0; let n=0; for(const x of a) if(b.has(x)) n++; let s=n/Math.sqrt(a.size*b.size); if(normUnit(it.unit)===normUnit(t.unit)) s+=0.1; return s; }
+function bestTemplate(it,discs){ let best=null,bs=0; for(const t of LIBRARY.templates){ const s=matchScore(it,t)+(discs&&discs.includes(t.d)?0.05:0); if(s>bs){best=t;bs=s;} } return bs>=MATCH_THRESHOLD?[best.id,Math.round(bs*1000)/1000]:[null,Math.round(bs*1000)/1000]; }
+
+async function unzip(buf){
+  const d=new Uint8Array(buf), u16=o=>d[o]|d[o+1]<<8, u32=o=>(d[o]|d[o+1]<<8|d[o+2]<<16|d[o+3]<<24)>>>0;
+  let e=-1; for(let i=d.length-22;i>=Math.max(0,d.length-65557);i--) if(u32(i)===0x06054b50){e=i;break;}
+  if(e<0) throw new Error("الملف ليس ملف Excel بصيغة xlsx");
+  const files={}; let p=u32(e+16); const n=u16(e+10), td=new TextDecoder();
+  for(let k=0;k<n;k++){ if(u32(p)!==0x02014b50) break;
+    const method=u16(p+10), csize=u32(p+20), nl=u16(p+28), el=u16(p+30), cl=u16(p+32), lho=u32(p+42), name=td.decode(d.subarray(p+46,p+46+nl));
+    const start=lho+30+u16(lho+26)+u16(lho+28); files[name]={method,data:d.subarray(start,start+csize)}; p+=46+nl+el+cl; }
+  return async name=>{ const f=files[name]; if(!f) return null; if(f.method===0) return td.decode(f.data);
+    if(typeof DecompressionStream==="undefined") throw new Error("المتصفح لا يدعم فك ضغط Excel — حدّثه أو احفظ الملف CSV");
+    return await new Response(new Blob([f.data]).stream().pipeThrough(new DecompressionStream("deflate-raw"))).text(); };
+}
+const X=(el,name)=>Array.from(el.getElementsByTagNameNS("*",name));
+const xml=s=>new DOMParser().parseFromString(s,"application/xml");
+const colIdx=ref=>{let n=0; for(const ch of ref.match(/^[A-Z]+/)[0]) n=n*26+ch.charCodeAt(0)-64; return n-1;};
+async function readXlsx(buf){
+  const get=await unzip(buf); const ssx=await get("xl/sharedStrings.xml");
+  const shared=ssx?X(xml(ssx),"si").map(si=>X(si,"t").map(t=>t.textContent).join("")):[];
+  const wb=xml(await get("xl/workbook.xml")), rels=xml(await get("xl/_rels/workbook.xml.rels"));
+  const target=Object.fromEntries(X(rels,"Relationship").map(r=>[r.getAttribute("Id"),r.getAttribute("Target")]));
+  const sheets=[];
+  for(const s of X(wb,"sheet")){
+    const rid=s.getAttribute("r:id")||s.getAttributeNS("http://schemas.openxmlformats.org/officeDocument/2006/relationships","id");
+    let t=(target[rid]||"").replace(/^\//,""); if(!t.startsWith("xl/")) t="xl/"+t;
+    const sx=await get(t); if(!sx) continue; const rows=[];
+    for(const row of X(xml(sx),"row")){ const r=(+row.getAttribute("r")||rows.length+1)-1; while(rows.length<=r) rows.push([]); const cells=rows[r];
+      for(const c of Array.from(row.children).filter(e=>e.localName==="c")){ const ref=c.getAttribute("r"), idx=ref?colIdx(ref):cells.length, t=c.getAttribute("t");
+        const vEl=Array.from(c.children).find(e=>e.localName==="v"), v=vEl?vEl.textContent:"";
+        const val=t==="s"?(shared[+v]??""):t==="inlineStr"?X(c,"t").map(x=>x.textContent).join(""):t==="b"?(v==="1"?"TRUE":"FALSE"):v;
+        while(cells.length<=idx) cells.push(""); cells[idx]=String(val).trim(); } }
+    sheets.push({name:s.getAttribute("name"),rows});
+  }
+  return sheets;
+}
+function readCSV(text){ const rows=[]; let row=[],f="",q=false; for(let i=0;i<text.length;i++){ const ch=text[i];
+  if(q){ if(ch==='"'){ if(text[i+1]==='"'){f+='"';i++;} else q=false; } else f+=ch; }
+  else if(ch==='"') q=true; else if(ch===","){row.push(f.trim());f="";} else if(ch==="\n"){row.push(f.trim());rows.push(row);row=[];f="";} else if(ch!=="\r") f+=ch; }
+  if(f||row.length){row.push(f.trim());rows.push(row);} return [{name:"CSV",rows}]; }
+
+let IMP=null;
+const colName=i=>{let s="";i++;while(i>0){const m=(i-1)%26;s=String.fromCharCode(65+m)+s;i=Math.floor((i-1)/26);}return s;};
+async function importExcelFile(file){
+  try{
+    if(/\.xls$/i.test(file.name)) throw new Error("صيغة .xls القديمة غير مدعومة — افتح الملف في Excel واحفظه بصيغة .xlsx");
+    const sheets=/\.csv$/i.test(file.name)?readCSV(await file.text()):await readXlsx(await file.arrayBuffer());
+    if(!sheets.length) throw new Error("لا توجد أوراق في الملف");
+    IMP={file:file.name,sheets,si:0,match:true,mode:S.boq.length?"add":"replace"}; impDetect(); impRender();
+  }catch(err){ toast("تعذر قراءة الملف: "+err.message); }
+}
+function impDetect(){ const rows=IMP.sheets[IMP.si].rows; const [h,cols]=detectHeader(rows); IMP.header=h??0; IMP.cols=cols; impItems(); }
+function impItems(){ const rows=IMP.sheets[IMP.si].rows; IMP.items=("desc" in IMP.cols&&"qty" in IMP.cols)?rowsToItems(rows,IMP.header,IMP.cols):[];
+  for(const it of IMP.items){ const [id,sc]=IMP.match?bestTemplate(it,typeDiscs()):[null,0]; it.template=id; it.match_score=sc; } }
+function impRender(){
+  const m=document.getElementById("imp"), rows=IMP.sheets[IMP.si].rows, hr=rows[IMP.header]||[], ncol=Math.max(...rows.slice(0,40).map(r=>r.length),1);
+  const colSel=f=>`<select onchange="IMP.cols['${f}']=this.value===''?undefined:+this.value; if(this.value==='')delete IMP.cols['${f}']; impItems(); impRender()"><option value="">—</option>${Array.from({length:ncol},(_,j)=>`<option value="${j}" ${IMP.cols[f]===j?"selected":""}>${colName(j)}: ${esc(String(hr[j]??"").slice(0,25))}</option>`).join("")}</select>`;
+  const tplOpts=sel=>`<option value="">— بدون تفكيك (يدوي) —</option>`+Object.keys(LIBRARY.disciplines).map(d=>`<optgroup label="${esc(dname(d))}">${LIBRARY.templates.filter(t=>t.d===d).map(t=>`<option value="${t.id}" ${t.id===sel?"selected":""}>${esc(t.description.slice(0,70))} (${esc(t.unit)})</option>`).join("")}</optgroup>`).join("");
+  const matched=IMP.items.filter(i=>i.template).length;
+  m.querySelector(".body").innerHTML=`
+   <h2>استيراد جدول الكميات من: ${esc(IMP.file)}</h2>
+   <div class="grid">
+    <label class="f">الورقة<select onchange="IMP.si=+this.value;impDetect();impRender()">${IMP.sheets.map((s,i)=>`<option value="${i}" ${i===IMP.si?"selected":""}>${esc(s.name)}</option>`).join("")}</select></label>
+    <label class="f">صف العناوين<input type="number" min="1" value="${IMP.header+1}" onchange="IMP.header=Math.max(0,(+this.value||1)-1);IMP.cols=detectHeader([IMP.sheets[IMP.si].rows[IMP.header]||[]])[1];impItems();impRender()"></label>
+    <label class="f">عمود الوصف *${colSel("desc")}</label><label class="f">عمود الكمية *${colSel("qty")}</label>
+    <label class="f">عمود الوحدة${colSel("unit")}</label><label class="f">عمود رقم البند${colSel("code")}</label>
+   </div>
+   <p class="note"><label><input type="checkbox" ${IMP.match?"checked":""} onchange="IMP.match=this.checked;impItems();impRender()"> اقتراح تفكيك من المكتبة لكل بند</label> —
+    الصفوف بدون كمية تُعتبر عناوين أقسام. ${IMP.items.length} بنداً، ${matched} بمطابقة مقترحة و${IMP.items.length-matched} تحتاج تفكيكاً يدوياً. راجع المطابقات وغيّر الخاطئ منها.</p>
+   ${("desc" in IMP.cols&&"qty" in IMP.cols)?"":`<p class="err">حدد عمودي الوصف والكمية (وصف العناوين في الصف ${IMP.header+1}).</p>`}
+   <div class="tw" style="max-height:48vh;overflow:auto"><table><thead><tr><th>البند</th><th>الوصف</th><th>الوحدة</th><th class="n">الكمية</th><th>التفكيك المقترح من المكتبة</th><th class="n">درجة التطابق</th></tr></thead><tbody>
+    ${(()=>{let sec=null;return IMP.items.map((it,i)=>{const h=it.section!==sec&&it.section?`<tr class="sec"><td colspan="6">${esc(it.section)}</td></tr>`:""; sec=it.section;
+      return h+`<tr><td>${esc(it.code)}</td><td>${esc(it.description)}</td><td>${esc(it.unit)}</td><td class="n">${fmt(it.qty,2)}</td>
+      <td><select style="max-width:340px" onchange="IMP.items[${i}].template=this.value||null;IMP.items[${i}].match_score=this.value?'يدوي':0">${tplOpts(it.template)}</select></td><td class="n">${it.template?esc(it.match_score):"—"}</td></tr>`;}).join("");})()}
+   </tbody></table></div>
+   <div class="toolbar">
+    <label class="note"><input type="radio" name="impmode" ${IMP.mode==="replace"?"checked":""} onchange="IMP.mode='replace'"> استبدال جدول الكميات الحالي</label>
+    <label class="note"><input type="radio" name="impmode" ${IMP.mode==="add"?"checked":""} onchange="IMP.mode='add'"> إضافة إلى الجدول الحالي (${S.boq.length} بند)</label>
+    <button class="primary" onclick="impApply()" ${IMP.items.length?"":"disabled"}>استيراد ${IMP.items.length} بنداً</button><button onclick="impClose()">إلغاء</button>
+   </div>`;
+  m.hidden=false;
+}
+function impClose(){ document.getElementById("imp").hidden=true; IMP=null; }
+function impApply(){
+  const out=IMP.items.map(it=>{ const t=it.template&&TPL[it.template]; const o={code:it.code,description:it.description,unit:it.unit,qty:it.qty,section:it.section||"",components:t?clone(t.components):[]};
+    if(t){ o.template=t.id; o.match_score=it.match_score; for(const c of t.components) if(!S.resources[c.res]) S.resources[c.res]={...LIBRARY.resources[c.res]}; } return o; });
+  if(IMP.mode==="replace") S.boq=out; else S.boq.push(...out);
+  S.project.source_file=IMP.file; const n=out.length, manual=out.filter(o=>!o.components.length).length;
+  impClose(); changed(); go("boq"); toast(`تم استيراد ${n} بنداً. ${manual?`${manual} بنداً بدون تفكيك — فكّكها يدوياً أو اختر قالباً.`:""} أدخل أسعار الموارد الناقصة.`);
+}
+function applyTemplate(i,id){ const it=S.boq[i]; if(!id) return; const t=TPL[id];
+  it.template=id; it.components=clone(t.components); it.match_score="يدوي"; for(const c of t.components) if(!S.resources[c.res]) S.resources[c.res]={...LIBRARY.resources[c.res]}; changed(); }
+
 /* ===================== Wiring ===================== */
 function renderAll(){ renderTabs(); ({project:renderProject,library:renderLibrary,boq:renderBoq,resources:renderResources,pipes:renderPipes,oh:renderOH,results:renderResults})[ACTIVE](); }
 function changed(){ save(); renderAll(); }
@@ -529,6 +661,7 @@ function exportCSV(){
   lines.push(["","الإجمالي شامل الضريبة","","","","",r2(r.sum*(1+r.vatRate))].map(q).join(","));
   download(slug()+".priced_boq.csv","﻿"+lines.join("\r\n"),"text/csv;charset=utf-8");
 }
+document.getElementById("xlsfile").addEventListener("change",e=>{ const f=e.target.files[0]; if(f) importExcelFile(f); e.target.value=""; });
 document.getElementById("file").addEventListener("change",e=>{
   const f=e.target.files[0]; if(!f) return; const rd=new FileReader();
   rd.onload=()=>{ try{ const d=JSON.parse(rd.result); if(!d.project) throw new Error("الملف لا يحتوي على project"); S=normalize(d); changed(); go("results"); }catch(err){ toast("تعذر قراءة الملف: "+err.message); } };

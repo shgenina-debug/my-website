@@ -34,7 +34,8 @@ E=.claude/skills/cost-estimating; P=.claude/skills/saudi-project-pricing/scripts
 python3 $E/scripts/build_project.py types
 python3 $E/scripts/build_project.py build $E/examples/electromechanical_project.json --out /tmp/em.json && python3 $P /tmp/em.json
 python3 $E/scripts/build_project.py build .claude/skills/water-pricing/examples/water_network_project.json --out /tmp/w.json && python3 $P /tmp/w.json
+python3 $E/scripts/build_project.py import $E/examples/sample_boq.xlsx --type building_full --out /tmp/imp.json   # 12 من 13 بنداً بمطابقة
 python3 $E/scripts/build_platform.py   # بعد أي تعديل على library.json أو الأمثلة
 python3 .claude/skills/tender-scouting/scripts/score_opportunities.py .claude/skills/tender-scouting/templates/pipeline.csv
 ```
-منطق الحساب في `pricing-platform/index.html` نسخة مطابقة من `build_project.py` + `water_assemblies.py` + `pricing_calc.py` — أي تعديل في أحدهما يُعكس في الآخر، ويجب أن يبقى مجموع الأمثلة متطابقاً قبل الضريبة: الإلكتروميكانيك 2,569,979.64 ر.س، والمياه 8,600,142.26 ر.س.
+منطق الحساب في `pricing-platform/index.html` نسخة مطابقة من `build_project.py` + `water_assemblies.py` + `pricing_calc.py`، ومنطق استيراد Excel (اكتشاف الأعمدة والمطابقة) نسخة من `boq_import.py` — أي تعديل في أحدهما يُعكس في الآخر، ويجب أن يبقى مجموع الأمثلة متطابقاً قبل الضريبة: الإلكتروميكانيك 2,569,979.64 ر.س، والمياه 8,600,142.26 ر.س.

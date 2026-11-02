@@ -28,7 +28,7 @@
 ## منصة التسعير
 افتح `pricing-platform/index.html` في المتصفح (لا تحتاج إنترنت):
 1. **مشروع جديد** ← اختر النوع.
-2. **مكتبة البنود** ← حدّد البنود وأدخل الكميات.
+2. **📊 استيراد Excel** لجدول كميات المالك (xlsx أو CSV): تحديد تلقائي للأعمدة مع إمكانية تعديلها، الصفوف بلا كمية تصبح عناوين أقسام، واقتراح تفكيك من المكتبة لكل بند تراجعه قبل الاستيراد. **أو** من **مكتبة البنود** ← حدّد البنود وأدخل الكميات.
 3. **جدول الكميات والتفكيك** ← عدّل الوصف والمعدلات أو أضف بنوداً حرة.
 4. **أسعار الموارد** ← سعر كل مورد مرة واحدة.
 5. **المصاريف والإضافات** ثم **النتائج**: ملخص العرض حسب التخصص، سعر م²، الجدول المسعّر، باريتو، الحساسية، والفحوص الهندسية.
@@ -36,7 +36,8 @@
 استيراد/حفظ JSON (نفس ملفات الوكيل)، تصدير CSV، وطباعة.
 
 ## الأدوات
-- `.claude/skills/cost-estimating/scripts/build_project.py` — `types` / `new` / `build`.
+- `.claude/skills/cost-estimating/scripts/build_project.py` — `types` / `new` / `import` (Excel/CSV) / `build`.
+- مثال ملف Excel للتجربة: `.claude/skills/cost-estimating/examples/sample_boq.xlsx`.
 - `.claude/skills/saudi-project-pricing/scripts/pricing_calc.py` — التسعير والملخص والحساسية.
 - `.claude/skills/water-pricing/scripts/water_assemblies.py` — تفكيك خنادق الخطوط.
 - `.claude/skills/cost-estimating/scripts/build_platform.py` — تضمين المكتبة والأمثلة في المنصة.
