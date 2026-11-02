@@ -29,6 +29,14 @@
   "roads": {
    "name": "طرق وأعمال خارجية",
    "prefix": "RD"
+  },
+  "lab_equipment": {
+   "name": "صيانة ومعايرة أجهزة المختبرات",
+   "prefix": "LB"
+  },
+  "office_equipment": {
+   "name": "صيانة آلات التصوير والبلوترات",
+   "prefix": "OE"
   }
  },
  "project_types": {
@@ -97,6 +105,37 @@
    "disciplines": [
     "water_networks",
     "roads"
+   ]
+  },
+  "lab_maintenance": {
+   "name": "صيانة ومعايرة أجهزة المختبرات",
+   "disciplines": [
+    "lab_equipment"
+   ],
+   "site_overhead_range": [
+    0.15,
+    0.45
+   ]
+  },
+  "office_equipment_maintenance": {
+   "name": "صيانة آلات التصوير والبلوترات",
+   "disciplines": [
+    "office_equipment"
+   ],
+   "site_overhead_range": [
+    0.15,
+    0.45
+   ]
+  },
+  "maintenance_services": {
+   "name": "عقد صيانة شامل (أجهزة مختبرات + آلات تصوير وبلوترات)",
+   "disciplines": [
+    "lab_equipment",
+    "office_equipment"
+   ],
+   "site_overhead_range": [
+    0.15,
+    0.45
    ]
   }
  },
@@ -766,6 +805,132 @@
    "type": "subcontract",
    "unit": "م²",
    "group": "asphalt"
+  },
+  "crew_lab_tech": {
+   "name": "فني صيانة أجهزة مختبرات",
+   "type": "labor",
+   "unit": "يوم",
+   "group": "labor"
+  },
+  "crew_lab_engineer": {
+   "name": "مهندس أجهزة تحليلية",
+   "type": "labor",
+   "unit": "يوم",
+   "group": "labor"
+  },
+  "crew_calibration": {
+   "name": "فني معايرة",
+   "type": "labor",
+   "unit": "يوم",
+   "group": "labor"
+  },
+  "crew_copier_tech": {
+   "name": "فني آلات تصوير وبلوترات",
+   "type": "labor",
+   "unit": "يوم",
+   "group": "labor"
+  },
+  "eq_service_vehicle": {
+   "name": "سيارة خدمة مع الوقود والتشغيل",
+   "type": "equipment",
+   "unit": "يوم",
+   "group": "vehicles"
+  },
+  "pm_kit_lab": {
+   "name": "مواد صيانة وقائية — أجهزة مختبرية عامة",
+   "type": "material",
+   "unit": "زيارة",
+   "group": "pm_materials"
+  },
+  "pm_kit_analytical": {
+   "name": "مواد وقطع استهلاكية للصيانة الوقائية — أجهزة تحليلية",
+   "type": "material",
+   "unit": "زيارة",
+   "group": "pm_materials"
+  },
+  "cal_weights_amort": {
+   "name": "إهلاك أوزان مرجعية معتمدة ومعايرتها الدورية",
+   "type": "material",
+   "unit": "معايرة",
+   "group": "cal_standards"
+  },
+  "cal_temp_amort": {
+   "name": "إهلاك مسجلات وحساسات حرارة مرجعية",
+   "type": "material",
+   "unit": "معايرة",
+   "group": "cal_standards"
+  },
+  "cal_volume_amort": {
+   "name": "إهلاك أدوات معايرة الحجم (ميزان دقيق ومستلزمات)",
+   "type": "material",
+   "unit": "معايرة",
+   "group": "cal_standards"
+  },
+  "cal_reference_solutions": {
+   "name": "محاليل ومراجع معايرة معتمدة",
+   "type": "material",
+   "unit": "معايرة",
+   "group": "cal_standards"
+  },
+  "cert_issue": {
+   "name": "إصدار شهادة/تقرير وتوثيق",
+   "type": "material",
+   "unit": "شهادة",
+   "group": "certificates"
+  },
+  "calib_lab_sub": {
+   "name": "معايرة لدى مختبر معتمد ISO/IEC 17025 (باطن)",
+   "type": "subcontract",
+   "unit": "جهاز",
+   "group": "calibration_sub"
+  },
+  "spare_parts_lab": {
+   "name": "مخصص قطع غيار أجهزة مختبرات",
+   "type": "material",
+   "unit": "جهاز/سنة",
+   "group": "spare_parts"
+  },
+  "copier_pm_kit": {
+   "name": "مواد تنظيف وصيانة وقائية لآلة تصوير",
+   "type": "material",
+   "unit": "زيارة",
+   "group": "pm_materials"
+  },
+  "plotter_pm_kit": {
+   "name": "مواد صيانة وقائية لبلوتر (تنظيف رؤوس ومعايرة)",
+   "type": "material",
+   "unit": "زيارة",
+   "group": "pm_materials"
+  },
+  "toner_per_page": {
+   "name": "تكلفة الحبر لكل صفحة",
+   "type": "material",
+   "unit": "صفحة",
+   "group": "toner"
+  },
+  "parts_per_page": {
+   "name": "استهلاك قطع (درم، فيوزر، بكرات) لكل صفحة",
+   "type": "material",
+   "unit": "صفحة",
+   "group": "copier_parts"
+  },
+  "plotter_ink": {
+   "name": "خرطوشة حبر بلوتر أصلية",
+   "type": "material",
+   "unit": "خرطوشة",
+   "group": "plotter_consumables"
+  },
+  "plotter_printhead": {
+   "name": "رأس طباعة بلوتر",
+   "type": "material",
+   "unit": "عدد",
+   "group": "plotter_consumables"
+  },
+  "spare_parts_copier": {
+   "name": "مخصص قطع غيار آلات تصوير وبلوترات",
+   "type": "material",
+   "unit": "جهاز/سنة",
+   "group": "spare_parts"
   }
  },
  "templates": [
@@ -2158,6 +2323,348 @@
      "qty": 1
     }
    ]
+  },
+  {
+   "id": "lb-pm-general",
+   "d": "lab_equipment",
+   "section": "صيانة وقائية",
+   "description": "صيانة وقائية لجهاز مختبري عام (ميزان، فرن، حاضنة، طرد مركزي، حمام مائي، ثلاجة) شاملة التقرير",
+   "unit": "زيارة",
+   "components": [
+    {
+     "res": "pm_kit_lab",
+     "qty": 1
+    },
+    {
+     "res": "crew_lab_tech",
+     "productivity": 5
+    },
+    {
+     "res": "eq_service_vehicle",
+     "productivity": 8
+    }
+   ]
+  },
+  {
+   "id": "lb-pm-analytical",
+   "d": "lab_equipment",
+   "section": "صيانة وقائية",
+   "description": "صيانة وقائية لجهاز تحليلي (HPLC، GC، AAS، ICP، مطياف) حسب دليل المصنع شاملة التقرير",
+   "unit": "زيارة",
+   "components": [
+    {
+     "res": "pm_kit_analytical",
+     "qty": 1
+    },
+    {
+     "res": "crew_lab_engineer",
+     "productivity": 1
+    },
+    {
+     "res": "eq_service_vehicle",
+     "productivity": 3
+    }
+   ]
+  },
+  {
+   "id": "lb-corrective",
+   "d": "lab_equipment",
+   "section": "صيانة تصحيحية",
+   "description": "صيانة تصحيحية — بلاغ عطل جهاز مختبري عام (تشخيص وإصلاح بدون قطع الغيار)",
+   "unit": "بلاغ",
+   "components": [
+    {
+     "res": "crew_lab_tech",
+     "productivity": 3
+    },
+    {
+     "res": "eq_service_vehicle",
+     "productivity": 4
+    }
+   ]
+  },
+  {
+   "id": "lb-corrective-analytical",
+   "d": "lab_equipment",
+   "section": "صيانة تصحيحية",
+   "description": "صيانة تصحيحية — بلاغ عطل جهاز تحليلي (تشخيص وإصلاح بدون قطع الغيار)",
+   "unit": "بلاغ",
+   "components": [
+    {
+     "res": "crew_lab_engineer",
+     "productivity": 1.5
+    },
+    {
+     "res": "eq_service_vehicle",
+     "productivity": 3
+    }
+   ]
+  },
+  {
+   "id": "lb-cal-balance",
+   "d": "lab_equipment",
+   "section": "معايرة",
+   "description": "معايرة ميزان بأوزان مرجعية معتمدة قابلة للتتبع مع شهادة معايرة",
+   "unit": "جهاز",
+   "components": [
+    {
+     "res": "cal_weights_amort",
+     "qty": 1
+    },
+    {
+     "res": "cert_issue",
+     "qty": 1
+    },
+    {
+     "res": "crew_calibration",
+     "productivity": 8
+    },
+    {
+     "res": "eq_service_vehicle",
+     "productivity": 8
+    }
+   ]
+  },
+  {
+   "id": "lb-cal-temp",
+   "d": "lab_equipment",
+   "section": "معايرة",
+   "description": "معايرة وتوزيع حراري لجهاز حراري (فرن، حاضنة، ثلاجة، أوتوكلاف) مع شهادة",
+   "unit": "جهاز",
+   "components": [
+    {
+     "res": "cal_temp_amort",
+     "qty": 1
+    },
+    {
+     "res": "cert_issue",
+     "qty": 1
+    },
+    {
+     "res": "crew_calibration",
+     "productivity": 3
+    },
+    {
+     "res": "eq_service_vehicle",
+     "productivity": 3
+    }
+   ]
+  },
+  {
+   "id": "lb-cal-pipette",
+   "d": "lab_equipment",
+   "section": "معايرة",
+   "description": "معايرة ماصة (Pipette) بالطريقة الوزنية مع شهادة",
+   "unit": "ماصة",
+   "components": [
+    {
+     "res": "cal_volume_amort",
+     "qty": 1
+    },
+    {
+     "res": "cert_issue",
+     "qty": 1
+    },
+    {
+     "res": "crew_calibration",
+     "productivity": 25
+    }
+   ]
+  },
+  {
+   "id": "lb-cal-general",
+   "d": "lab_equipment",
+   "section": "معايرة",
+   "description": "معايرة جهاز قياس عام (pH، موصلية، عكارة، ترمومتر، مؤقت) مع شهادة",
+   "unit": "جهاز",
+   "components": [
+    {
+     "res": "cal_reference_solutions",
+     "qty": 1
+    },
+    {
+     "res": "cert_issue",
+     "qty": 1
+    },
+    {
+     "res": "crew_calibration",
+     "productivity": 10
+    },
+    {
+     "res": "eq_service_vehicle",
+     "productivity": 10
+    }
+   ]
+  },
+  {
+   "id": "lb-cal-accredited",
+   "d": "lab_equipment",
+   "section": "معايرة",
+   "description": "معايرة لدى مختبر معتمد ISO/IEC 17025 شاملة الفك والتغليف والنقل والإرجاع",
+   "unit": "جهاز",
+   "components": [
+    {
+     "res": "calib_lab_sub",
+     "qty": 1
+    },
+    {
+     "res": "crew_lab_tech",
+     "productivity": 6
+    },
+    {
+     "res": "eq_service_vehicle",
+     "productivity": 6
+    }
+   ]
+  },
+  {
+   "id": "lb-qualification",
+   "d": "lab_equipment",
+   "section": "تأهيل",
+   "description": "تأهيل جهاز IQ/OQ/PQ مع البروتوكولات والتقارير",
+   "unit": "جهاز",
+   "components": [
+    {
+     "res": "cert_issue",
+     "qty": 3
+    },
+    {
+     "res": "crew_lab_engineer",
+     "productivity": 0.5
+    }
+   ]
+  },
+  {
+   "id": "lb-parts",
+   "d": "lab_equipment",
+   "section": "قطع غيار",
+   "description": "مخصص قطع غيار أجهزة المختبرات (عقد شامل) — لكل جهاز سنوياً",
+   "unit": "جهاز/سنة",
+   "components": [
+    {
+     "res": "spare_parts_lab",
+     "qty": 1
+    }
+   ]
+  },
+  {
+   "id": "oe-copier-pm",
+   "d": "office_equipment",
+   "section": "صيانة وقائية",
+   "description": "صيانة وقائية لآلة تصوير/طابعة متعددة الوظائف مع التنظيف والضبط",
+   "unit": "زيارة",
+   "components": [
+    {
+     "res": "copier_pm_kit",
+     "qty": 1
+    },
+    {
+     "res": "crew_copier_tech",
+     "productivity": 6
+    },
+    {
+     "res": "eq_service_vehicle",
+     "productivity": 8
+    }
+   ]
+  },
+  {
+   "id": "oe-plotter-pm",
+   "d": "office_equipment",
+   "section": "صيانة وقائية",
+   "description": "صيانة وقائية لبلوتر/طابعة عريضة مع تنظيف رؤوس الطباعة والمعايرة اللونية",
+   "unit": "زيارة",
+   "components": [
+    {
+     "res": "plotter_pm_kit",
+     "qty": 1
+    },
+    {
+     "res": "crew_copier_tech",
+     "productivity": 4
+    },
+    {
+     "res": "eq_service_vehicle",
+     "productivity": 6
+    }
+   ]
+  },
+  {
+   "id": "oe-corrective",
+   "d": "office_equipment",
+   "section": "صيانة تصحيحية",
+   "description": "صيانة تصحيحية — بلاغ عطل آلة تصوير/بلوتر (بدون قطع الغيار)",
+   "unit": "بلاغ",
+   "components": [
+    {
+     "res": "crew_copier_tech",
+     "productivity": 4
+    },
+    {
+     "res": "eq_service_vehicle",
+     "productivity": 6
+    }
+   ]
+  },
+  {
+   "id": "oe-cpc",
+   "d": "office_equipment",
+   "section": "عقود سعر النسخة",
+   "description": "عقد سعر النسخة (Cost per copy) شامل الحبر وقطع الاستهلاك",
+   "unit": "صفحة",
+   "components": [
+    {
+     "res": "toner_per_page",
+     "qty": 1
+    },
+    {
+     "res": "parts_per_page",
+     "qty": 1
+    }
+   ]
+  },
+  {
+   "id": "oe-plotter-ink",
+   "d": "office_equipment",
+   "section": "مستهلكات",
+   "description": "توريد خرطوشة حبر بلوتر أصلية",
+   "unit": "خرطوشة",
+   "components": [
+    {
+     "res": "plotter_ink",
+     "qty": 1
+    }
+   ]
+  },
+  {
+   "id": "oe-printhead",
+   "d": "office_equipment",
+   "section": "مستهلكات",
+   "description": "توريد وتركيب رأس طباعة بلوتر",
+   "unit": "عدد",
+   "components": [
+    {
+     "res": "plotter_printhead",
+     "qty": 1
+    },
+    {
+     "res": "crew_copier_tech",
+     "productivity": 6
+    }
+   ]
+  },
+  {
+   "id": "oe-parts",
+   "d": "office_equipment",
+   "section": "قطع غيار",
+   "description": "مخصص قطع غيار آلات التصوير والبلوترات (عقد شامل) — لكل جهاز سنوياً",
+   "unit": "جهاز/سنة",
+   "components": [
+    {
+     "res": "spare_parts_copier",
+     "qty": 1
+    }
+   ]
   }
  ],
  "checks": [
@@ -2288,6 +2795,55 @@
     "st-rebar"
    ],
    "msg": "خرسانة مسلحة بدون بند حديد تسليح — تأكد أن الحديد مسعّر (البنود هنا بدون الحديد)."
+  },
+  {
+   "kind": "requires",
+   "if": [
+    "lb-pm-general",
+    "lb-pm-analytical"
+   ],
+   "then": [
+    "lb-corrective",
+    "lb-corrective-analytical"
+   ],
+   "msg": "صيانة وقائية لأجهزة المختبر بدون بند بلاغات الأعطال — حدد هل البلاغات مشمولة في سعر الزيارات (وحمّل تكلفتها) أم خارج العقد."
+  },
+  {
+   "kind": "requires",
+   "if": [
+    "lb-pm-general",
+    "lb-pm-analytical",
+    "lb-corrective",
+    "lb-corrective-analytical"
+   ],
+   "then": [
+    "lb-parts"
+   ],
+   "msg": "قطع غيار أجهزة المختبرات غير مسعّرة — وضّح في العرض هل العقد شامل قطع الغيار أم غير شامل (تُورد بأمر منفصل)."
+  },
+  {
+   "kind": "requires",
+   "if": [
+    "oe-copier-pm",
+    "oe-plotter-pm"
+   ],
+   "then": [
+    "oe-corrective"
+   ],
+   "msg": "صيانة وقائية لآلات التصوير بدون بند بلاغات الأعطال — حدد هل البلاغات مشمولة."
+  },
+  {
+   "kind": "requires",
+   "if": [
+    "oe-copier-pm",
+    "oe-plotter-pm",
+    "oe-corrective"
+   ],
+   "then": [
+    "oe-parts",
+    "oe-cpc"
+   ],
+   "msg": "قطع غيار آلات التصوير والبلوترات غير مسعّرة ولا يوجد عقد سعر نسخة — وضّح هل العقد شامل أم غير شامل."
   }
  ]
 }

@@ -18,6 +18,7 @@ HTML = os.path.join(ROOT, "pricing-platform", "index.html")
 LIB = os.path.join(HERE, "..", "library", "library.json")
 EXAMPLES = {
     "electromechanical": os.path.join(HERE, "..", "examples", "electromechanical_project.json"),
+    "maintenance_services": os.path.join(HERE, "..", "examples", "maintenance_services_project.json"),
     "water_networks": os.path.join(ROOT, ".claude", "skills", "water-pricing", "examples", "water_network_project.json"),
 }
 

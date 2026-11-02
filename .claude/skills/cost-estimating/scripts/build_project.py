@@ -190,6 +190,9 @@ def cmd_build(lib, args):
 
     out = {k: v for k, v in src.items() if k not in ("pipelines", "rates", "design", "resources")}
     out["boq"] = pipe_items + items
+    rng = lib["project_types"].get(src["project"].get("type"), {}).get("site_overhead_range")
+    if rng and "site_overhead_range" not in out["project"]:
+        out["project"] = {**out["project"], "site_overhead_range": rng}
     with open(args.out, "w", encoding="utf-8") as f:
         json.dump(out, f, ensure_ascii=False, indent=2)
 

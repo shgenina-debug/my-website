@@ -191,7 +191,11 @@ MARKUP_RANGES = {
 
 def sanity_warnings(project, r):
     warnings = []
-    for label, num, den, lo, hi in SANITY_RANGES:
+    ranges = SANITY_RANGES
+    if project["project"].get("site_overhead_range"):  # per project type (e.g. maintenance contracts)
+        lo, hi = project["project"]["site_overhead_range"]
+        ranges = [(SANITY_RANGES[0][0], "site_total", "direct", lo, hi)]
+    for label, num, den, lo, hi in ranges:
         share = r[num] / r[den] if r[den] else 0.0
         if not lo <= share <= hi:
             warnings.append(f"{label} = {share * 100:.1f}% خارج النطاق المعتاد ({lo * 100:g}% – {hi * 100:g}%). راجع الحساب التفصيلي.")

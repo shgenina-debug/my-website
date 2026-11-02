@@ -1,0 +1,570 @@
+{
+  "_note": "مثال توضيحي فقط — أعداد الأجهزة والزيارات والأسعار افتراضية لتوضيح طريقة الإدخال ويجب استبدالها بجرد الأجهزة الفعلي وعروض الموردين وسجلات الشركة.",
+  "project": {
+    "name": "مثال: عقد صيانة ومعايرة أجهزة مختبرات جودة المياه وآلات التصوير والبلوترات (سنتان)",
+    "type": "maintenance_services",
+    "location": "الرياض",
+    "currency": "ر.س",
+    "duration_months": 24.0,
+    "vat_rate": 0.15,
+    "working_days_per_month": 26
+  },
+  "resources": {
+    "pm_kit_lab": {
+      "name": "مواد صيانة وقائية — أجهزة مختبرية عامة",
+      "type": "material",
+      "unit": "زيارة",
+      "group": "pm_materials",
+      "rate": 35
+    },
+    "crew_lab_tech": {
+      "name": "فني صيانة أجهزة مختبرات",
+      "type": "labor",
+      "unit": "يوم",
+      "group": "labor",
+      "rate": 650
+    },
+    "eq_service_vehicle": {
+      "name": "سيارة خدمة مع الوقود والتشغيل",
+      "type": "equipment",
+      "unit": "يوم",
+      "group": "vehicles",
+      "rate": 280
+    },
+    "pm_kit_analytical": {
+      "name": "مواد وقطع استهلاكية للصيانة الوقائية — أجهزة تحليلية",
+      "type": "material",
+      "unit": "زيارة",
+      "group": "pm_materials",
+      "rate": 420
+    },
+    "crew_lab_engineer": {
+      "name": "مهندس أجهزة تحليلية",
+      "type": "labor",
+      "unit": "يوم",
+      "group": "labor",
+      "rate": 1400
+    },
+    "cal_weights_amort": {
+      "name": "إهلاك أوزان مرجعية معتمدة ومعايرتها الدورية",
+      "type": "material",
+      "unit": "معايرة",
+      "group": "cal_standards",
+      "rate": 45
+    },
+    "cert_issue": {
+      "name": "إصدار شهادة/تقرير وتوثيق",
+      "type": "material",
+      "unit": "شهادة",
+      "group": "certificates",
+      "rate": 25
+    },
+    "crew_calibration": {
+      "name": "فني معايرة",
+      "type": "labor",
+      "unit": "يوم",
+      "group": "labor",
+      "rate": 800
+    },
+    "cal_temp_amort": {
+      "name": "إهلاك مسجلات وحساسات حرارة مرجعية",
+      "type": "material",
+      "unit": "معايرة",
+      "group": "cal_standards",
+      "rate": 60
+    },
+    "cal_volume_amort": {
+      "name": "إهلاك أدوات معايرة الحجم (ميزان دقيق ومستلزمات)",
+      "type": "material",
+      "unit": "معايرة",
+      "group": "cal_standards",
+      "rate": 12
+    },
+    "cal_reference_solutions": {
+      "name": "محاليل ومراجع معايرة معتمدة",
+      "type": "material",
+      "unit": "معايرة",
+      "group": "cal_standards",
+      "rate": 40
+    },
+    "calib_lab_sub": {
+      "name": "معايرة لدى مختبر معتمد ISO/IEC 17025 (باطن)",
+      "type": "subcontract",
+      "unit": "جهاز",
+      "group": "calibration_sub",
+      "rate": 1800
+    },
+    "spare_parts_lab": {
+      "name": "مخصص قطع غيار أجهزة مختبرات",
+      "type": "material",
+      "unit": "جهاز/سنة",
+      "group": "spare_parts",
+      "rate": 350
+    },
+    "copier_pm_kit": {
+      "name": "مواد تنظيف وصيانة وقائية لآلة تصوير",
+      "type": "material",
+      "unit": "زيارة",
+      "group": "pm_materials",
+      "rate": 30
+    },
+    "crew_copier_tech": {
+      "name": "فني آلات تصوير وبلوترات",
+      "type": "labor",
+      "unit": "يوم",
+      "group": "labor",
+      "rate": 550
+    },
+    "plotter_pm_kit": {
+      "name": "مواد صيانة وقائية لبلوتر (تنظيف رؤوس ومعايرة)",
+      "type": "material",
+      "unit": "زيارة",
+      "group": "pm_materials",
+      "rate": 90
+    },
+    "toner_per_page": {
+      "name": "تكلفة الحبر لكل صفحة",
+      "type": "material",
+      "unit": "صفحة",
+      "group": "toner",
+      "rate": 0.035
+    },
+    "parts_per_page": {
+      "name": "استهلاك قطع (درم، فيوزر، بكرات) لكل صفحة",
+      "type": "material",
+      "unit": "صفحة",
+      "group": "copier_parts",
+      "rate": 0.012
+    },
+    "plotter_ink": {
+      "name": "خرطوشة حبر بلوتر أصلية",
+      "type": "material",
+      "unit": "خرطوشة",
+      "group": "plotter_consumables",
+      "rate": 390
+    },
+    "plotter_printhead": {
+      "name": "رأس طباعة بلوتر",
+      "type": "material",
+      "unit": "عدد",
+      "group": "plotter_consumables",
+      "rate": 1350
+    },
+    "spare_parts_copier": {
+      "name": "مخصص قطع غيار آلات تصوير وبلوترات",
+      "type": "material",
+      "unit": "جهاز/سنة",
+      "group": "spare_parts",
+      "rate": 900
+    }
+  },
+  "boq": [
+    {
+      "code": "LB-01",
+      "template": "lb-pm-general",
+      "section": "صيانة وقائية",
+      "description": "صيانة وقائية لجهاز مختبري عام (ميزان، فرن، حاضنة، طرد مركزي، حمام مائي، ثلاجة) شاملة التقرير",
+      "unit": "زيارة",
+      "qty": 480,
+      "components": [
+        {
+          "res": "pm_kit_lab",
+          "qty": 1
+        },
+        {
+          "res": "crew_lab_tech",
+          "productivity": 5
+        },
+        {
+          "res": "eq_service_vehicle",
+          "productivity": 8
+        }
+      ],
+      "notes": "60 جهاز × 4 زيارات/سنة × سنتان"
+    },
+    {
+      "code": "LB-02",
+      "template": "lb-pm-analytical",
+      "section": "صيانة وقائية",
+      "description": "صيانة وقائية لجهاز تحليلي (HPLC، GC، AAS، ICP، مطياف) حسب دليل المصنع شاملة التقرير",
+      "unit": "زيارة",
+      "qty": 48,
+      "components": [
+        {
+          "res": "pm_kit_analytical",
+          "qty": 1
+        },
+        {
+          "res": "crew_lab_engineer",
+          "productivity": 1
+        },
+        {
+          "res": "eq_service_vehicle",
+          "productivity": 3
+        }
+      ],
+      "notes": "12 جهاز × زيارتان/سنة × سنتان"
+    },
+    {
+      "code": "LB-03",
+      "template": "lb-corrective",
+      "section": "صيانة تصحيحية",
+      "description": "صيانة تصحيحية — بلاغ عطل جهاز مختبري عام (تشخيص وإصلاح بدون قطع الغيار)",
+      "unit": "بلاغ",
+      "qty": 120,
+      "components": [
+        {
+          "res": "crew_lab_tech",
+          "productivity": 3
+        },
+        {
+          "res": "eq_service_vehicle",
+          "productivity": 4
+        }
+      ],
+      "notes": "تقدير: بلاغ واحد/جهاز/سنة"
+    },
+    {
+      "code": "LB-04",
+      "template": "lb-corrective-analytical",
+      "section": "صيانة تصحيحية",
+      "description": "صيانة تصحيحية — بلاغ عطل جهاز تحليلي (تشخيص وإصلاح بدون قطع الغيار)",
+      "unit": "بلاغ",
+      "qty": 36.0,
+      "components": [
+        {
+          "res": "crew_lab_engineer",
+          "productivity": 1.5
+        },
+        {
+          "res": "eq_service_vehicle",
+          "productivity": 3
+        }
+      ],
+      "notes": "تقدير: 1.5 بلاغ/جهاز/سنة"
+    },
+    {
+      "code": "LB-05",
+      "template": "lb-cal-balance",
+      "section": "معايرة",
+      "description": "معايرة ميزان بأوزان مرجعية معتمدة قابلة للتتبع مع شهادة معايرة",
+      "unit": "جهاز",
+      "qty": 40,
+      "components": [
+        {
+          "res": "cal_weights_amort",
+          "qty": 1
+        },
+        {
+          "res": "cert_issue",
+          "qty": 1
+        },
+        {
+          "res": "crew_calibration",
+          "productivity": 8
+        },
+        {
+          "res": "eq_service_vehicle",
+          "productivity": 8
+        }
+      ],
+      "notes": "20 ميزان × مرة/سنة"
+    },
+    {
+      "code": "LB-06",
+      "template": "lb-cal-temp",
+      "section": "معايرة",
+      "description": "معايرة وتوزيع حراري لجهاز حراري (فرن، حاضنة، ثلاجة، أوتوكلاف) مع شهادة",
+      "unit": "جهاز",
+      "qty": 50,
+      "components": [
+        {
+          "res": "cal_temp_amort",
+          "qty": 1
+        },
+        {
+          "res": "cert_issue",
+          "qty": 1
+        },
+        {
+          "res": "crew_calibration",
+          "productivity": 3
+        },
+        {
+          "res": "eq_service_vehicle",
+          "productivity": 3
+        }
+      ],
+      "notes": "25 جهاز حراري × مرة/سنة"
+    },
+    {
+      "code": "LB-07",
+      "template": "lb-cal-pipette",
+      "section": "معايرة",
+      "description": "معايرة ماصة (Pipette) بالطريقة الوزنية مع شهادة",
+      "unit": "ماصة",
+      "qty": 160,
+      "components": [
+        {
+          "res": "cal_volume_amort",
+          "qty": 1
+        },
+        {
+          "res": "cert_issue",
+          "qty": 1
+        },
+        {
+          "res": "crew_calibration",
+          "productivity": 25
+        }
+      ],
+      "notes": "80 ماصة × مرة/سنة"
+    },
+    {
+      "code": "LB-08",
+      "template": "lb-cal-general",
+      "section": "معايرة",
+      "description": "معايرة جهاز قياس عام (pH، موصلية، عكارة، ترمومتر، مؤقت) مع شهادة",
+      "unit": "جهاز",
+      "qty": 120,
+      "components": [
+        {
+          "res": "cal_reference_solutions",
+          "qty": 1
+        },
+        {
+          "res": "cert_issue",
+          "qty": 1
+        },
+        {
+          "res": "crew_calibration",
+          "productivity": 10
+        },
+        {
+          "res": "eq_service_vehicle",
+          "productivity": 10
+        }
+      ],
+      "notes": "30 جهاز × مرتان/سنة"
+    },
+    {
+      "code": "LB-09",
+      "template": "lb-cal-accredited",
+      "section": "معايرة",
+      "description": "معايرة لدى مختبر معتمد ISO/IEC 17025 شاملة الفك والتغليف والنقل والإرجاع",
+      "unit": "جهاز",
+      "qty": 12,
+      "components": [
+        {
+          "res": "calib_lab_sub",
+          "qty": 1
+        },
+        {
+          "res": "crew_lab_tech",
+          "productivity": 6
+        },
+        {
+          "res": "eq_service_vehicle",
+          "productivity": 6
+        }
+      ],
+      "notes": "6 أجهزة تتطلب شهادة معتمدة"
+    },
+    {
+      "code": "LB-10",
+      "template": "lb-qualification",
+      "section": "تأهيل",
+      "description": "تأهيل جهاز IQ/OQ/PQ مع البروتوكولات والتقارير",
+      "unit": "جهاز",
+      "qty": 4,
+      "components": [
+        {
+          "res": "cert_issue",
+          "qty": 3
+        },
+        {
+          "res": "crew_lab_engineer",
+          "productivity": 0.5
+        }
+      ]
+    },
+    {
+      "code": "LB-11",
+      "template": "lb-parts",
+      "section": "قطع غيار",
+      "description": "مخصص قطع غيار أجهزة المختبرات (عقد شامل) — لكل جهاز سنوياً",
+      "unit": "جهاز/سنة",
+      "qty": 144,
+      "components": [
+        {
+          "res": "spare_parts_lab",
+          "qty": 1
+        }
+      ],
+      "notes": "72 جهاز × سنتان"
+    },
+    {
+      "code": "OE-01",
+      "template": "oe-copier-pm",
+      "section": "صيانة وقائية",
+      "description": "صيانة وقائية لآلة تصوير/طابعة متعددة الوظائف مع التنظيف والضبط",
+      "unit": "زيارة",
+      "qty": 320,
+      "components": [
+        {
+          "res": "copier_pm_kit",
+          "qty": 1
+        },
+        {
+          "res": "crew_copier_tech",
+          "productivity": 6
+        },
+        {
+          "res": "eq_service_vehicle",
+          "productivity": 8
+        }
+      ],
+      "notes": "40 آلة × 4 زيارات/سنة"
+    },
+    {
+      "code": "OE-02",
+      "template": "oe-plotter-pm",
+      "section": "صيانة وقائية",
+      "description": "صيانة وقائية لبلوتر/طابعة عريضة مع تنظيف رؤوس الطباعة والمعايرة اللونية",
+      "unit": "زيارة",
+      "qty": 48,
+      "components": [
+        {
+          "res": "plotter_pm_kit",
+          "qty": 1
+        },
+        {
+          "res": "crew_copier_tech",
+          "productivity": 4
+        },
+        {
+          "res": "eq_service_vehicle",
+          "productivity": 6
+        }
+      ],
+      "notes": "6 بلوتر × 4 زيارات/سنة"
+    },
+    {
+      "code": "OE-03",
+      "template": "oe-corrective",
+      "section": "صيانة تصحيحية",
+      "description": "صيانة تصحيحية — بلاغ عطل آلة تصوير/بلوتر (بدون قطع الغيار)",
+      "unit": "بلاغ",
+      "qty": 184,
+      "components": [
+        {
+          "res": "crew_copier_tech",
+          "productivity": 4
+        },
+        {
+          "res": "eq_service_vehicle",
+          "productivity": 6
+        }
+      ],
+      "notes": "تقدير: بلاغان/جهاز/سنة"
+    },
+    {
+      "code": "OE-04",
+      "template": "oe-cpc",
+      "section": "عقود سعر النسخة",
+      "description": "عقد سعر النسخة (Cost per copy) شامل الحبر وقطع الاستهلاك",
+      "unit": "صفحة",
+      "qty": 3000000,
+      "components": [
+        {
+          "res": "toner_per_page",
+          "qty": 1
+        },
+        {
+          "res": "parts_per_page",
+          "qty": 1
+        }
+      ],
+      "notes": "1.5 مليون صفحة/سنة"
+    },
+    {
+      "code": "OE-05",
+      "template": "oe-plotter-ink",
+      "section": "مستهلكات",
+      "description": "توريد خرطوشة حبر بلوتر أصلية",
+      "unit": "خرطوشة",
+      "qty": 120,
+      "components": [
+        {
+          "res": "plotter_ink",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "code": "OE-06",
+      "template": "oe-printhead",
+      "section": "مستهلكات",
+      "description": "توريد وتركيب رأس طباعة بلوتر",
+      "unit": "عدد",
+      "qty": 8,
+      "components": [
+        {
+          "res": "plotter_printhead",
+          "qty": 1
+        },
+        {
+          "res": "crew_copier_tech",
+          "productivity": 6
+        }
+      ]
+    },
+    {
+      "code": "OE-07",
+      "template": "oe-parts",
+      "section": "قطع غيار",
+      "description": "مخصص قطع غيار آلات التصوير والبلوترات (عقد شامل) — لكل جهاز سنوياً",
+      "unit": "جهاز/سنة",
+      "qty": 12,
+      "components": [
+        {
+          "res": "spare_parts_copier",
+          "qty": 1
+        }
+      ],
+      "notes": "قطع البلوترات فقط (آلات التصوير ضمن سعر النسخة)"
+    }
+  ],
+  "site_overheads": [
+    {
+      "name": "مدير العقد (ربع تفرغ)",
+      "count": 0.25,
+      "monthly_cost": 22000
+    },
+    {
+      "name": "مكتب استقبال البلاغات (نصف تفرغ)",
+      "count": 0.5,
+      "monthly_cost": 6000
+    },
+    {
+      "name": "نظام إدارة الصيانة CMMS والتقارير",
+      "count": 1,
+      "monthly_cost": 1200
+    },
+    {
+      "name": "الجرد الأولي وترقيم الأجهزة وبطاقات الصيانة",
+      "lump_sum": 18000
+    },
+    {
+      "name": "مخزون قطع سريعة الحركة (تكلفة التمويل والتخزين)",
+      "lump_sum": 12000
+    }
+  ],
+  "markups": {
+    "head_office": 0.05,
+    "finance": 0.015,
+    "bonds_insurance": 0.01,
+    "contingency": 0.04,
+    "profit": 0.1
+  }
+}
