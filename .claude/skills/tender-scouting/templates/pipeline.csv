@@ -1,0 +1,3 @@
+id,title,client,source_url,accessed_on,city,scope,est_value_sar,classification_required,submission_deadline,bid_bond,status,scope_fit,qualification,capacity,location,client_score,competition,time,risk,notes
+EX-001,مثال: إحلال شبكات مياه وتوصيلات منزلية - حي (توضيحي),شركة المياه الوطنية,https://example.invalid/replace-with-real-source,2026-11-02,الرياض,شبكات مياه + توصيلات,25000000,مياه وصرف - الدرجة الثانية,2026-12-15,2%,جديدة,5,5,4,5,4,3,4,3,سطر توضيحي - احذفه
+EX-002,مثال: خط نقل مياه GRP قطر 1200 مم (توضيحي),مقاول رئيسي لمشروع شراكة,https://example.invalid/replace-with-real-source,2026-11-02,ينبع,خط نقل,180000000,مياه وصرف - الدرجة الأولى,2026-11-10,1%,جديدة,3,1,1,2,3,2,1,2,سطر توضيحي - احذفه

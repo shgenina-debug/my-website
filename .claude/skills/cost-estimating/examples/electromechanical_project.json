@@ -1,0 +1,983 @@
+{
+  "_note": "مثال توضيحي فقط — الكميات والأسعار افتراضية لتوضيح طريقة الإدخال ويجب استبدالها بعروض موردين وسجلات الشركة.",
+  "project": {
+    "name": "مثال: أعمال الإلكتروميكانيك لمبنى إداري (أرضي + 3 أدوار)",
+    "type": "electromechanical",
+    "location": "جدة",
+    "currency": "ر.س",
+    "duration_months": 8,
+    "vat_rate": 0.15,
+    "working_days_per_month": 26,
+    "area_m2": 3200
+  },
+  "resources": {
+    "conduit_20": {
+      "name": "ماسورة PVC 20 مم مع الملحقات",
+      "type": "material",
+      "unit": "م.ط",
+      "group": "conduits",
+      "rate": 3.2
+    },
+    "wire_1_5": {
+      "name": "سلك نحاس 1.5 مم²",
+      "type": "material",
+      "unit": "م.ط",
+      "group": "wires",
+      "rate": 1.1
+    },
+    "back_box": {
+      "name": "علبة كهرباء",
+      "type": "material",
+      "unit": "عدد",
+      "group": "wiring_devices",
+      "rate": 4
+    },
+    "switch": {
+      "name": "مفتاح إنارة",
+      "type": "material",
+      "unit": "عدد",
+      "group": "wiring_devices",
+      "rate": 18
+    },
+    "crew_electrician": {
+      "name": "فرقة كهربائيين",
+      "type": "labor",
+      "unit": "يوم",
+      "group": "labor",
+      "rate": 1100
+    },
+    "wire_2_5": {
+      "name": "سلك نحاس 2.5 مم²",
+      "type": "material",
+      "unit": "م.ط",
+      "group": "wires",
+      "rate": 1.7
+    },
+    "socket": {
+      "name": "بريزة 13 أمبير",
+      "type": "material",
+      "unit": "عدد",
+      "group": "wiring_devices",
+      "rate": 22
+    },
+    "conduit_25": {
+      "name": "ماسورة PVC 25 مم مع الملحقات",
+      "type": "material",
+      "unit": "م.ط",
+      "group": "conduits",
+      "rate": 4.5
+    },
+    "wire_4": {
+      "name": "سلك نحاس 4 مم²",
+      "type": "material",
+      "unit": "م.ط",
+      "group": "wires",
+      "rate": 2.7
+    },
+    "isolator": {
+      "name": "مفتاح عزل (مكيف/سخان)",
+      "type": "material",
+      "unit": "عدد",
+      "group": "wiring_devices",
+      "rate": 65
+    },
+    "data_outlet": {
+      "name": "مخرج بيانات Cat6 مع الكابل",
+      "type": "material",
+      "unit": "عدد",
+      "group": "low_current",
+      "rate": 140
+    },
+    "fire_alarm_device": {
+      "name": "كاشف/جهاز إنذار حريق مع التمديد",
+      "type": "material",
+      "unit": "عدد",
+      "group": "low_current",
+      "rate": 230
+    },
+    "luminaire_led": {
+      "name": "كشاف LED",
+      "type": "material",
+      "unit": "عدد",
+      "group": "lighting",
+      "rate": 165
+    },
+    "cable_4x16": {
+      "name": "كابل نحاس 4×16 مم² XLPE",
+      "type": "material",
+      "unit": "م.ط",
+      "group": "cables",
+      "rate": 78
+    },
+    "crew_cable": {
+      "name": "فرقة سحب كابلات",
+      "type": "labor",
+      "unit": "يوم",
+      "group": "labor",
+      "rate": 900
+    },
+    "cable_4x50": {
+      "name": "كابل نحاس 4×50 مم² XLPE",
+      "type": "material",
+      "unit": "م.ط",
+      "group": "cables",
+      "rate": 215
+    },
+    "cable_tray": {
+      "name": "حامل كابلات مجلفن مع الحوامل",
+      "type": "material",
+      "unit": "م.ط",
+      "group": "cables",
+      "rate": 95
+    },
+    "db_panel": {
+      "name": "لوحة توزيع فرعية مع القواطع",
+      "type": "material",
+      "unit": "عدد",
+      "group": "panels",
+      "rate": 4200
+    },
+    "cable_lugs": {
+      "name": "أطراف وجلاندات كابلات",
+      "type": "material",
+      "unit": "مجموعة",
+      "group": "cables",
+      "rate": 220
+    },
+    "mdb_panel": {
+      "name": "لوحة توزيع رئيسية MDB",
+      "type": "material",
+      "unit": "عدد",
+      "group": "panels",
+      "rate": 48000
+    },
+    "earthing_pit": {
+      "name": "حفرة تأريض كاملة (باطن)",
+      "type": "subcontract",
+      "unit": "عدد",
+      "group": "earthing",
+      "rate": 1800
+    },
+    "split_unit_2tr": {
+      "name": "وحدة سبليت 2 طن",
+      "type": "material",
+      "unit": "عدد",
+      "group": "hvac_units",
+      "rate": 3300
+    },
+    "copper_pair": {
+      "name": "مواسير نحاس للمبرد (زوج) مع العزل",
+      "type": "material",
+      "unit": "م.ط",
+      "group": "hvac_piping",
+      "rate": 55
+    },
+    "drain_pipe_hvac": {
+      "name": "ماسورة تصريف مكثف",
+      "type": "material",
+      "unit": "م.ط",
+      "group": "hvac_piping",
+      "rate": 6
+    },
+    "crew_hvac": {
+      "name": "فرقة فنيي تكييف",
+      "type": "labor",
+      "unit": "يوم",
+      "group": "labor",
+      "rate": 1300
+    },
+    "package_unit_10tr": {
+      "name": "وحدة باكدج 10 طن",
+      "type": "material",
+      "unit": "عدد",
+      "group": "hvac_units",
+      "rate": 38000
+    },
+    "eq_crane": {
+      "name": "رافعة",
+      "type": "equipment",
+      "unit": "يوم",
+      "group": "equipment",
+      "rate": 2500
+    },
+    "gi_sheet": {
+      "name": "صاج مجلفن لمجاري الهواء",
+      "type": "material",
+      "unit": "م²",
+      "group": "ductwork",
+      "rate": 42
+    },
+    "duct_insulation": {
+      "name": "عزل مجاري الهواء",
+      "type": "material",
+      "unit": "م²",
+      "group": "ductwork",
+      "rate": 24
+    },
+    "duct_accessories": {
+      "name": "حوامل وفلنجات ومواد لحام مجاري",
+      "type": "material",
+      "unit": "م²",
+      "group": "ductwork",
+      "rate": 14
+    },
+    "crew_duct": {
+      "name": "فرقة مجاري هواء",
+      "type": "labor",
+      "unit": "يوم",
+      "group": "labor",
+      "rate": 1150
+    },
+    "diffuser": {
+      "name": "مخرج هواء (ديفيوزر/جريل)",
+      "type": "material",
+      "unit": "عدد",
+      "group": "air_outlets",
+      "rate": 160
+    },
+    "exhaust_fan": {
+      "name": "مروحة شفط",
+      "type": "material",
+      "unit": "عدد",
+      "group": "fans",
+      "rate": 320
+    },
+    "tab_hvac": {
+      "name": "الاختبار والموازنة TAB (باطن)",
+      "type": "subcontract",
+      "unit": "طن تبريد",
+      "group": "testing",
+      "rate": 120
+    },
+    "ppr_20": {
+      "name": "ماسورة PPR 20–25 مم مع القطع",
+      "type": "material",
+      "unit": "م.ط",
+      "group": "plumbing_pipes",
+      "rate": 9
+    },
+    "valve_small": {
+      "name": "محبس زاوية/كروي صغير",
+      "type": "material",
+      "unit": "عدد",
+      "group": "plumbing_fittings",
+      "rate": 35
+    },
+    "crew_plumber": {
+      "name": "فرقة سباكين",
+      "type": "labor",
+      "unit": "يوم",
+      "group": "labor",
+      "rate": 1000
+    },
+    "upvc_drain": {
+      "name": "ماسورة صرف uPVC 50–110 مم مع القطع",
+      "type": "material",
+      "unit": "م.ط",
+      "group": "plumbing_pipes",
+      "rate": 18
+    },
+    "floor_drain": {
+      "name": "صفاية أرضية",
+      "type": "material",
+      "unit": "عدد",
+      "group": "plumbing_fittings",
+      "rate": 55
+    },
+    "wc_set": {
+      "name": "طقم مرحاض كامل مع الخلاط",
+      "type": "material",
+      "unit": "عدد",
+      "group": "sanitary",
+      "rate": 850
+    },
+    "basin_set": {
+      "name": "مغسلة كاملة مع الخلاط",
+      "type": "material",
+      "unit": "عدد",
+      "group": "sanitary",
+      "rate": 620
+    },
+    "water_heater": {
+      "name": "سخان مياه 50–80 لتر",
+      "type": "material",
+      "unit": "عدد",
+      "group": "sanitary",
+      "rate": 780
+    },
+    "black_steel_pipe": {
+      "name": "ماسورة حديد أسود (حريق) مع القطع والدهان",
+      "type": "material",
+      "unit": "م.ط",
+      "group": "fire_pipes",
+      "rate": 95
+    },
+    "crew_fire": {
+      "name": "فرقة أنظمة حريق",
+      "type": "labor",
+      "unit": "يوم",
+      "group": "labor",
+      "rate": 1100
+    },
+    "sprinkler_head": {
+      "name": "رشاش حريق مع الوصلة",
+      "type": "material",
+      "unit": "عدد",
+      "group": "fire_devices",
+      "rate": 48
+    },
+    "fire_hose_cabinet": {
+      "name": "صندوق حريق كامل",
+      "type": "material",
+      "unit": "عدد",
+      "group": "fire_devices",
+      "rate": 2400
+    },
+    "fire_extinguisher": {
+      "name": "طفاية حريق",
+      "type": "material",
+      "unit": "عدد",
+      "group": "fire_devices",
+      "rate": 180
+    }
+  },
+  "boq": [
+    {
+      "code": "EL-01",
+      "template": "el-light-point",
+      "section": "تمديدات",
+      "description": "نقطة إنارة كاملة: مواسير + أسلاك 1.5 مم² + علبة + مفتاح",
+      "unit": "نقطة",
+      "qty": 420,
+      "components": [
+        {
+          "res": "conduit_20",
+          "qty": 7,
+          "waste": 0.05
+        },
+        {
+          "res": "wire_1_5",
+          "qty": 22,
+          "waste": 0.05
+        },
+        {
+          "res": "back_box",
+          "qty": 1.5
+        },
+        {
+          "res": "switch",
+          "qty": 0.5
+        },
+        {
+          "res": "crew_electrician",
+          "productivity": 12
+        }
+      ]
+    },
+    {
+      "code": "EL-02",
+      "template": "el-socket-point",
+      "section": "تمديدات",
+      "description": "نقطة بريزة 13 أمبير كاملة: مواسير + أسلاك 2.5 مم² + علبة + بريزة",
+      "unit": "نقطة",
+      "qty": 380,
+      "components": [
+        {
+          "res": "conduit_20",
+          "qty": 7,
+          "waste": 0.05
+        },
+        {
+          "res": "wire_2_5",
+          "qty": 22,
+          "waste": 0.05
+        },
+        {
+          "res": "back_box",
+          "qty": 1
+        },
+        {
+          "res": "socket",
+          "qty": 1
+        },
+        {
+          "res": "crew_electrician",
+          "productivity": 10
+        }
+      ]
+    },
+    {
+      "code": "EL-03",
+      "template": "el-power-point",
+      "section": "تمديدات",
+      "description": "نقطة باور (مكيف/سخان) أسلاك 4 مم² مع مفتاح عزل",
+      "unit": "نقطة",
+      "qty": 60,
+      "components": [
+        {
+          "res": "conduit_25",
+          "qty": 10,
+          "waste": 0.05
+        },
+        {
+          "res": "wire_4",
+          "qty": 32,
+          "waste": 0.05
+        },
+        {
+          "res": "isolator",
+          "qty": 1
+        },
+        {
+          "res": "crew_electrician",
+          "productivity": 6
+        }
+      ]
+    },
+    {
+      "code": "EL-04",
+      "template": "el-data",
+      "section": "تيار خفيف",
+      "description": "مخرج بيانات Cat6 كامل مع الكابل والمواسير",
+      "unit": "نقطة",
+      "qty": 150,
+      "components": [
+        {
+          "res": "data_outlet",
+          "qty": 1
+        },
+        {
+          "res": "conduit_20",
+          "qty": 10
+        },
+        {
+          "res": "crew_electrician",
+          "productivity": 10
+        }
+      ]
+    },
+    {
+      "code": "EL-05",
+      "template": "el-fire-alarm",
+      "section": "تيار خفيف",
+      "description": "جهاز إنذار حريق (كاشف/زر/جرس) مع التمديد",
+      "unit": "عدد",
+      "qty": 140,
+      "components": [
+        {
+          "res": "fire_alarm_device",
+          "qty": 1
+        },
+        {
+          "res": "conduit_20",
+          "qty": 8
+        },
+        {
+          "res": "crew_electrician",
+          "productivity": 12
+        }
+      ]
+    },
+    {
+      "code": "EL-06",
+      "template": "el-luminaire",
+      "section": "إنارة",
+      "description": "كشاف إنارة LED توريد وتركيب وتوصيل",
+      "unit": "عدد",
+      "qty": 520,
+      "components": [
+        {
+          "res": "luminaire_led",
+          "qty": 1,
+          "waste": 0.01
+        },
+        {
+          "res": "crew_electrician",
+          "productivity": 16
+        }
+      ]
+    },
+    {
+      "code": "EL-07",
+      "template": "el-cable-16",
+      "section": "كابلات ولوحات",
+      "description": "كابل نحاس 4×16 مم² XLPE سحب على حوامل/مواسير",
+      "unit": "م.ط",
+      "qty": 900,
+      "components": [
+        {
+          "res": "cable_4x16",
+          "qty": 1,
+          "waste": 0.03
+        },
+        {
+          "res": "crew_cable",
+          "productivity": 100
+        }
+      ]
+    },
+    {
+      "code": "EL-08",
+      "template": "el-cable-50",
+      "section": "كابلات ولوحات",
+      "description": "كابل نحاس 4×50 مم² XLPE سحب على حوامل",
+      "unit": "م.ط",
+      "qty": 260,
+      "components": [
+        {
+          "res": "cable_4x50",
+          "qty": 1,
+          "waste": 0.03
+        },
+        {
+          "res": "crew_cable",
+          "productivity": 60
+        }
+      ]
+    },
+    {
+      "code": "EL-09",
+      "template": "el-tray",
+      "section": "كابلات ولوحات",
+      "description": "حامل كابلات مجلفن عرض 300 مم مع الحوامل والأكواع",
+      "unit": "م.ط",
+      "qty": 350,
+      "components": [
+        {
+          "res": "cable_tray",
+          "qty": 1,
+          "waste": 0.05
+        },
+        {
+          "res": "crew_electrician",
+          "productivity": 25
+        }
+      ]
+    },
+    {
+      "code": "EL-10",
+      "template": "el-db",
+      "section": "كابلات ولوحات",
+      "description": "لوحة توزيع فرعية كاملة مع القواطع والتوصيل والاختبار",
+      "unit": "عدد",
+      "qty": 8,
+      "components": [
+        {
+          "res": "db_panel",
+          "qty": 1
+        },
+        {
+          "res": "cable_lugs",
+          "qty": 1
+        },
+        {
+          "res": "crew_electrician",
+          "productivity": 1
+        }
+      ]
+    },
+    {
+      "code": "EL-11",
+      "template": "el-mdb",
+      "section": "كابلات ولوحات",
+      "description": "لوحة توزيع رئيسية MDB توريد وتركيب واختبار",
+      "unit": "عدد",
+      "qty": 1,
+      "components": [
+        {
+          "res": "mdb_panel",
+          "qty": 1
+        },
+        {
+          "res": "cable_lugs",
+          "qty": 4
+        },
+        {
+          "res": "crew_electrician",
+          "productivity": 0.25
+        }
+      ]
+    },
+    {
+      "code": "EL-12",
+      "template": "el-earth",
+      "section": "تأريض",
+      "description": "حفرة تأريض كاملة مع القضيب والاختبار",
+      "unit": "عدد",
+      "qty": 3,
+      "components": [
+        {
+          "res": "earthing_pit",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "code": "HV-01",
+      "template": "hv-split",
+      "section": "وحدات",
+      "description": "وحدة سبليت 2 طن توريد وتركيب مع 5 م مواسير نحاس والتصريف",
+      "unit": "عدد",
+      "qty": 12,
+      "components": [
+        {
+          "res": "split_unit_2tr",
+          "qty": 1
+        },
+        {
+          "res": "copper_pair",
+          "qty": 5,
+          "waste": 0.05
+        },
+        {
+          "res": "drain_pipe_hvac",
+          "qty": 5
+        },
+        {
+          "res": "crew_hvac",
+          "productivity": 2
+        }
+      ]
+    },
+    {
+      "code": "HV-02",
+      "template": "hv-package",
+      "section": "وحدات",
+      "description": "وحدة باكدج 10 طن مع القاعدة ومانع الاهتزاز والرفع",
+      "unit": "عدد",
+      "qty": 8,
+      "components": [
+        {
+          "res": "package_unit_10tr",
+          "qty": 1
+        },
+        {
+          "res": "eq_crane",
+          "productivity": 4
+        },
+        {
+          "res": "crew_hvac",
+          "productivity": 0.5
+        }
+      ]
+    },
+    {
+      "code": "HV-03",
+      "template": "hv-duct",
+      "section": "مجاري هواء",
+      "description": "مجاري هواء صاج مجلفن مع العزل والحوامل (بالمساحة السطحية)",
+      "unit": "م²",
+      "qty": 2400,
+      "components": [
+        {
+          "res": "gi_sheet",
+          "qty": 1.15
+        },
+        {
+          "res": "duct_insulation",
+          "qty": 1.1
+        },
+        {
+          "res": "duct_accessories",
+          "qty": 1
+        },
+        {
+          "res": "crew_duct",
+          "productivity": 18
+        }
+      ]
+    },
+    {
+      "code": "HV-04",
+      "template": "hv-copper",
+      "section": "مواسير",
+      "description": "مواسير نحاس للمبرد (زوج) معزولة إضافية",
+      "unit": "م.ط",
+      "qty": 120,
+      "components": [
+        {
+          "res": "copper_pair",
+          "qty": 1,
+          "waste": 0.05
+        },
+        {
+          "res": "crew_hvac",
+          "productivity": 30
+        }
+      ]
+    },
+    {
+      "code": "HV-05",
+      "template": "hv-diffuser",
+      "section": "مخارج هواء",
+      "description": "مخرج هواء (ديفيوزر/جريل) مع الوصلة المرنة",
+      "unit": "عدد",
+      "qty": 260,
+      "components": [
+        {
+          "res": "diffuser",
+          "qty": 1
+        },
+        {
+          "res": "crew_duct",
+          "productivity": 14
+        }
+      ]
+    },
+    {
+      "code": "HV-06",
+      "template": "hv-exhaust",
+      "section": "تهوية",
+      "description": "مروحة شفط (حمامات/مطابخ) مع التوصيل",
+      "unit": "عدد",
+      "qty": 24,
+      "components": [
+        {
+          "res": "exhaust_fan",
+          "qty": 1
+        },
+        {
+          "res": "crew_hvac",
+          "productivity": 6
+        }
+      ]
+    },
+    {
+      "code": "HV-07",
+      "template": "hv-tab",
+      "section": "اختبار وتشغيل",
+      "description": "الاختبار والموازنة والتشغيل TAB لكل طن تبريد",
+      "unit": "طن تبريد",
+      "qty": 104,
+      "components": [
+        {
+          "res": "tab_hvac",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "code": "PL-01",
+      "template": "pl-water-point",
+      "section": "تغذية مياه",
+      "description": "نقطة تغذية مياه (بارد/حار) PPR كاملة مع المحبس",
+      "unit": "نقطة",
+      "qty": 96,
+      "components": [
+        {
+          "res": "ppr_20",
+          "qty": 6,
+          "waste": 0.05
+        },
+        {
+          "res": "valve_small",
+          "qty": 1
+        },
+        {
+          "res": "crew_plumber",
+          "productivity": 8
+        }
+      ]
+    },
+    {
+      "code": "PL-02",
+      "template": "pl-drain-point",
+      "section": "صرف",
+      "description": "نقطة صرف uPVC كاملة مع القطع والتهوية",
+      "unit": "نقطة",
+      "qty": 88,
+      "components": [
+        {
+          "res": "upvc_drain",
+          "qty": 4,
+          "waste": 0.05
+        },
+        {
+          "res": "crew_plumber",
+          "productivity": 8
+        }
+      ]
+    },
+    {
+      "code": "PL-03",
+      "template": "pl-floor-drain",
+      "section": "صرف",
+      "description": "صفاية أرضية مع الوصلة",
+      "unit": "عدد",
+      "qty": 32,
+      "components": [
+        {
+          "res": "floor_drain",
+          "qty": 1
+        },
+        {
+          "res": "upvc_drain",
+          "qty": 2
+        },
+        {
+          "res": "crew_plumber",
+          "productivity": 10
+        }
+      ]
+    },
+    {
+      "code": "PL-04",
+      "template": "pl-wc",
+      "section": "أدوات صحية",
+      "description": "مرحاض كامل مع الخلاط والشطاف توريد وتركيب",
+      "unit": "عدد",
+      "qty": 28,
+      "components": [
+        {
+          "res": "wc_set",
+          "qty": 1
+        },
+        {
+          "res": "crew_plumber",
+          "productivity": 5
+        }
+      ]
+    },
+    {
+      "code": "PL-05",
+      "template": "pl-basin",
+      "section": "أدوات صحية",
+      "description": "مغسلة كاملة مع الخلاط توريد وتركيب",
+      "unit": "عدد",
+      "qty": 30,
+      "components": [
+        {
+          "res": "basin_set",
+          "qty": 1
+        },
+        {
+          "res": "crew_plumber",
+          "productivity": 6
+        }
+      ]
+    },
+    {
+      "code": "PL-06",
+      "template": "pl-heater",
+      "section": "أدوات صحية",
+      "description": "سخان مياه توريد وتركيب مع المحابس",
+      "unit": "عدد",
+      "qty": 10,
+      "components": [
+        {
+          "res": "water_heater",
+          "qty": 1
+        },
+        {
+          "res": "valve_small",
+          "qty": 2
+        },
+        {
+          "res": "crew_plumber",
+          "productivity": 6
+        }
+      ]
+    },
+    {
+      "code": "PL-07",
+      "template": "pl-fire-pipe",
+      "section": "مكافحة حريق",
+      "description": "مواسير حديد أسود لشبكة الحريق مع القطع والحوامل والدهان",
+      "unit": "م.ط",
+      "qty": 1100,
+      "components": [
+        {
+          "res": "black_steel_pipe",
+          "qty": 1,
+          "waste": 0.05
+        },
+        {
+          "res": "crew_fire",
+          "productivity": 20
+        }
+      ]
+    },
+    {
+      "code": "PL-08",
+      "template": "pl-sprinkler",
+      "section": "مكافحة حريق",
+      "description": "رشاش حريق مع الوصلة المرنة/الفرعية",
+      "unit": "عدد",
+      "qty": 520,
+      "components": [
+        {
+          "res": "sprinkler_head",
+          "qty": 1
+        },
+        {
+          "res": "crew_fire",
+          "productivity": 25
+        }
+      ]
+    },
+    {
+      "code": "PL-09",
+      "template": "pl-fhc",
+      "section": "مكافحة حريق",
+      "description": "صندوق حريق كامل مع البكرة والطفاية",
+      "unit": "عدد",
+      "qty": 12,
+      "components": [
+        {
+          "res": "fire_hose_cabinet",
+          "qty": 1
+        },
+        {
+          "res": "fire_extinguisher",
+          "qty": 1
+        },
+        {
+          "res": "crew_fire",
+          "productivity": 3
+        }
+      ]
+    }
+  ],
+  "site_overheads": [
+    {
+      "name": "مدير مشروع MEP (ربع تفرغ)",
+      "count": 0.25,
+      "monthly_cost": 30000
+    },
+    {
+      "name": "مهندس كهرباء (نصف تفرغ)",
+      "count": 0.5,
+      "monthly_cost": 16000
+    },
+    {
+      "name": "مهندس ميكانيكا (نصف تفرغ)",
+      "count": 0.5,
+      "monthly_cost": 16000
+    },
+    {
+      "name": "مسؤول سلامة (ربع تفرغ)",
+      "count": 0.25,
+      "monthly_cost": 8000
+    },
+    {
+      "name": "سيارة موقع",
+      "count": 1,
+      "monthly_cost": 3500
+    },
+    {
+      "name": "مخططات تنفيذية وحسب التنفيذ",
+      "lump_sum": 25000
+    },
+    {
+      "name": "اختبارات وتشغيل وتسليم",
+      "lump_sum": 25000
+    }
+  ],
+  "markups": {
+    "head_office": 0.05,
+    "finance": 0.01,
+    "bonds_insurance": 0.01,
+    "contingency": 0.03,
+    "profit": 0.08
+  }
+}
