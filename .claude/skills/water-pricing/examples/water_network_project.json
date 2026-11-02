@@ -1,0 +1,115 @@
+{
+  "_note": "مثال توضيحي فقط — كل الأسعار والإنتاجيات افتراضية لتوضيح طريقة الإدخال ويجب استبدالها بعروض موردين وسجلات الشركة.",
+  "project": {
+    "name": "مثال: إحلال شبكة مياه وتوصيلات منزلية لحي سكني",
+    "location": "الرياض",
+    "currency": "ر.س",
+    "duration_months": 8,
+    "vat_rate": 0.15,
+    "working_days_per_month": 26
+  },
+  "design": {
+    "min_cover_m": 1.0
+  },
+  "rates": {
+    "excavation_m3": {"type": "equipment", "key": "excavation", "rate": 14},
+    "rock_excavation_m3": {"type": "equipment", "key": "excavation", "rate": 65},
+    "bedding_m3": {"type": "material", "key": "sand", "rate": 55},
+    "surround_m3": {"type": "material", "key": "sand", "rate": 60},
+    "backfill_m3": {"type": "equipment", "key": "backfill", "rate": 12},
+    "disposal_m3": {"type": "equipment", "key": "disposal", "rate": 18},
+    "shoring_m2": {"type": "equipment", "key": "shoring", "rate": 22},
+    "asphalt_m2": {"type": "subcontract", "key": "asphalt", "rate": 70},
+    "dewatering_m": {"type": "subcontract", "key": "dewatering", "rate": 40},
+    "testing_m": {"type": "subcontract", "key": "testing", "rate": 6},
+    "tape_m": {"type": "material", "key": "sundries", "rate": 1.5}
+  },
+  "pipelines": [
+    {
+      "code": "W-01",
+      "description": "توريد وتمديد واختبار أنابيب HDPE PE100 SDR11 قطر 160 مم شاملاً الحفر والردم وإعادة الأسفلت",
+      "material": "HDPE",
+      "dn_mm": 160,
+      "od_m": 0.16,
+      "length_m": 9500,
+      "cover_m": 1.2,
+      "surface": "asphalt",
+      "rock_ratio": 0.0,
+      "ground_water": false,
+      "pipe_rate_per_m": 48,
+      "fittings_allowance": 0.08,
+      "lay_crew_daily_cost": 1450,
+      "lay_equipment_daily_cost": 450,
+      "lay_productivity_m_day": 220,
+      "crews": 2,
+      "productivity_factors": [
+        {"name": "العمل داخل حي مأهول", "factor": 0.75}
+      ]
+    },
+    {
+      "code": "W-02",
+      "description": "توريد وتمديد واختبار أنابيب حديد دكتايل K9 قطر 400 مم شاملاً الحفر والتدعيم والردم وإعادة الأسفلت",
+      "material": "DI",
+      "dn_mm": 400,
+      "od_m": 0.429,
+      "length_m": 2200,
+      "cover_m": 1.5,
+      "surface": "asphalt",
+      "rock_ratio": 0.15,
+      "ground_water": false,
+      "pipe_rate_per_m": 520,
+      "fittings_allowance": 0.10,
+      "lay_crew_daily_cost": 1900,
+      "lay_equipment_daily_cost": 1600,
+      "lay_productivity_m_day": 60,
+      "crews": 1,
+      "productivity_factors": [
+        {"name": "العمل داخل حي مأهول", "factor": 0.8}
+      ]
+    }
+  ],
+  "boq": [
+    {
+      "code": "HC-01",
+      "description": "توصيلة منزلية مياه قطر 32 مم بطول حتى 10 م شاملة صندوق العداد",
+      "unit": "عدد",
+      "qty": 1400,
+      "components": [
+        {"type": "material", "name": "سرج + محبس + أنبوب + صندوق عداد", "key": "fittings", "qty": 1, "rate": 340},
+        {"type": "labor", "name": "فني + عاملان", "key": "labor", "daily_cost": 750, "productivity": 5},
+        {"type": "subcontract", "name": "إعادة أسفلت/بلاط موضعي", "key": "asphalt", "qty": 2.5, "rate": 70}
+      ]
+    },
+    {
+      "code": "V-01",
+      "description": "محبس بوابي قطر 400 مم داخل غرفة خرسانية شاملة الغطاء D400",
+      "unit": "عدد",
+      "qty": 18,
+      "components": [
+        {"type": "material", "name": "محبس بوابي DN400", "key": "valves", "qty": 1, "rate": 9800},
+        {"type": "subcontract", "name": "غرفة محبس خرسانية مع الغطاء", "key": "chambers", "qty": 1, "rate": 7500},
+        {"type": "labor", "name": "فرقة تركيب", "key": "labor", "daily_cost": 1900, "productivity": 1.5}
+      ]
+    }
+  ],
+  "site_overheads": [
+    {"name": "مدير مشروع", "count": 1, "monthly_cost": 28000},
+    {"name": "مهندس موقع", "count": 2, "monthly_cost": 15000},
+    {"name": "مساح + معدات مساحة", "count": 1, "monthly_cost": 11000},
+    {"name": "مسؤول سلامة", "count": 1, "monthly_cost": 9000},
+    {"name": "مسؤول جودة", "count": 1, "monthly_cost": 10000},
+    {"name": "سيارات الموقع", "count": 3, "monthly_cost": 3500},
+    {"name": "مكتب ومستودع الموقع", "count": 1, "monthly_cost": 9000},
+    {"name": "إدارة المرور والحواجز واللوحات", "count": 1, "monthly_cost": 12000},
+    {"name": "التعبئة والتسريح", "lump_sum": 60000},
+    {"name": "مخططات حسب التنفيذ وبيانات GIS", "lump_sum": 45000},
+    {"name": "رسوم وتصاريح الحفر (يُتحقق من مسؤوليتها)", "lump_sum": 50000}
+  ],
+  "markups": {
+    "head_office": 0.05,
+    "finance": 0.015,
+    "bonds_insurance": 0.012,
+    "contingency": 0.04,
+    "profit": 0.08
+  }
+}

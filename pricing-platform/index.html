@@ -1,0 +1,462 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>منصة تسعير المياه</title>
+<style>
+:root{
+  --bg:#f6f7f9;--surface:#fff;--surface-2:#f0f2f5;--text:#16202b;--muted:#5b6876;--border:#dde2e8;
+  --accent:#0b6e99;--accent-soft:#e3f1f8;--good:#1f7a4d;--warn:#a35c00;--warn-soft:#fff4e0;--bad:#b42318;
+  --bar:#0b6e99;--bar-2:#7fb7d1;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0f141a;--surface:#161d25;--surface-2:#1d2630;--text:#e6ebf0;--muted:#9aa7b4;--border:#2a3540;
+    --accent:#4fb3e0;--accent-soft:#163246;--good:#4cc38a;--warn:#f0a443;--warn-soft:#3a2a12;--bad:#f97066;
+    --bar:#4fb3e0;--bar-2:#2c6a89;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0f141a;--surface:#161d25;--surface-2:#1d2630;--text:#e6ebf0;--muted:#9aa7b4;--border:#2a3540;
+  --accent:#4fb3e0;--accent-soft:#163246;--good:#4cc38a;--warn:#f0a443;--warn-soft:#3a2a12;--bad:#f97066;
+  --bar:#4fb3e0;--bar-2:#2c6a89;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:14px/1.6 "Segoe UI",Tahoma,"Noto Sans Arabic",system-ui,sans-serif}
+header{background:var(--surface);border-bottom:1px solid var(--border);padding:12px 16px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:5}
+header h1{font-size:17px;margin:0}
+header .sub{color:var(--muted);font-size:12px}
+.toolbar{display:flex;flex-wrap:wrap;gap:6px}
+button,.btn{background:var(--surface-2);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:6px 10px;font:inherit;cursor:pointer}
+button.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+button.ghost{background:transparent}
+button.del{color:var(--bad);background:transparent;border-color:transparent;padding:2px 6px}
+nav{display:flex;gap:4px;overflow-x:auto;padding:8px 16px 0;background:var(--bg)}
+nav button{border-radius:6px 6px 0 0;border-bottom:none;white-space:nowrap}
+nav button.on{background:var(--surface);color:var(--accent);font-weight:600}
+main{padding:0 16px 40px}
+section.tab{display:none;background:var(--surface);border:1px solid var(--border);border-radius:0 0 8px 8px;padding:16px}
+section.tab.on{display:block}
+h2{font-size:15px;margin:18px 0 8px}
+h2:first-child{margin-top:0}
+.note{color:var(--muted);font-size:12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
+label.f{display:flex;flex-direction:column;gap:3px;font-size:12px;color:var(--muted)}
+input,select{background:var(--surface);color:var(--text);border:1px solid var(--border);border-radius:5px;padding:5px 7px;font:inherit;min-width:0;width:100%}
+input[type=checkbox]{width:auto}
+.tw{overflow-x:auto;border:1px solid var(--border);border-radius:6px;margin:6px 0 12px}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{padding:6px 8px;border-bottom:1px solid var(--border);text-align:right;vertical-align:middle}
+th{background:var(--surface-2);font-weight:600;white-space:nowrap}
+td.n,th.n{text-align:left;direction:ltr;font-variant-numeric:tabular-nums;white-space:nowrap}
+td input{min-width:70px}
+td input.wide{min-width:240px}
+tr.total td{font-weight:700;background:var(--surface-2)}
+.kpis{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px;margin-bottom:14px}
+.kpi{background:var(--surface-2);border:1px solid var(--border);border-radius:8px;padding:10px}
+.kpi .l{font-size:12px;color:var(--muted)}
+.kpi .v{font-size:18px;font-weight:700;direction:ltr;text-align:right;font-variant-numeric:tabular-nums}
+.warn{background:var(--warn-soft);color:var(--warn);border-radius:6px;padding:8px 10px;margin:4px 0;font-size:13px}
+.err{background:var(--warn-soft);color:var(--bad);border-radius:6px;padding:8px 10px;margin:4px 0}
+.barcell{min-width:140px}
+.bar{height:10px;background:var(--bar);border-radius:3px}
+.bar.b2{background:var(--bar-2)}
+.item{border:1px solid var(--border);border-radius:8px;padding:10px;margin-bottom:10px}
+.item .head{display:grid;grid-template-columns:90px 1fr 80px 110px auto;gap:8px;align-items:end}
+.tag{display:inline-block;padding:1px 6px;border-radius:4px;background:var(--accent-soft);color:var(--accent);font-size:11px}
+.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}
+.two>div{min-width:0}
+@media (max-width:760px){.two{grid-template-columns:minmax(0,1fr)}.item .head{grid-template-columns:1fr 1fr}}
+@media print{header,nav,section.tab:not(#t-results){display:none!important}section.tab{border:none}#t-results{display:block!important}body{background:#fff;color:#000}}
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>منصة تسعير مشاريع المياه والصرف</h1>
+    <div class="sub">تفكيك هندسي للبنود • تحليل سعر الوحدة • ملخص العرض • باريتو • حساسية — نفس صيغة ملفات <code>pricing_calc.py</code></div>
+  </div>
+  <div class="toolbar">
+    <button onclick="document.getElementById('file').click()">📂 استيراد JSON</button>
+    <input id="file" type="file" accept=".json,application/json" hidden>
+    <button onclick="exportSource()">💾 حفظ المشروع</button>
+    <button onclick="exportPriced()">⬇️ ملف للحاسبة</button>
+    <button onclick="exportCSV()">⬇️ CSV</button>
+    <button onclick="window.print()">🖨️ طباعة</button>
+    <button class="ghost" onclick="resetExample()">↺ المثال</button>
+    <button class="ghost" onclick="toggleTheme()">🌓 الوضع</button>
+  </div>
+</header>
+<nav id="tabs"></nav>
+<main>
+  <section class="tab" id="t-project"></section>
+  <section class="tab" id="t-rates"></section>
+  <section class="tab" id="t-pipes"></section>
+  <section class="tab" id="t-boq"></section>
+  <section class="tab" id="t-oh"></section>
+  <section class="tab" id="t-results"></section>
+</main>
+
+<script>
+"use strict";
+/* ===================== Example (illustrative only) ===================== */
+const EXAMPLE = {
+  "_note":"مثال توضيحي فقط — كل الأسعار والإنتاجيات افتراضية ويجب استبدالها بعروض موردين وسجلات الشركة.",
+  "project":{"name":"مثال: إحلال شبكة مياه وتوصيلات منزلية لحي سكني","location":"الرياض","currency":"ر.س","duration_months":8,"vat_rate":0.15,"working_days_per_month":26},
+  "design":{"min_cover_m":1.0},
+  "rates":{
+    "excavation_m3":{"type":"equipment","key":"excavation","rate":14},
+    "rock_excavation_m3":{"type":"equipment","key":"excavation","rate":65},
+    "bedding_m3":{"type":"material","key":"sand","rate":55},
+    "surround_m3":{"type":"material","key":"sand","rate":60},
+    "backfill_m3":{"type":"equipment","key":"backfill","rate":12},
+    "disposal_m3":{"type":"equipment","key":"disposal","rate":18},
+    "shoring_m2":{"type":"equipment","key":"shoring","rate":22},
+    "asphalt_m2":{"type":"subcontract","key":"asphalt","rate":70},
+    "dewatering_m":{"type":"subcontract","key":"dewatering","rate":40},
+    "testing_m":{"type":"subcontract","key":"testing","rate":6},
+    "tape_m":{"type":"material","key":"sundries","rate":1.5}
+  },
+  "pipelines":[
+    {"code":"W-01","description":"توريد وتمديد واختبار أنابيب HDPE PE100 SDR11 قطر 160 مم شاملاً الحفر والردم وإعادة الأسفلت","material":"HDPE","dn_mm":160,"od_m":0.16,"length_m":9500,"cover_m":1.2,"surface":"asphalt","rock_ratio":0,"ground_water":false,"pipe_rate_per_m":48,"fittings_allowance":0.08,"lay_crew_daily_cost":1450,"lay_equipment_daily_cost":450,"lay_productivity_m_day":220,"crews":2,"productivity_factors":[{"name":"العمل داخل حي مأهول","factor":0.75}]},
+    {"code":"W-02","description":"توريد وتمديد واختبار أنابيب حديد دكتايل K9 قطر 400 مم شاملاً الحفر والتدعيم والردم وإعادة الأسفلت","material":"DI","dn_mm":400,"od_m":0.429,"length_m":2200,"cover_m":1.5,"surface":"asphalt","rock_ratio":0.15,"ground_water":false,"pipe_rate_per_m":520,"fittings_allowance":0.10,"lay_crew_daily_cost":1900,"lay_equipment_daily_cost":1600,"lay_productivity_m_day":60,"crews":1,"productivity_factors":[{"name":"العمل داخل حي مأهول","factor":0.8}]}
+  ],
+  "boq":[
+    {"code":"HC-01","description":"توصيلة منزلية مياه قطر 32 مم بطول حتى 10 م شاملة صندوق العداد","unit":"عدد","qty":1400,"components":[
+      {"type":"material","name":"سرج + محبس + أنبوب + صندوق عداد","key":"fittings","qty":1,"rate":340},
+      {"type":"labor","name":"فني + عاملان","key":"labor","daily_cost":750,"productivity":5},
+      {"type":"subcontract","name":"إعادة أسفلت/بلاط موضعي","key":"asphalt","qty":2.5,"rate":70}]},
+    {"code":"V-01","description":"محبس بوابي قطر 400 مم داخل غرفة خرسانية شاملة الغطاء D400","unit":"عدد","qty":18,"components":[
+      {"type":"material","name":"محبس بوابي DN400","key":"valves","qty":1,"rate":9800},
+      {"type":"subcontract","name":"غرفة محبس خرسانية مع الغطاء","key":"chambers","qty":1,"rate":7500},
+      {"type":"labor","name":"فرقة تركيب","key":"labor","daily_cost":1900,"productivity":1.5}]}
+  ],
+  "site_overheads":[
+    {"name":"مدير مشروع","count":1,"monthly_cost":28000},
+    {"name":"مهندس موقع","count":2,"monthly_cost":15000},
+    {"name":"مساح + معدات مساحة","count":1,"monthly_cost":11000},
+    {"name":"مسؤول سلامة","count":1,"monthly_cost":9000},
+    {"name":"مسؤول جودة","count":1,"monthly_cost":10000},
+    {"name":"سيارات الموقع","count":3,"monthly_cost":3500},
+    {"name":"مكتب ومستودع الموقع","count":1,"monthly_cost":9000},
+    {"name":"إدارة المرور والحواجز واللوحات","count":1,"monthly_cost":12000},
+    {"name":"التعبئة والتسريح","lump_sum":60000},
+    {"name":"مخططات حسب التنفيذ وبيانات GIS","lump_sum":45000},
+    {"name":"رسوم وتصاريح الحفر (يُتحقق من مسؤوليتها)","lump_sum":50000}
+  ],
+  "markups":{"head_office":0.05,"finance":0.015,"bonds_insurance":0.012,"contingency":0.04,"profit":0.08}
+};
+
+/* ===================== Engine (mirrors water_assemblies.py + pricing_calc.py) ===================== */
+const TYPES = {material:"مواد",labor:"عمالة",equipment:"معدات",subcontract:"مقاول باطن"};
+const MARKUPS = {head_office:"المصاريف العامة للشركة",finance:"تكلفة التمويل",bonds_insurance:"الضمانات البنكية والتأمين",contingency:"المخاطر والطوارئ"};
+const DEFAULT_DESIGN = {min_width_m:0.60,clearance_small_m:0.20,clearance_large_m:0.30,bedding_m:0.15,surround_above_m:0.30,min_cover_m:1.00,shoring_depth_m:1.50,deep_trench_m:4.00,bulking:1.25,asphalt_overlap_m:0.30,pipe_waste:0.02};
+const DESIGN_LABELS = {min_width_m:"أقل عرض للخندق (م)",clearance_small_m:"خلوص جانبي DN≤300 (م)",clearance_large_m:"خلوص جانبي DN>300 (م)",bedding_m:"سماكة الفرشة (م)",surround_above_m:"التغليف فوق الظهر (م)",min_cover_m:"الغطاء الأدنى (م)",shoring_depth_m:"عمق بدء التدعيم (م)",deep_trench_m:"عمق الخندق الخاص (م)",bulking:"معامل الانتفاش",asphalt_overlap_m:"تجاوز الأسفلت لكل جانب (م)",pipe_waste:"هالك الأنابيب"};
+const RATE_KEYS = {excavation_m3:"حفر خندق (م³)",rock_excavation_m3:"حفر صخري (م³)",bedding_m3:"فرشة (م³)",surround_m3:"تغليف (م³)",backfill_m3:"ردم ودمك (م³)",disposal_m3:"نقل فائض (م³ مفكك)",shoring_m2:"تدعيم (م²)",asphalt_m2:"قص وإعادة أسفلت (م²)",dewatering_m:"نزح مياه (م.ط)",testing_m:"اختبار وتطهير (م.ط)",tape_m:"شريط تحذيري (م.ط)"};
+const NORMS = [["HDPE",0,160,150,300],["HDPE",161,400,80,150],["DI",0,300,80,150],["DI",301,600,40,80],["DI",601,1200,20,40],["GRP",301,600,40,80],["GRP",601,1600,20,40],["UPVC",0,400,50,100]];
+const FLEXIBLE = new Set(["HDPE","GRP","UPVC","PVC"]);
+const r4 = x => Math.round(x*1e4)/1e4, r3 = x => Math.round(x*1e3)/1e3, r2 = x => Math.round(x*100)/100;
+
+function geometry(p,d){
+  const od=+p.od_m, clearance = (+p.dn_mm<=300)?d.clearance_small_m:d.clearance_large_m;
+  const width=Math.max(d.min_width_m, od+2*clearance), depth=(+p.cover_m)+od+d.bedding_m;
+  const pipeA=Math.PI*od*od/4, exc=width*depth, bed=width*d.bedding_m, sur=width*(od+d.surround_above_m)-pipeA;
+  const backfill=exc-bed-sur-pipeA, imp=p.import_backfill?backfill:0;
+  const rock=exc*(+p.rock_ratio||0);
+  return {width,depth,excavation:exc-rock,rock,bedding:bed,surround:sur,backfill,
+    disposal:(pipeA+bed+sur+imp)*d.bulking, shoring: depth>d.shoring_depth_m?2*depth:0,
+    asphalt: p.surface==="asphalt"? width+2*d.asphalt_overlap_m:0};
+}
+function prodFactor(p){return (p.productivity_factors||[]).reduce((a,f)=>a*(+f.factor||1),1);}
+function buildPipeItem(p,rates,d,missing){
+  const g=geometry(p,d), f=prodFactor(p), eff=r3(p.lay_productivity_m_day*f), comps=[];
+  comps.push({type:"material",name:`أنبوب ${p.material} DN${p.dn_mm}`,key:"pipe",qty:1,rate:+p.pipe_rate_per_m,waste:(p.pipe_waste??d.pipe_waste)});
+  if(+p.fittings_allowance) comps.push({type:"material",name:"قطع ووصلات (نسبة من سعر الأنبوب)",key:"pipe",qty:+p.fittings_allowance,rate:+p.pipe_rate_per_m});
+  comps.push({type:"labor",name:"فرقة التمديد والوصل",key:"labor",daily_cost:+p.lay_crew_daily_cost,productivity:eff});
+  if(+p.lay_equipment_daily_cost) comps.push({type:"equipment",name:"معدات التمديد (رفع/لحام)",key:"equipment",daily_cost:+p.lay_equipment_daily_cost,productivity:eff});
+  const rows=[["excavation_m3","حفر خندق",g.excavation],["rock_excavation_m3","حفر صخري",g.rock],["bedding_m3","فرشة رملية",g.bedding],["surround_m3","تغليف بمادة مختارة",g.surround],["backfill_m3","ردم ودمك على طبقات",g.backfill],["disposal_m3","نقل الفائض للمرادم المعتمدة",g.disposal],["shoring_m2","تدعيم جوانب الخندق",g.shoring],["asphalt_m2","قص وإعادة الأسفلت وطبقة الأساس",g.asphalt],["dewatering_m","نزح المياه الجوفية",p.ground_water?1:0],["testing_m","اختبار الضغط والتطهير",1],["tape_m","شريط تحذيري كاشف",1]];
+  for(const [k,name,q] of rows){
+    if(!(k in rates)){missing.add(`${k} (مطلوب للبند ${p.code})`);continue;}
+    if(q<=0) continue;
+    const r=rates[k]; comps.push({type:r.type||"subcontract",name,key:r.key||k,qty:r4(q),rate:+r.rate});
+  }
+  return {item:{code:p.code,description:p.description,unit:"م.ط",qty:+p.length_m,components:comps},g,f};
+}
+function pipeChecks(p,g,d,f,proj){
+  const w=[], mat=String(p.material).toUpperCase();
+  if(+p.cover_m<d.min_cover_m) w.push(`الغطاء ${p.cover_m} م أقل من الحد الأدنى ${d.min_cover_m} م — حماية خرسانية أو تأكيد من المواصفة.`);
+  if(g.depth>d.deep_trench_m) w.push(`عمق الخندق ${g.depth.toFixed(2)} م > ${d.deep_trench_m} م — يتطلب تصميم تدعيم خاص ودراسة سلامة.`);
+  if(g.shoring) w.push(`التدعيم محمّل لأن العمق ${g.depth.toFixed(2)} م > ${d.shoring_depth_m} م.`);
+  if(p.ground_water) w.push("مياه جوفية: تأكد من طريقة النزح وتأثيرها على الإنتاجية (معامل التعديل).");
+  if(FLEXIBLE.has(mat)) w.push("أنبوب مرن: جودة الفرشة والتغليف والدمك حاسمة لمنع الانبعاج — راجع متطلبات المصنع.");
+  const eff=p.lay_productivity_m_day*f;
+  for(const [m,lo_dn,hi_dn,lo,hi] of NORMS){ if(mat===m && +p.dn_mm>=lo_dn && +p.dn_mm<=hi_dn){ if(!(eff>=lo*0.6 && eff<=hi*1.2)) w.push(`إنتاجية التمديد الفعلية ${eff.toFixed(0)} م/يوم بعيدة عن النطاق الإرشادي ${lo}–${hi} م/يوم.`); break; } }
+  const crews=+p.crews||1, days=p.length_m/(eff*crews), avail=(proj.duration_months||0)*(proj.working_days_per_month||26);
+  if(avail && days>avail*0.7) w.push(`مدة التمديد ${days.toFixed(0)} يوم عمل بـ ${crews} فرقة تتجاوز 70% من المدة المتاحة (${avail} يوم) — زِد الفرق وحمّل تكلفتها أو راجع البرنامج.`);
+  return {w,days,crews};
+}
+function expand(src){
+  const d={...DEFAULT_DESIGN,...(src.design||{})}, rates=src.rates||{}, missing=new Set(), gen=[], geo=[];
+  for(const p of (src.pipelines||[])){const {item,g,f}=buildPipeItem(p,rates,d,missing); gen.push(item); geo.push({p,g,f,...pipeChecks(p,g,d,f,src.project)});}
+  return {priced:{project:src.project,boq:[...gen,...(src.boq||[])],site_overheads:src.site_overheads||[],markups:src.markups||{}},geo,missing:[...missing].sort(),design:d};
+}
+function compCost(c){ const base = ("productivity" in c) ? (c.productivity>0? c.daily_cost/c.productivity : NaN) : c.qty*c.rate; return base*(1+(+c.waste||0)); }
+function itemUnit(item,ov){ const b={material:0,labor:0,equipment:0,subcontract:0}; for(const c of item.components||[]){ let x=compCost(c); if(ov && c.key in ov) x*=1+ov[c.key]; b[c.type]=(b[c.type]||0)+x; } return {unit:Object.values(b).reduce((a,v)=>a+v,0),b}; }
+function price(proj,ov){
+  let direct=0; const items=(proj.boq||[]).map(it=>{const {unit,b}=itemUnit(it,ov); const t=unit*it.qty; direct+=t; return {...it,direct_unit:unit,breakdown:b,direct_total:t};});
+  let site=0; const siteRows=(proj.site_overheads||[]).map(o=>{const a=("monthly_cost" in o)?(o.count??1)*o.monthly_cost*(o.months??proj.project.duration_months):+o.lump_sum; site+=a; return [o.name,a];});
+  const pc=direct+site, m=proj.markups||{}, mk=Object.keys(MARKUPS).map(k=>[MARKUPS[k],pc*(+m[k]||0)]);
+  const tc=pc+mk.reduce((a,x)=>a+x[1],0), profit=tc*(+m.profit||0), bid=tc+profit, vatRate=proj.project.vat_rate??0.15;
+  const factor=direct?bid/direct:0; let sum=0;
+  for(const it of items){it.unit_price=r2(it.direct_unit*factor); it.total_price=r2(it.unit_price*it.qty); sum+=it.total_price;}
+  return {items,direct,site,siteRows,pc,mk,tc,profit,bid,sum,vatRate,vat:bid*vatRate,factor};
+}
+function sanity(proj,r){
+  const w=[], s=r.direct?r.site/r.direct:0;
+  if(!(s>=0.08&&s<=0.15)) w.push(`مصاريف الموقع من التكلفة المباشرة = ${(s*100).toFixed(1)}% خارج النطاق المعتاد (8% – 15%). راجع الحساب التفصيلي.`);
+  const m=proj.markups||{}, R={head_office:[0.03,0.07,"المصاريف العامة للشركة"],contingency:[0.02,0.10,"المخاطر والطوارئ"],profit:[0.05,0.15,"الربح"]};
+  for(const k in R){const v=+m[k]||0; if(!(v>=R[k][0]&&v<=R[k][1])) w.push(`نسبة ${R[k][2]} = ${+(v*100).toFixed(2)}% خارج النطاق المعتاد (${R[k][0]*100}% – ${R[k][1]*100}%).`);}
+  for(const it of r.items){ if(!(it.direct_unit>0)) w.push(`البند ${it.code} بدون تكلفة صحيحة — تأكد من تسعيره (أو إنتاجية = صفر).`); }
+  return w;
+}
+function sensitivity(proj,base,delta){
+  const keys=[...new Set((proj.boq||[]).flatMap(i=>(i.components||[]).map(c=>c.key).filter(Boolean)))];
+  return keys.map(k=>[k,price(proj,{[k]:delta}).bid-base.bid]).sort((a,b)=>Math.abs(b[1])-Math.abs(a[1]));
+}
+
+/* ===================== State, persistence ===================== */
+const STORE="water-pricing-platform-v1";
+let S, ACTIVE="results", DELTA=0.10;
+function clone(x){return JSON.parse(JSON.stringify(x));}
+function load(){ try{const t=localStorage.getItem(STORE); if(t) return JSON.parse(t);}catch(e){} return clone(EXAMPLE); }
+function save(){ try{localStorage.setItem(STORE,JSON.stringify(S));}catch(e){} }
+S=load();
+
+/* ===================== Helpers ===================== */
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const fmt=(x,dg=2)=>Number.isFinite(x)?x.toLocaleString("en-US",{minimumFractionDigits:dg,maximumFractionDigits:dg}):"—";
+const pct=(x,b)=>b?(x/b*100).toFixed(2)+"%":"—";
+function getPath(o,p){return p.split(".").reduce((a,k)=>a==null?a:a[k],o);}
+function setPath(o,p,v){const ks=p.split("."); let a=o; for(let i=0;i<ks.length-1;i++){if(a[ks[i]]==null)a[ks[i]]={}; a=a[ks[i]];} a[ks.at(-1)]=v;}
+function inp(path,kind="num",cls=""){
+  const v=getPath(S,path);
+  if(kind==="bool") return `<input type="checkbox" data-p="${path}" data-k="bool" ${v?"checked":""}>`;
+  return `<input class="${cls}" ${kind==="num"?'type="number" step="any" inputmode="decimal"':'type="text"'} data-p="${path}" data-k="${kind}" value="${esc(v??"")}">`;
+}
+function sel(path,opts){const v=getPath(S,path); return `<select data-p="${path}" data-k="text">${Object.entries(opts).map(([k,l])=>`<option value="${k}" ${k===v?"selected":""}>${esc(l)}</option>`).join("")}</select>`;}
+function cur(){return S.project.currency||"ر.س";}
+
+/* ===================== Tabs ===================== */
+const TABS=[["project","المشروع والافتراضات"],["rates","مكتبة الأسعار"],["pipes","الخطوط (تفكيك هندسي)"],["boq","البنود الأخرى"],["oh","مصاريف الموقع والإضافات"],["results","النتائج والتحليل"]];
+function renderTabs(){document.getElementById("tabs").innerHTML=TABS.map(([k,l])=>`<button class="${k===ACTIVE?"on":""}" onclick="go('${k}')">${l}</button>`).join(""); for(const [k] of TABS) document.getElementById("t-"+k).classList.toggle("on",k===ACTIVE);}
+function go(k){ACTIVE=k; try{sessionStorage.setItem(STORE+"-tab",k);}catch(e){} renderTabs(); renderAll();}
+try{const t=sessionStorage.getItem(STORE+"-tab"); if(t) ACTIVE=t;}catch(e){}
+
+function renderProject(){
+  S.design=S.design||{};
+  document.getElementById("t-project").innerHTML=`
+  <h2>بيانات المشروع</h2>
+  <div class="grid">
+    <label class="f">اسم المشروع${inp("project.name","text")}</label>
+    <label class="f">الموقع${inp("project.location","text")}</label>
+    <label class="f">العملة${inp("project.currency","text")}</label>
+    <label class="f">المدة (شهر)${inp("project.duration_months")}</label>
+    <label class="f">أيام العمل في الشهر${inp("project.working_days_per_month")}</label>
+    <label class="f">ضريبة القيمة المضافة (كسر عشري)${inp("project.vat_rate")}</label>
+  </div>
+  <h2>الافتراضات التصميمية للخنادق</h2>
+  <p class="note">قيم إرشادية — طابقها مع مواصفات المشروع ومعايير شركة المياه الوطنية. اترك الحقل فارغاً لاستخدام القيمة الافتراضية (بين القوسين).</p>
+  <div class="grid">${Object.keys(DEFAULT_DESIGN).map(k=>`<label class="f">${DESIGN_LABELS[k]} (${DEFAULT_DESIGN[k]})${inp("design."+k)}</label>`).join("")}</div>
+  ${S._note?`<p class="warn">${esc(S._note)}</p>`:""}`;
+}
+function renderRates(){
+  S.rates=S.rates||{};
+  const rows=Object.keys(RATE_KEYS).map(k=>{const has=k in S.rates; return `<tr><td>${RATE_KEYS[k]}<br><span class="note">${k}</span></td>
+    <td>${has?sel(`rates.${k}.type`,TYPES):"—"}</td><td>${has?inp(`rates.${k}.key`,"text"):"—"}</td>
+    <td>${has?inp(`rates.${k}.rate`):`<span class="note">غير مسعّر</span>`}</td>
+    <td>${has?`<button class="del" onclick="delRate('${k}')">حذف</button>`:`<button onclick="addRate('${k}')">+ إضافة سعر</button>`}</td></tr>`;}).join("");
+  document.getElementById("t-rates").innerHTML=`
+  <h2>أسعار الأنشطة المستخدمة في تفكيك الخطوط</h2>
+  <p class="note">كل سعر هو تكلفة مباشرة لوحدة النشاط، من عروض الموردين ومقاولي الباطن أو سجلات الشركة. احذف سعر النشاط إذا كان له بند مستقل في جدول المالك (لتجنّب الازدواج). «المفتاح» يجمع الموارد في تحليل الحساسية.</p>
+  <div class="tw"><table><thead><tr><th>النشاط</th><th>النوع</th><th>المفتاح</th><th>السعر (${esc(cur())})</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>`;
+}
+function addRate(k){S.rates[k]={type:"subcontract",key:k.split("_")[0],rate:0}; changed(true);}
+function delRate(k){delete S.rates[k]; changed(true);}
+
+function renderPipes(){
+  S.pipelines=S.pipelines||[];
+  const {geo}=expand(S);
+  const cards=S.pipelines.map((p,i)=>{const G=geo[i]; const g=G.g; const P=`pipelines.${i}`;
+    return `<div class="item">
+    <div class="head"><label class="f">الرمز${inp(P+".code","text")}</label><label class="f">الوصف${inp(P+".description","text","wide")}</label>
+      <label class="f">المادة${sel(P+".material",{HDPE:"HDPE",DI:"حديد دكتايل DI",GRP:"GRP",UPVC:"uPVC",STEEL:"حديد صلب"})}</label>
+      <label class="f">الطول (م)${inp(P+".length_m")}</label><button class="del" onclick="delPipe(${i})">حذف الخط</button></div>
+    <div class="grid" style="margin-top:8px">
+      <label class="f">DN (مم)${inp(P+".dn_mm")}</label><label class="f">القطر الخارجي OD (م)${inp(P+".od_m")}</label>
+      <label class="f">الغطاء فوق الظهر (م)${inp(P+".cover_m")}</label>
+      <label class="f">السطح${sel(P+".surface",{asphalt:"أسفلت",soil:"ترابي / غير مرصوف"})}</label>
+      <label class="f">نسبة الصخر من الحفر${inp(P+".rock_ratio")}</label>
+      <label class="f">مياه جوفية ${inp(P+".ground_water","bool")}</label>
+      <label class="f">ردم بمواد مستوردة ${inp(P+".import_backfill","bool")}</label>
+      <label class="f">سعر الأنبوب (للمتر)${inp(P+".pipe_rate_per_m")}</label>
+      <label class="f">القطع والوصلات (نسبة)${inp(P+".fittings_allowance")}</label>
+      <label class="f">تكلفة فرقة التمديد اليومية${inp(P+".lay_crew_daily_cost")}</label>
+      <label class="f">تكلفة معدات التمديد اليومية${inp(P+".lay_equipment_daily_cost")}</label>
+      <label class="f">الإنتاجية الأساسية (م/يوم)${inp(P+".lay_productivity_m_day")}</label>
+      <label class="f">عدد الفرق${inp(P+".crews")}</label>
+    </div>
+    <div style="margin-top:8px"><span class="note">معاملات تعديل الإنتاجية:</span>
+      ${(p.productivity_factors||[]).map((f,j)=>`<span style="display:inline-flex;gap:4px;align-items:center;margin:2px">${inp(`${P}.productivity_factors.${j}.name`,"text")}${inp(`${P}.productivity_factors.${j}.factor`)}<button class="del" onclick="delFactor(${i},${j})">×</button></span>`).join("")}
+      <button onclick="addFactor(${i})">+ معامل</button></div>
+    <div class="tw"><table><thead><tr><th>العرض</th><th>العمق</th><th>حفر</th><th>صخر</th><th>فرشة</th><th>تغليف</th><th>ردم</th><th>فائض</th><th>تدعيم م²</th><th>أسفلت م²</th><th>إنتاجية فعلية</th><th>مدة التمديد</th></tr></thead>
+    <tbody><tr>${[g.width,g.depth,g.excavation,g.rock,g.bedding,g.surround,g.backfill,g.disposal,g.shoring,g.asphalt].map(x=>`<td class="n">${fmt(x,3)}</td>`).join("")}<td>${fmt(p.lay_productivity_m_day*G.f,0)} م/يوم</td><td>${fmt(G.days,0)} يوم</td></tr></tbody></table></div>
+    <div class="note">الكميات لكل متر طولي (م أو م³/م أو م²/م).</div>
+    ${G.w.map(x=>`<div class="warn">⚠️ ${esc(x)}</div>`).join("")}
+  </div>`;}).join("");
+  document.getElementById("t-pipes").innerHTML=`<h2>خطوط المياه والصرف — التفكيك الهندسي لكل متر</h2>
+  <p class="note">يُحسب عرض الخندق = max(أقل عرض، OD + 2 × الخلوص)، والعمق = الغطاء + OD + الفرشة. تتحول الكميات تلقائياً إلى مكونات تكلفة باستخدام مكتبة الأسعار.</p>
+  ${cards}<button class="primary" onclick="addPipe()">+ إضافة خط</button>`;
+}
+function addPipe(){S.pipelines.push({code:`W-${String(S.pipelines.length+1).padStart(2,"0")}`,description:"",material:"HDPE",dn_mm:110,od_m:0.11,length_m:0,cover_m:1.2,surface:"asphalt",rock_ratio:0,ground_water:false,pipe_rate_per_m:0,fittings_allowance:0.05,lay_crew_daily_cost:0,lay_equipment_daily_cost:0,lay_productivity_m_day:150,crews:1,productivity_factors:[]}); changed(true);}
+function delPipe(i){ if(confirm("حذف الخط؟")){S.pipelines.splice(i,1); changed(true);} }
+function addFactor(i){(S.pipelines[i].productivity_factors ||= []).push({name:"ظرف",factor:0.9}); changed(true);}
+function delFactor(i,j){S.pipelines[i].productivity_factors.splice(j,1); changed(true);}
+
+function renderBoq(){
+  S.boq=S.boq||[];
+  const cards=S.boq.map((it,i)=>{const P=`boq.${i}`; const u=itemUnit(it).unit;
+    const comps=(it.components||[]).map((c,j)=>{const C=`${P}.components.${j}`; const prod="productivity" in c;
+      return `<tr><td>${sel(C+".type",TYPES)}</td><td>${inp(C+".name","text","wide")}</td><td>${inp(C+".key","text")}</td>
+      <td><select onchange="setMode(${i},${j},this.value)"><option value="q" ${prod?"":"selected"}>كمية × سعر</option><option value="p" ${prod?"selected":""}>يومية ÷ إنتاجية</option></select></td>
+      ${prod?`<td>${inp(C+".daily_cost")}</td><td>${inp(C+".productivity")}</td>`:`<td>${inp(C+".qty")}</td><td>${inp(C+".rate")}</td>`}
+      <td>${inp(C+".waste")}</td><td class="n">${fmt(compCost(c))}</td><td><button class="del" onclick="delComp(${i},${j})">×</button></td></tr>`;}).join("");
+    return `<div class="item"><div class="head"><label class="f">الرمز${inp(P+".code","text")}</label><label class="f">الوصف${inp(P+".description","text","wide")}</label>
+    <label class="f">الوحدة${inp(P+".unit","text")}</label><label class="f">الكمية${inp(P+".qty")}</label><button class="del" onclick="delItem(${i})">حذف البند</button></div>
+    <div class="tw"><table><thead><tr><th>النوع</th><th>المكوّن</th><th>المفتاح</th><th>الطريقة</th><th>الكمية / اليومية</th><th>السعر / الإنتاجية</th><th>الهالك</th><th class="n">التكلفة للوحدة</th><th></th></tr></thead><tbody>${comps}
+    <tr class="total"><td colspan="7">التكلفة المباشرة للوحدة</td><td class="n">${fmt(u)}</td><td></td></tr></tbody></table></div>
+    <button onclick="addComp(${i})">+ مكوّن</button></div>`;}).join("");
+  document.getElementById("t-boq").innerHTML=`<h2>البنود الأخرى (توصيلات، محابس، غرف، أعمال عامة)</h2>
+  <p class="note">تحليل سعر الوحدة: مواد (كمية × سعر × (1 + هالك)) + عمالة ومعدات (التكلفة اليومية ÷ الإنتاجية) + مقاولو الباطن.</p>${cards}
+  <button class="primary" onclick="addItem()">+ إضافة بند</button>`;
+}
+function addItem(){S.boq.push({code:`X-${String(S.boq.length+1).padStart(2,"0")}`,description:"",unit:"عدد",qty:1,components:[]}); changed(true);}
+function delItem(i){ if(confirm("حذف البند؟")){S.boq.splice(i,1); changed(true);} }
+function addComp(i){S.boq[i].components.push({type:"material",name:"",key:"",qty:1,rate:0}); changed(true);}
+function delComp(i,j){S.boq[i].components.splice(j,1); changed(true);}
+function setMode(i,j,m){const c=S.boq[i].components[j]; if(m==="p"){delete c.qty; delete c.rate; c.daily_cost=c.daily_cost||0; c.productivity=c.productivity||1;} else {delete c.daily_cost; delete c.productivity; c.qty=c.qty??1; c.rate=c.rate??0;} changed(true);}
+
+function renderOH(){
+  S.site_overheads=S.site_overheads||[]; S.markups=S.markups||{};
+  const rows=S.site_overheads.map((o,i)=>{const P=`site_overheads.${i}`; const lump="lump_sum" in o;
+    const amt=lump?+o.lump_sum:(o.count??1)*o.monthly_cost*(o.months??S.project.duration_months);
+    return `<tr><td>${inp(P+".name","text","wide")}</td><td><select onchange="setOHMode(${i},this.value)"><option value="m" ${lump?"":"selected"}>شهري</option><option value="l" ${lump?"selected":""}>مقطوع</option></select></td>
+    ${lump?`<td colspan="3">${inp(P+".lump_sum")}</td>`:`<td>${inp(P+".count")}</td><td>${inp(P+".monthly_cost")}</td><td>${inp(P+".months")}</td>`}
+    <td class="n">${fmt(amt)}</td><td><button class="del" onclick="delOH(${i})">×</button></td></tr>`;}).join("");
+  document.getElementById("t-oh").innerHTML=`<h2>مصاريف الموقع غير المباشرة</h2>
+  <p class="note">احسبها تفصيلياً من الجهاز الإداري والمعدات والخدمات × المدة. اترك «الأشهر» فارغاً لاستخدام مدة المشروع.</p>
+  <div class="tw"><table><thead><tr><th>البند</th><th>الطريقة</th><th>العدد</th><th>التكلفة الشهرية</th><th>الأشهر</th><th class="n">المبلغ</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>
+  <button onclick="addOH()">+ إضافة</button>
+  <h2>الإضافات (كسر عشري)</h2>
+  <div class="grid">${Object.entries({...MARKUPS,profit:"الربح (على إجمالي التكلفة)"}).map(([k,l])=>`<label class="f">${l}${inp("markups."+k)}</label>`).join("")}</div>
+  <p class="note">النطاقات المعتادة: المصاريف العامة 3–7%، المخاطر 2–10%، الربح 5–15% — راجع منهجية saudi-project-pricing.</p>`;
+}
+function addOH(){S.site_overheads.push({name:"",count:1,monthly_cost:0}); changed(true);}
+function delOH(i){S.site_overheads.splice(i,1); changed(true);}
+function setOHMode(i,m){const o=S.site_overheads[i]; if(m==="l"){const a=(o.count??1)*(o.monthly_cost||0)*(o.months??S.project.duration_months); delete o.count; delete o.monthly_cost; delete o.months; o.lump_sum=a;} else {delete o.lump_sum; o.count=1; o.monthly_cost=0;} changed(true);}
+
+function renderResults(){
+  const el=document.getElementById("t-results");
+  const ex=expand(S);
+  if(ex.missing.length){ el.innerHTML=`<h2>لا يمكن التسعير — أسعار ناقصة</h2><p class="note">لا تُخترع الأسعار. أضفها في «مكتبة الأسعار» من عروض الموردين:</p>${ex.missing.map(m=>`<div class="err">${esc(m)}</div>`).join("")}`; return; }
+  const P=ex.priced; let r;
+  try{ r=price(P); }catch(e){ el.innerHTML=`<div class="err">خطأ في البيانات: ${esc(e.message)}</div>`; return; }
+  const bid=r.bid, C=esc(cur());
+  const typeTot={material:0,labor:0,equipment:0,subcontract:0}; r.items.forEach(it=>{for(const t in typeTot) typeTot[t]+=(it.breakdown[t]||0)*it.qty;});
+  const maxT=Math.max(...Object.values(typeTot),1);
+  const sorted=[...r.items].sort((a,b)=>b.total_price-a.total_price); let cum=0;
+  const sens=sensitivity(P,r,DELTA), maxS=Math.max(...sens.map(s=>Math.abs(s[1])),1);
+  const warns=[...sanity(P,r),...ex.geo.flatMap(G=>G.w.map(x=>`${G.p.code}: ${x}`))];
+  const pipeKPI=ex.geo.map(G=>{const it=r.items.find(i=>i.code===G.p.code); const pipeShare=it?(it.breakdown.material?((+G.p.pipe_rate_per_m*(1+(G.p.pipe_waste??ex.design.pipe_waste))+(+G.p.fittings_allowance||0)*G.p.pipe_rate_per_m)/it.direct_unit):0):0; return {G,it,pipeShare};});
+  el.innerHTML=`
+  <h2>${esc(S.project.name)} <span class="tag">${esc(S.project.location||"")}</span></h2>
+  <div class="kpis">
+    <div class="kpi"><div class="l">سعر العرض قبل الضريبة (مجموع الجدول)</div><div class="v">${fmt(r.sum)}</div></div>
+    <div class="kpi"><div class="l">شامل الضريبة ${+(r.vatRate*100).toFixed(2)}%</div><div class="v">${fmt(r.sum*(1+r.vatRate))}</div></div>
+    <div class="kpi"><div class="l">التكلفة المباشرة</div><div class="v">${fmt(r.direct)}</div></div>
+    <div class="kpi"><div class="l">الربح</div><div class="v">${fmt(r.profit)}</div></div>
+    <div class="kpi"><div class="l">معامل التحميل المتوازن</div><div class="v">${r.factor.toFixed(4)}</div></div>
+  </div>
+  ${warns.length?`<h2>تنبيهات المعقولية والفحوص الهندسية</h2>${warns.map(w=>`<div class="warn">⚠️ ${esc(w)}</div>`).join("")}`:""}
+  <div class="two">
+   <div><h2>ملخص العرض المالي</h2><div class="tw"><table><thead><tr><th>المكوّن</th><th class="n">المبلغ (${C})</th><th class="n">من سعر العرض</th></tr></thead><tbody>
+    <tr><td>التكلفة المباشرة</td><td class="n">${fmt(r.direct)}</td><td class="n">${pct(r.direct,bid)}</td></tr>
+    <tr><td>مصاريف الموقع غير المباشرة</td><td class="n">${fmt(r.site)}</td><td class="n">${pct(r.site,bid)}</td></tr>
+    <tr class="total"><td>تكلفة المشروع</td><td class="n">${fmt(r.pc)}</td><td class="n">${pct(r.pc,bid)}</td></tr>
+    ${r.mk.map(([n,a])=>`<tr><td>${n}</td><td class="n">${fmt(a)}</td><td class="n">${pct(a,bid)}</td></tr>`).join("")}
+    <tr class="total"><td>إجمالي التكلفة</td><td class="n">${fmt(r.tc)}</td><td class="n">${pct(r.tc,bid)}</td></tr>
+    <tr><td>الربح</td><td class="n">${fmt(r.profit)}</td><td class="n">${pct(r.profit,bid)}</td></tr>
+    <tr class="total"><td>سعر العرض قبل الضريبة</td><td class="n">${fmt(bid)}</td><td class="n">100.00%</td></tr>
+    <tr><td>ضريبة القيمة المضافة</td><td class="n">${fmt(r.vat)}</td><td></td></tr>
+    <tr class="total"><td>سعر العرض شامل الضريبة</td><td class="n">${fmt(bid+r.vat)}</td><td></td></tr>
+   </tbody></table></div>
+   <p class="note">فرق التقريب بين مجموع الجدول والملخص: ${fmt(r.sum-bid)}. المبلغ المعتمد في خطاب العرض هو مجموع الجدول.</p></div>
+   <div><h2>توزيع التكلفة المباشرة حسب النوع</h2><div class="tw"><table><tbody>
+    ${Object.entries(typeTot).map(([t,v])=>`<tr><td>${TYPES[t]}</td><td class="barcell"><div class="bar" style="width:${(v/maxT*100).toFixed(1)}%"></div></td><td class="n">${fmt(v,0)}</td><td class="n">${pct(v,r.direct)}</td></tr>`).join("")}
+   </tbody></table></div>
+   <h2>مؤشرات الخطوط</h2><div class="tw"><table><thead><tr><th>الخط</th><th class="n">سعر المتر</th><th class="n">نسبة الأنبوب من التكلفة</th><th class="n">مدة التمديد</th></tr></thead><tbody>
+    ${pipeKPI.map(({G,it,pipeShare})=>`<tr><td>${esc(G.p.code)} ${esc(G.p.material)} DN${G.p.dn_mm}</td><td class="n">${it?fmt(it.unit_price):"—"}</td><td class="n">${(pipeShare*100).toFixed(1)}%</td><td>${fmt(G.days,0)} يوم عمل — ${G.crews} فرقة</td></tr>`).join("")}
+   </tbody></table></div></div>
+  </div>
+  <h2>جدول الكميات المسعّر وتحليل أسعار البنود</h2>
+  <div class="tw"><table><thead><tr><th>البند</th><th>الوصف</th><th>الوحدة</th><th class="n">الكمية</th>${Object.values(TYPES).map(t=>`<th class="n">${t}</th>`).join("")}<th class="n">التكلفة المباشرة</th><th class="n">سعر الوحدة</th><th class="n">الإجمالي</th></tr></thead><tbody>
+   ${r.items.map(it=>`<tr><td>${esc(it.code)}</td><td>${esc(it.description)}</td><td>${esc(it.unit)}</td><td class="n">${fmt(it.qty,2)}</td>${Object.keys(TYPES).map(t=>`<td class="n">${fmt(it.breakdown[t]||0)}</td>`).join("")}<td class="n">${fmt(it.direct_unit)}</td><td class="n"><b>${fmt(it.unit_price)}</b></td><td class="n">${fmt(it.total_price)}</td></tr>`).join("")}
+   <tr class="total"><td colspan="${7+Object.keys(TYPES).length-1}">الإجمالي قبل الضريبة</td><td class="n">${fmt(r.sum)}</td></tr>
+  </tbody></table></div>
+  <div class="two">
+   <div><h2>تحليل باريتو (أين تتركز القيمة)</h2><div class="tw"><table><thead><tr><th>البند</th><th class="n">الإجمالي</th><th class="n">النسبة</th><th class="n">التراكمي</th><th>الفئة</th></tr></thead><tbody>
+    ${sorted.map(it=>{const prev=cum; cum+=it.total_price; const cls=prev/r.sum<0.8?"A":(prev/r.sum<0.95?"B":"C"); return `<tr><td>${esc(it.code)}</td><td class="n">${fmt(it.total_price,0)}</td><td class="n">${pct(it.total_price,r.sum)}</td><td class="n">${pct(cum,r.sum)}</td><td><span class="tag">${cls}</span></td></tr>`;}).join("")}
+   </tbody></table></div><p class="note">بنود الفئة A تستحق تدقيق الكميات و3 عروض أسعار على الأقل.</p></div>
+   <div><h2>تحليل الحساسية (±<input type="number" step="1" style="width:60px" value="${DELTA*100}" onchange="DELTA=(+this.value||10)/100;renderResults()">% على تكلفة المورد)</h2><div class="tw"><table><thead><tr><th>المورد (المفتاح)</th><th class="barcell"></th><th class="n">الأثر على العرض</th><th class="n">النسبة</th></tr></thead><tbody>
+    ${sens.map(([k,d])=>`<tr><td>${esc(k)}</td><td class="barcell"><div class="bar b2" style="width:${(Math.abs(d)/maxS*100).toFixed(1)}%"></div></td><td class="n">±${fmt(Math.abs(d),0)}</td><td class="n">±${pct(Math.abs(d),bid)}</td></tr>`).join("")}
+   </tbody></table></div></div>
+  </div>
+  <h2>مصاريف الموقع</h2><div class="tw"><table><tbody>${r.siteRows.map(([n,a])=>`<tr><td>${esc(n)}</td><td class="n">${fmt(a)}</td></tr>`).join("")}<tr class="total"><td>الإجمالي</td><td class="n">${fmt(r.site)}</td></tr></tbody></table></div>
+  <p class="note">كل الأسعار غير شاملة الضريبة في الجدول. الأرقام من مدخلات المستخدم — راجع قائمة التحقق قبل التسليم.</p>`;
+}
+
+/* ===================== Wiring ===================== */
+function renderAll(){ ({project:renderProject,rates:renderRates,pipes:renderPipes,boq:renderBoq,oh:renderOH,results:renderResults})[ACTIVE](); }
+function changed(rerender){ save(); if(rerender) renderAll(); }
+document.addEventListener("change",e=>{
+  const t=e.target, p=t.dataset&&t.dataset.p; if(!p) return;
+  const k=t.dataset.k; let v;
+  if(k==="bool") v=t.checked; else if(k==="num"){ if(t.value===""){ v=undefined; } else { v=parseFloat(t.value); if(!Number.isFinite(v)) return; } } else v=t.value;
+  if(v===undefined){ const ks=p.split("."), last=ks.pop(), parent=getPath(S,ks.join(".")); if(parent) delete parent[last]; } else setPath(S,p,v);
+  changed(true);
+});
+function download(name,text,type){const b=new Blob([text],{type}); const a=document.createElement("a"); a.href=URL.createObjectURL(b); a.download=name; document.body.appendChild(a); a.click(); setTimeout(()=>{URL.revokeObjectURL(a.href); a.remove();},500);}
+const slug=()=>(S.project.name||"project").replace(/[^\p{L}\p{N}]+/gu,"_").slice(0,40);
+function exportSource(){download(slug()+".water.json",JSON.stringify(S,null,2),"application/json");}
+function exportPriced(){const ex=expand(S); if(ex.missing.length){alert("أسعار ناقصة:\n"+ex.missing.join("\n")); return;} download(slug()+".priced_input.json",JSON.stringify(ex.priced,null,2),"application/json");}
+function exportCSV(){
+  const ex=expand(S); if(ex.missing.length){alert("أسعار ناقصة:\n"+ex.missing.join("\n")); return;}
+  const r=price(ex.priced), q=s=>`"${String(s).replace(/"/g,'""')}"`;
+  const lines=[["البند","الوصف","الوحدة","الكمية","التكلفة المباشرة للوحدة","سعر الوحدة","الإجمالي"].map(q).join(",")];
+  r.items.forEach(it=>lines.push([it.code,it.description,it.unit,it.qty,r2(it.direct_unit),it.unit_price,it.total_price].map(q).join(",")));
+  lines.push(""); lines.push(["","الإجمالي قبل الضريبة","","","","",r2(r.sum)].map(q).join(","));
+  lines.push(["",`ضريبة القيمة المضافة ${r.vatRate*100}%`,"","","","",r2(r.sum*r.vatRate)].map(q).join(","));
+  lines.push(["","الإجمالي شامل الضريبة","","","","",r2(r.sum*(1+r.vatRate))].map(q).join(","));
+  download(slug()+".priced_boq.csv","﻿"+lines.join("\r\n"),"text/csv;charset=utf-8");
+}
+document.getElementById("file").addEventListener("change",e=>{
+  const f=e.target.files[0]; if(!f) return; const rd=new FileReader();
+  rd.onload=()=>{ try{ const d=JSON.parse(rd.result); if(!d.project) throw new Error("الملف لا يحتوي على project"); d.boq=d.boq||[]; d.pipelines=d.pipelines||[]; d.rates=d.rates||{}; d.site_overheads=d.site_overheads||[]; d.markups=d.markups||{}; S=d; changed(true); go("results"); }catch(err){ alert("تعذر قراءة الملف: "+err.message); } };
+  rd.readAsText(f,"utf-8"); e.target.value="";
+});
+function resetExample(){ if(confirm("استبدال البيانات الحالية بالمثال التوضيحي؟")){ S=clone(EXAMPLE); changed(true); } }
+function toggleTheme(){const h=document.documentElement; const dark=h.dataset.theme? h.dataset.theme==="dark" : matchMedia("(prefers-color-scheme: dark)").matches; h.dataset.theme=dark?"light":"dark";}
+renderTabs(); renderAll();
+</script>
+</body>
+</html>
