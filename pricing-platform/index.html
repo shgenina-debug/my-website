@@ -68,6 +68,10 @@ tr.total td{font-weight:700;background:var(--surface-2)}
 .two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}
 .two>div{min-width:0}
 @media (max-width:760px){.two{grid-template-columns:minmax(0,1fr)}.item .head{grid-template-columns:1fr 1fr}}
+.toast{position:fixed;bottom:16px;left:16px;right:16px;margin:auto;max-width:520px;background:var(--text);color:var(--bg);padding:10px 14px;border-radius:8px;z-index:20;white-space:pre-line}
+.ask{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;z-index:30;padding:16px}
+.ask[hidden],.toast[hidden]{display:none}
+.ask .box{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;max-width:380px;width:100%}
 @media print{header,nav,section.tab:not(#t-results){display:none!important}section.tab{border:none}#t-results{display:block!important}body{background:#fff;color:#000}}
 </style>
 </head>
@@ -89,6 +93,8 @@ tr.total td{font-weight:700;background:var(--surface-2)}
   </div>
 </header>
 <nav id="tabs"></nav>
+<div id="toast" class="toast" role="status" hidden></div>
+<div id="ask" class="ask" hidden><div class="box"><p></p><div class="toolbar"><button class="primary yes">نعم</button><button class="no">إلغاء</button></div></div></div>
 <main>
   <section class="tab" id="t-project"></section>
   <section class="tab" id="t-rates"></section>
@@ -319,7 +325,7 @@ function renderPipes(){
   ${cards}<button class="primary" onclick="addPipe()">+ إضافة خط</button>`;
 }
 function addPipe(){S.pipelines.push({code:`W-${String(S.pipelines.length+1).padStart(2,"0")}`,description:"",material:"HDPE",dn_mm:110,od_m:0.11,length_m:0,cover_m:1.2,surface:"asphalt",rock_ratio:0,ground_water:false,pipe_rate_per_m:0,fittings_allowance:0.05,lay_crew_daily_cost:0,lay_equipment_daily_cost:0,lay_productivity_m_day:150,crews:1,productivity_factors:[]}); changed(true);}
-function delPipe(i){ if(confirm("حذف الخط؟")){S.pipelines.splice(i,1); changed(true);} }
+async function delPipe(i){ if(await ask("حذف الخط؟")){S.pipelines.splice(i,1); changed(true);} }
 function addFactor(i){(S.pipelines[i].productivity_factors ||= []).push({name:"ظرف",factor:0.9}); changed(true);}
 function delFactor(i,j){S.pipelines[i].productivity_factors.splice(j,1); changed(true);}
 
@@ -341,7 +347,7 @@ function renderBoq(){
   <button class="primary" onclick="addItem()">+ إضافة بند</button>`;
 }
 function addItem(){S.boq.push({code:`X-${String(S.boq.length+1).padStart(2,"0")}`,description:"",unit:"عدد",qty:1,components:[]}); changed(true);}
-function delItem(i){ if(confirm("حذف البند؟")){S.boq.splice(i,1); changed(true);} }
+async function delItem(i){ if(await ask("حذف البند؟")){S.boq.splice(i,1); changed(true);} }
 function addComp(i){S.boq[i].components.push({type:"material",name:"",key:"",qty:1,rate:0}); changed(true);}
 function delComp(i,j){S.boq[i].components.splice(j,1); changed(true);}
 function setMode(i,j,m){const c=S.boq[i].components[j]; if(m==="p"){delete c.qty; delete c.rate; c.daily_cost=c.daily_cost||0; c.productivity=c.productivity||1;} else {delete c.daily_cost; delete c.productivity; c.qty=c.qty??1; c.rate=c.rate??0;} changed(true);}
@@ -435,12 +441,25 @@ document.addEventListener("change",e=>{
   if(v===undefined){ const ks=p.split("."), last=ks.pop(), parent=getPath(S,ks.join(".")); if(parent) delete parent[last]; } else setPath(S,p,v);
   changed(true);
 });
-function download(name,text,type){const b=new Blob([text],{type}); const a=document.createElement("a"); a.href=URL.createObjectURL(b); a.download=name; document.body.appendChild(a); a.click(); setTimeout(()=>{URL.revokeObjectURL(a.href); a.remove();},500);}
+/* hosted on claude.ai: save through the downloads capability; opened locally: plain link */
+let DLP=null;
+function dlNS(){ if(!DLP) DLP=(window.claude&&typeof window.claude.use==="function")?window.claude.use("downloads").catch(()=>null):Promise.resolve(undefined); return DLP; }
+async function download(name,text,type){
+  const ns=await dlNS();
+  if(ns){ try{ await ns.save({filename:name,data:new Blob([text],{type})}); toast("تم حفظ الملف."); }
+    catch(e){ if(e&&e.code==="declined") return; toast(e&&e.code==="rate_limited"?"هناك نافذة حفظ مفتوحة بالفعل، حاول بعد لحظات.":"الحفظ غير متاح في هذا العرض."); } return; }
+  if(ns===null){ toast("الحفظ غير متاح في هذا العرض."); return; }
+  const b=new Blob([text],{type}); const a=document.createElement("a"); a.href=URL.createObjectURL(b); a.download=name; document.body.appendChild(a); a.click(); setTimeout(()=>{URL.revokeObjectURL(a.href); a.remove();},500);
+}
+function toast(msg){ const t=document.getElementById("toast"); t.textContent=msg; t.hidden=false; clearTimeout(toast.h); toast.h=setTimeout(()=>{t.hidden=true;},6000); }
+function ask(msg){ return new Promise(res=>{ const d=document.getElementById("ask"); d.querySelector("p").textContent=msg; d.hidden=false;
+  const done=v=>{d.hidden=true; d.querySelector(".yes").onclick=d.querySelector(".no").onclick=null; res(v);};
+  d.querySelector(".yes").onclick=()=>done(true); d.querySelector(".no").onclick=()=>done(false); }); }
 const slug=()=>(S.project.name||"project").replace(/[^\p{L}\p{N}]+/gu,"_").slice(0,40);
 function exportSource(){download(slug()+".water.json",JSON.stringify(S,null,2),"application/json");}
-function exportPriced(){const ex=expand(S); if(ex.missing.length){alert("أسعار ناقصة:\n"+ex.missing.join("\n")); return;} download(slug()+".priced_input.json",JSON.stringify(ex.priced,null,2),"application/json");}
+function exportPriced(){const ex=expand(S); if(ex.missing.length){toast("أسعار ناقصة:\n"+ex.missing.join("\n")); return;} download(slug()+".priced_input.json",JSON.stringify(ex.priced,null,2),"application/json");}
 function exportCSV(){
-  const ex=expand(S); if(ex.missing.length){alert("أسعار ناقصة:\n"+ex.missing.join("\n")); return;}
+  const ex=expand(S); if(ex.missing.length){toast("أسعار ناقصة:\n"+ex.missing.join("\n")); return;}
   const r=price(ex.priced), q=s=>`"${String(s).replace(/"/g,'""')}"`;
   const lines=[["البند","الوصف","الوحدة","الكمية","التكلفة المباشرة للوحدة","سعر الوحدة","الإجمالي"].map(q).join(",")];
   r.items.forEach(it=>lines.push([it.code,it.description,it.unit,it.qty,r2(it.direct_unit),it.unit_price,it.total_price].map(q).join(",")));
@@ -451,10 +470,10 @@ function exportCSV(){
 }
 document.getElementById("file").addEventListener("change",e=>{
   const f=e.target.files[0]; if(!f) return; const rd=new FileReader();
-  rd.onload=()=>{ try{ const d=JSON.parse(rd.result); if(!d.project) throw new Error("الملف لا يحتوي على project"); d.boq=d.boq||[]; d.pipelines=d.pipelines||[]; d.rates=d.rates||{}; d.site_overheads=d.site_overheads||[]; d.markups=d.markups||{}; S=d; changed(true); go("results"); }catch(err){ alert("تعذر قراءة الملف: "+err.message); } };
+  rd.onload=()=>{ try{ const d=JSON.parse(rd.result); if(!d.project) throw new Error("الملف لا يحتوي على project"); d.boq=d.boq||[]; d.pipelines=d.pipelines||[]; d.rates=d.rates||{}; d.site_overheads=d.site_overheads||[]; d.markups=d.markups||{}; S=d; changed(true); go("results"); }catch(err){ toast("تعذر قراءة الملف: "+err.message); } };
   rd.readAsText(f,"utf-8"); e.target.value="";
 });
-function resetExample(){ if(confirm("استبدال البيانات الحالية بالمثال التوضيحي؟")){ S=clone(EXAMPLE); changed(true); } }
+async function resetExample(){ if(await ask("استبدال البيانات الحالية بالمثال التوضيحي؟")){ S=clone(EXAMPLE); changed(true); } }
 function toggleTheme(){const h=document.documentElement; const dark=h.dataset.theme? h.dataset.theme==="dark" : matchMedia("(prefers-color-scheme: dark)").matches; h.dataset.theme=dark?"light":"dark";}
 renderTabs(); renderAll();
 </script>
