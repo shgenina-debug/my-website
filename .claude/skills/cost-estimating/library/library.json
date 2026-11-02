@@ -1,0 +1,2293 @@
+{
+ "_note": "مكتبة بنود التسعير — معدلات الاستهلاك والإنتاجية إرشادية للبدء فقط ويجب معايرتها بسجلات الشركة ومواصفات المشروع. المكتبة لا تحتوي أي أسعار عمداً: الأسعار تُدخل لكل مشروع في resources.",
+ "version": 1,
+ "disciplines": {
+  "structural": {
+   "name": "إنشائي (خرسانة وحديد وأعمال ترابية)",
+   "prefix": "ST"
+  },
+  "architectural": {
+   "name": "معماري وتشطيبات",
+   "prefix": "AR"
+  },
+  "electrical": {
+   "name": "كهرباء وتيار خفيف",
+   "prefix": "EL"
+  },
+  "hvac": {
+   "name": "تكييف وتهوية",
+   "prefix": "HV"
+  },
+  "plumbing_fire": {
+   "name": "سباكة ومكافحة حريق",
+   "prefix": "PL"
+  },
+  "water_networks": {
+   "name": "شبكات مياه وصرف",
+   "prefix": "WN"
+  },
+  "roads": {
+   "name": "طرق وأعمال خارجية",
+   "prefix": "RD"
+  }
+ },
+ "project_types": {
+  "building_full": {
+   "name": "مبنى متكامل",
+   "disciplines": [
+    "structural",
+    "architectural",
+    "electrical",
+    "hvac",
+    "plumbing_fire"
+   ]
+  },
+  "electromechanical": {
+   "name": "إلكتروميكانيك (كهرباء + تكييف + سباكة وحريق)",
+   "disciplines": [
+    "electrical",
+    "hvac",
+    "plumbing_fire"
+   ]
+  },
+  "architectural": {
+   "name": "معماري وتشطيبات",
+   "disciplines": [
+    "architectural"
+   ]
+  },
+  "structural": {
+   "name": "إنشائي / هيكل خرساني",
+   "disciplines": [
+    "structural"
+   ]
+  },
+  "electrical": {
+   "name": "كهرباء فقط",
+   "disciplines": [
+    "electrical"
+   ]
+  },
+  "hvac": {
+   "name": "تكييف فقط",
+   "disciplines": [
+    "hvac"
+   ]
+  },
+  "plumbing_fire": {
+   "name": "سباكة وحريق فقط",
+   "disciplines": [
+    "plumbing_fire"
+   ]
+  },
+  "water_networks": {
+   "name": "شبكات مياه وصرف",
+   "disciplines": [
+    "water_networks"
+   ]
+  },
+  "roads": {
+   "name": "طرق وأعمال خارجية",
+   "disciplines": [
+    "roads"
+   ]
+  },
+  "infrastructure": {
+   "name": "بنية تحتية (شبكات + طرق)",
+   "disciplines": [
+    "water_networks",
+    "roads"
+   ]
+  }
+ },
+ "resources": {
+  "crew_general": {
+   "name": "فرقة عمالة عادية",
+   "type": "labor",
+   "unit": "يوم",
+   "group": "labor"
+  },
+  "crew_concrete": {
+   "name": "فرقة صب خرسانة",
+   "type": "labor",
+   "unit": "يوم",
+   "group": "labor"
+  },
+  "crew_carpentry": {
+   "name": "فرقة نجارة مسلحة (شدات)",
+   "type": "labor",
+   "unit": "يوم",
+   "group": "labor"
+  },
+  "crew_steel": {
+   "name": "فرقة حدادة مسلحة",
+   "type": "labor",
+   "unit": "يوم",
+   "group": "labor"
+  },
+  "crew_mason": {
+   "name": "فرقة بناء بلوك",
+   "type": "labor",
+   "unit": "يوم",
+   "group": "labor"
+  },
+  "crew_plaster": {
+   "name": "فرقة لياسة",
+   "type": "labor",
+   "unit": "يوم",
+   "group": "labor"
+  },
+  "crew_painter": {
+   "name": "فرقة دهانات",
+   "type": "labor",
+   "unit": "يوم",
+   "group": "labor"
+  },
+  "crew_tiling": {
+   "name": "فرقة بلاط وسيراميك",
+   "type": "labor",
+   "unit": "يوم",
+   "group": "labor"
+  },
+  "crew_marble": {
+   "name": "فرقة رخام",
+   "type": "labor",
+   "unit": "يوم",
+   "group": "labor"
+  },
+  "crew_ceiling": {
+   "name": "فرقة أسقف مستعارة",
+   "type": "labor",
+   "unit": "يوم",
+   "group": "labor"
+  },
+  "crew_waterproof": {
+   "name": "فرقة عزل",
+   "type": "labor",
+   "unit": "يوم",
+   "group": "labor"
+  },
+  "crew_joinery": {
+   "name": "فرقة تركيب أبواب ونجارة",
+   "type": "labor",
+   "unit": "يوم",
+   "group": "labor"
+  },
+  "crew_electrician": {
+   "name": "فرقة كهربائيين",
+   "type": "labor",
+   "unit": "يوم",
+   "group": "labor"
+  },
+  "crew_cable": {
+   "name": "فرقة سحب كابلات",
+   "type": "labor",
+   "unit": "يوم",
+   "group": "labor"
+  },
+  "crew_hvac": {
+   "name": "فرقة فنيي تكييف",
+   "type": "labor",
+   "unit": "يوم",
+   "group": "labor"
+  },
+  "crew_duct": {
+   "name": "فرقة مجاري هواء",
+   "type": "labor",
+   "unit": "يوم",
+   "group": "labor"
+  },
+  "crew_plumber": {
+   "name": "فرقة سباكين",
+   "type": "labor",
+   "unit": "يوم",
+   "group": "labor"
+  },
+  "crew_fire": {
+   "name": "فرقة أنظمة حريق",
+   "type": "labor",
+   "unit": "يوم",
+   "group": "labor"
+  },
+  "crew_roads": {
+   "name": "فرقة أعمال طرق",
+   "type": "labor",
+   "unit": "يوم",
+   "group": "labor"
+  },
+  "eq_excavator": {
+   "name": "حفار مع مشغل ووقود",
+   "type": "equipment",
+   "unit": "يوم",
+   "group": "equipment"
+  },
+  "eq_truck": {
+   "name": "قلاب نقل",
+   "type": "equipment",
+   "unit": "يوم",
+   "group": "equipment"
+  },
+  "eq_roller": {
+   "name": "هراس / دكاك",
+   "type": "equipment",
+   "unit": "يوم",
+   "group": "equipment"
+  },
+  "eq_grader": {
+   "name": "جريدر",
+   "type": "equipment",
+   "unit": "يوم",
+   "group": "equipment"
+  },
+  "eq_crane": {
+   "name": "رافعة",
+   "type": "equipment",
+   "unit": "يوم",
+   "group": "equipment"
+  },
+  "eq_scaffold": {
+   "name": "سقالات (إيجار)",
+   "type": "equipment",
+   "unit": "يوم",
+   "group": "equipment"
+  },
+  "fill_selected": {
+   "name": "تربة ردم مختارة (مورّدة)",
+   "type": "material",
+   "unit": "م³",
+   "group": "earthworks"
+  },
+  "water_compaction": {
+   "name": "مياه دمك ورش",
+   "type": "material",
+   "unit": "م³",
+   "group": "earthworks"
+  },
+  "concrete_c15": {
+   "name": "خرسانة جاهزة C15 (نظافة)",
+   "type": "material",
+   "unit": "م³",
+   "group": "concrete"
+  },
+  "concrete_c35": {
+   "name": "خرسانة جاهزة C35 مع المضخة",
+   "type": "material",
+   "unit": "م³",
+   "group": "concrete"
+  },
+  "formwork_mat": {
+   "name": "مواد شدات (استهلاك/إهلاك)",
+   "type": "material",
+   "unit": "م²",
+   "group": "formwork"
+  },
+  "rebar": {
+   "name": "حديد تسليح Grade 60",
+   "type": "material",
+   "unit": "طن",
+   "group": "rebar"
+  },
+  "tie_wire": {
+   "name": "سلك رباط وكراسي",
+   "type": "material",
+   "unit": "كجم",
+   "group": "rebar"
+  },
+  "curing": {
+   "name": "مواد معالجة",
+   "type": "material",
+   "unit": "م²",
+   "group": "concrete"
+  },
+  "bitumen_coat": {
+   "name": "دهان بيتوميني",
+   "type": "material",
+   "unit": "لتر",
+   "group": "waterproofing"
+  },
+  "block_20": {
+   "name": "بلوك أسمنتي 20 سم",
+   "type": "material",
+   "unit": "حبة",
+   "group": "masonry"
+  },
+  "block_15": {
+   "name": "بلوك أسمنتي 15 سم",
+   "type": "material",
+   "unit": "حبة",
+   "group": "masonry"
+  },
+  "mortar": {
+   "name": "مونة أسمنتية (مواد)",
+   "type": "material",
+   "unit": "م³",
+   "group": "masonry"
+  },
+  "plaster_mix": {
+   "name": "مونة لياسة جاهزة/ممزوجة",
+   "type": "material",
+   "unit": "م³",
+   "group": "plaster"
+  },
+  "mesh_corner": {
+   "name": "شبك وزوايا لياسة",
+   "type": "material",
+   "unit": "م²",
+   "group": "plaster"
+  },
+  "putty": {
+   "name": "معجون",
+   "type": "material",
+   "unit": "كجم",
+   "group": "paint"
+  },
+  "primer": {
+   "name": "برايمر",
+   "type": "material",
+   "unit": "لتر",
+   "group": "paint"
+  },
+  "paint_int": {
+   "name": "دهان داخلي (بلاستيك/أكريليك)",
+   "type": "material",
+   "unit": "لتر",
+   "group": "paint"
+  },
+  "paint_ext": {
+   "name": "دهان خارجي (تكستشر/أكريليك خارجي)",
+   "type": "material",
+   "unit": "لتر",
+   "group": "paint"
+  },
+  "tile_ceramic": {
+   "name": "بلاط سيراميك",
+   "type": "material",
+   "unit": "م²",
+   "group": "tiles"
+  },
+  "tile_porcelain": {
+   "name": "بلاط بورسلين",
+   "type": "material",
+   "unit": "م²",
+   "group": "tiles"
+  },
+  "marble": {
+   "name": "رخام/جرانيت",
+   "type": "material",
+   "unit": "م²",
+   "group": "stone"
+  },
+  "tile_adhesive": {
+   "name": "لاصق بلاط",
+   "type": "material",
+   "unit": "كجم",
+   "group": "tiles"
+  },
+  "grout": {
+   "name": "روبة",
+   "type": "material",
+   "unit": "كجم",
+   "group": "tiles"
+  },
+  "skirting": {
+   "name": "وزرة (نعلة)",
+   "type": "material",
+   "unit": "م.ط",
+   "group": "tiles"
+  },
+  "gypsum_board_sys": {
+   "name": "نظام جبس بورد (ألواح + هيكل + تشطيب)",
+   "type": "material",
+   "unit": "م²",
+   "group": "ceilings"
+  },
+  "ceiling_tiles_sys": {
+   "name": "نظام سقف بلاطات 60×60 مع الهيكل",
+   "type": "material",
+   "unit": "م²",
+   "group": "ceilings"
+  },
+  "membrane": {
+   "name": "عزل مائي رولات (ممبرين)",
+   "type": "material",
+   "unit": "م²",
+   "group": "waterproofing"
+  },
+  "wp_primer": {
+   "name": "برايمر عزل",
+   "type": "material",
+   "unit": "لتر",
+   "group": "waterproofing"
+  },
+  "xps_board": {
+   "name": "عزل حراري ألواح XPS",
+   "type": "material",
+   "unit": "م²",
+   "group": "insulation"
+  },
+  "screed": {
+   "name": "خرسانة ميول (فوم/رملية)",
+   "type": "material",
+   "unit": "م³",
+   "group": "concrete"
+  },
+  "door_wood": {
+   "name": "باب خشب كامل (حلق + ضلفة + إكسسوارات)",
+   "type": "material",
+   "unit": "عدد",
+   "group": "doors"
+  },
+  "door_steel": {
+   "name": "باب حديد/مقاوم حريق كامل",
+   "type": "material",
+   "unit": "عدد",
+   "group": "doors"
+  },
+  "aluminium_window": {
+   "name": "نوافذ ألمنيوم مع الزجاج (توريد وتركيب - باطن)",
+   "type": "subcontract",
+   "unit": "م²",
+   "group": "aluminium"
+  },
+  "conduit_20": {
+   "name": "ماسورة PVC 20 مم مع الملحقات",
+   "type": "material",
+   "unit": "م.ط",
+   "group": "conduits"
+  },
+  "conduit_25": {
+   "name": "ماسورة PVC 25 مم مع الملحقات",
+   "type": "material",
+   "unit": "م.ط",
+   "group": "conduits"
+  },
+  "wire_1_5": {
+   "name": "سلك نحاس 1.5 مم²",
+   "type": "material",
+   "unit": "م.ط",
+   "group": "wires"
+  },
+  "wire_2_5": {
+   "name": "سلك نحاس 2.5 مم²",
+   "type": "material",
+   "unit": "م.ط",
+   "group": "wires"
+  },
+  "wire_4": {
+   "name": "سلك نحاس 4 مم²",
+   "type": "material",
+   "unit": "م.ط",
+   "group": "wires"
+  },
+  "back_box": {
+   "name": "علبة كهرباء",
+   "type": "material",
+   "unit": "عدد",
+   "group": "wiring_devices"
+  },
+  "switch": {
+   "name": "مفتاح إنارة",
+   "type": "material",
+   "unit": "عدد",
+   "group": "wiring_devices"
+  },
+  "socket": {
+   "name": "بريزة 13 أمبير",
+   "type": "material",
+   "unit": "عدد",
+   "group": "wiring_devices"
+  },
+  "isolator": {
+   "name": "مفتاح عزل (مكيف/سخان)",
+   "type": "material",
+   "unit": "عدد",
+   "group": "wiring_devices"
+  },
+  "data_outlet": {
+   "name": "مخرج بيانات Cat6 مع الكابل",
+   "type": "material",
+   "unit": "عدد",
+   "group": "low_current"
+  },
+  "luminaire_led": {
+   "name": "كشاف LED",
+   "type": "material",
+   "unit": "عدد",
+   "group": "lighting"
+  },
+  "cable_4x16": {
+   "name": "كابل نحاس 4×16 مم² XLPE",
+   "type": "material",
+   "unit": "م.ط",
+   "group": "cables"
+  },
+  "cable_4x50": {
+   "name": "كابل نحاس 4×50 مم² XLPE",
+   "type": "material",
+   "unit": "م.ط",
+   "group": "cables"
+  },
+  "cable_lugs": {
+   "name": "أطراف وجلاندات كابلات",
+   "type": "material",
+   "unit": "مجموعة",
+   "group": "cables"
+  },
+  "cable_tray": {
+   "name": "حامل كابلات مجلفن مع الحوامل",
+   "type": "material",
+   "unit": "م.ط",
+   "group": "cables"
+  },
+  "db_panel": {
+   "name": "لوحة توزيع فرعية مع القواطع",
+   "type": "material",
+   "unit": "عدد",
+   "group": "panels"
+  },
+  "mdb_panel": {
+   "name": "لوحة توزيع رئيسية MDB",
+   "type": "material",
+   "unit": "عدد",
+   "group": "panels"
+  },
+  "earthing_pit": {
+   "name": "حفرة تأريض كاملة (باطن)",
+   "type": "subcontract",
+   "unit": "عدد",
+   "group": "earthing"
+  },
+  "fire_alarm_device": {
+   "name": "كاشف/جهاز إنذار حريق مع التمديد",
+   "type": "material",
+   "unit": "عدد",
+   "group": "low_current"
+  },
+  "split_unit_2tr": {
+   "name": "وحدة سبليت 2 طن",
+   "type": "material",
+   "unit": "عدد",
+   "group": "hvac_units"
+  },
+  "package_unit_10tr": {
+   "name": "وحدة باكدج 10 طن",
+   "type": "material",
+   "unit": "عدد",
+   "group": "hvac_units"
+  },
+  "copper_pair": {
+   "name": "مواسير نحاس للمبرد (زوج) مع العزل",
+   "type": "material",
+   "unit": "م.ط",
+   "group": "hvac_piping"
+  },
+  "drain_pipe_hvac": {
+   "name": "ماسورة تصريف مكثف",
+   "type": "material",
+   "unit": "م.ط",
+   "group": "hvac_piping"
+  },
+  "gi_sheet": {
+   "name": "صاج مجلفن لمجاري الهواء",
+   "type": "material",
+   "unit": "م²",
+   "group": "ductwork"
+  },
+  "duct_insulation": {
+   "name": "عزل مجاري الهواء",
+   "type": "material",
+   "unit": "م²",
+   "group": "ductwork"
+  },
+  "duct_accessories": {
+   "name": "حوامل وفلنجات ومواد لحام مجاري",
+   "type": "material",
+   "unit": "م²",
+   "group": "ductwork"
+  },
+  "diffuser": {
+   "name": "مخرج هواء (ديفيوزر/جريل)",
+   "type": "material",
+   "unit": "عدد",
+   "group": "air_outlets"
+  },
+  "exhaust_fan": {
+   "name": "مروحة شفط",
+   "type": "material",
+   "unit": "عدد",
+   "group": "fans"
+  },
+  "tab_hvac": {
+   "name": "الاختبار والموازنة TAB (باطن)",
+   "type": "subcontract",
+   "unit": "طن تبريد",
+   "group": "testing"
+  },
+  "ppr_20": {
+   "name": "ماسورة PPR 20–25 مم مع القطع",
+   "type": "material",
+   "unit": "م.ط",
+   "group": "plumbing_pipes"
+  },
+  "upvc_drain": {
+   "name": "ماسورة صرف uPVC 50–110 مم مع القطع",
+   "type": "material",
+   "unit": "م.ط",
+   "group": "plumbing_pipes"
+  },
+  "valve_small": {
+   "name": "محبس زاوية/كروي صغير",
+   "type": "material",
+   "unit": "عدد",
+   "group": "plumbing_fittings"
+  },
+  "floor_drain": {
+   "name": "صفاية أرضية",
+   "type": "material",
+   "unit": "عدد",
+   "group": "plumbing_fittings"
+  },
+  "wc_set": {
+   "name": "طقم مرحاض كامل مع الخلاط",
+   "type": "material",
+   "unit": "عدد",
+   "group": "sanitary"
+  },
+  "basin_set": {
+   "name": "مغسلة كاملة مع الخلاط",
+   "type": "material",
+   "unit": "عدد",
+   "group": "sanitary"
+  },
+  "water_heater": {
+   "name": "سخان مياه 50–80 لتر",
+   "type": "material",
+   "unit": "عدد",
+   "group": "sanitary"
+  },
+  "black_steel_pipe": {
+   "name": "ماسورة حديد أسود (حريق) مع القطع والدهان",
+   "type": "material",
+   "unit": "م.ط",
+   "group": "fire_pipes"
+  },
+  "sprinkler_head": {
+   "name": "رشاش حريق مع الوصلة",
+   "type": "material",
+   "unit": "عدد",
+   "group": "fire_devices"
+  },
+  "fire_hose_cabinet": {
+   "name": "صندوق حريق كامل",
+   "type": "material",
+   "unit": "عدد",
+   "group": "fire_devices"
+  },
+  "fire_extinguisher": {
+   "name": "طفاية حريق",
+   "type": "material",
+   "unit": "عدد",
+   "group": "fire_devices"
+  },
+  "subbase": {
+   "name": "طبقة تحت الأساس (مورّدة)",
+   "type": "material",
+   "unit": "م³",
+   "group": "aggregates"
+  },
+  "basecourse": {
+   "name": "طبقة أساس مكسرة (مورّدة)",
+   "type": "material",
+   "unit": "م³",
+   "group": "aggregates"
+  },
+  "prime_coat": {
+   "name": "طبقة تشريب MC-70",
+   "type": "material",
+   "unit": "لتر",
+   "group": "asphalt"
+  },
+  "asphalt_wearing": {
+   "name": "خلطة أسفلتية سطحية (فرد ودمك - باطن)",
+   "type": "subcontract",
+   "unit": "طن",
+   "group": "asphalt"
+  },
+  "kerb_precast": {
+   "name": "بردورة خرسانية مسبقة الصب",
+   "type": "material",
+   "unit": "م.ط",
+   "group": "kerbs"
+  },
+  "interlock": {
+   "name": "بلاط متداخل (إنترلوك) 8 سم",
+   "type": "material",
+   "unit": "م²",
+   "group": "paving"
+  },
+  "sand_bedding": {
+   "name": "رمل فرشة",
+   "type": "material",
+   "unit": "م³",
+   "group": "earthworks"
+  },
+  "road_marking": {
+   "name": "دهانات طرق حرارية (باطن)",
+   "type": "subcontract",
+   "unit": "م²",
+   "group": "road_marking"
+  },
+  "water_hc_kit": {
+   "name": "مجموعة توصيلة مياه منزلية (سرج + محبس + أنبوب + صندوق عداد)",
+   "type": "material",
+   "unit": "عدد",
+   "group": "fittings"
+  },
+  "gate_valve_400": {
+   "name": "محبس بوابي DN400",
+   "type": "material",
+   "unit": "عدد",
+   "group": "valves"
+  },
+  "valve_chamber": {
+   "name": "غرفة محبس خرسانية مع غطاء D400 (باطن)",
+   "type": "subcontract",
+   "unit": "عدد",
+   "group": "chambers"
+  },
+  "manhole_precast": {
+   "name": "غرفة تفتيش مسبقة الصب حتى 3 م مع الغطاء",
+   "type": "material",
+   "unit": "عدد",
+   "group": "chambers"
+  },
+  "asphalt_patch": {
+   "name": "إعادة أسفلت/بلاط موضعي (باطن)",
+   "type": "subcontract",
+   "unit": "م²",
+   "group": "asphalt"
+  }
+ },
+ "templates": [
+  {
+   "id": "st-exc",
+   "d": "structural",
+   "section": "أعمال ترابية",
+   "description": "حفر عام في تربة عادية حتى منسوب التأسيس شاملاً النقل داخل الموقع",
+   "unit": "م³",
+   "components": [
+    {
+     "res": "eq_excavator",
+     "productivity": 300
+    },
+    {
+     "res": "eq_truck",
+     "productivity": 150
+    },
+    {
+     "res": "crew_general",
+     "productivity": 150
+    }
+   ]
+  },
+  {
+   "id": "st-fill",
+   "d": "structural",
+   "section": "أعمال ترابية",
+   "description": "ردم بتربة مختارة مورّدة على طبقات 25 سم مع الدمك 95%",
+   "unit": "م³",
+   "components": [
+    {
+     "res": "fill_selected",
+     "qty": 1.25
+    },
+    {
+     "res": "water_compaction",
+     "qty": 0.1
+    },
+    {
+     "res": "eq_roller",
+     "productivity": 200
+    },
+    {
+     "res": "crew_general",
+     "productivity": 100
+    }
+   ]
+  },
+  {
+   "id": "st-pcc",
+   "d": "structural",
+   "section": "خرسانة",
+   "description": "خرسانة عادية نظافة C15 سماكة 10 سم تحت القواعد",
+   "unit": "م³",
+   "components": [
+    {
+     "res": "concrete_c15",
+     "qty": 1,
+     "waste": 0.05
+    },
+    {
+     "res": "crew_concrete",
+     "productivity": 40
+    }
+   ]
+  },
+  {
+   "id": "st-footing",
+   "d": "structural",
+   "section": "خرسانة",
+   "description": "خرسانة مسلحة C35 للقواعد والميد (بدون الحديد) شاملة الشدات والمعالجة",
+   "unit": "م³",
+   "components": [
+    {
+     "res": "concrete_c35",
+     "qty": 1,
+     "waste": 0.03
+    },
+    {
+     "res": "formwork_mat",
+     "qty": 1.5
+    },
+    {
+     "res": "curing",
+     "qty": 1
+    },
+    {
+     "res": "crew_carpentry",
+     "productivity": 25
+    },
+    {
+     "res": "crew_concrete",
+     "productivity": 60
+    }
+   ]
+  },
+  {
+   "id": "st-column",
+   "d": "structural",
+   "section": "خرسانة",
+   "description": "خرسانة مسلحة C35 للأعمدة والجدران الخرسانية (بدون الحديد) شاملة الشدات",
+   "unit": "م³",
+   "components": [
+    {
+     "res": "concrete_c35",
+     "qty": 1,
+     "waste": 0.03
+    },
+    {
+     "res": "formwork_mat",
+     "qty": 9
+    },
+    {
+     "res": "crew_carpentry",
+     "productivity": 6
+    },
+    {
+     "res": "crew_concrete",
+     "productivity": 25
+    }
+   ]
+  },
+  {
+   "id": "st-slab",
+   "d": "structural",
+   "section": "خرسانة",
+   "description": "خرسانة مسلحة C35 للأسقف والكمرات (بدون الحديد) شاملة الشدات والمعالجة",
+   "unit": "م³",
+   "components": [
+    {
+     "res": "concrete_c35",
+     "qty": 1,
+     "waste": 0.03
+    },
+    {
+     "res": "formwork_mat",
+     "qty": 6.5
+    },
+    {
+     "res": "curing",
+     "qty": 5
+    },
+    {
+     "res": "crew_carpentry",
+     "productivity": 10
+    },
+    {
+     "res": "crew_concrete",
+     "productivity": 50
+    },
+    {
+     "res": "eq_scaffold",
+     "productivity": 12
+    }
+   ]
+  },
+  {
+   "id": "st-rebar",
+   "d": "structural",
+   "section": "حديد تسليح",
+   "description": "حديد تسليح Grade 60 توريد وقص وتشكيل وتركيب",
+   "unit": "طن",
+   "components": [
+    {
+     "res": "rebar",
+     "qty": 1,
+     "waste": 0.05
+    },
+    {
+     "res": "tie_wire",
+     "qty": 10
+    },
+    {
+     "res": "crew_steel",
+     "productivity": 1.6
+    }
+   ]
+  },
+  {
+   "id": "st-bitumen",
+   "d": "structural",
+   "section": "عزل",
+   "description": "دهان بيتوميني وجهين للأسطح الخرسانية الملامسة للتربة",
+   "unit": "م²",
+   "components": [
+    {
+     "res": "bitumen_coat",
+     "qty": 0.8,
+     "waste": 0.05
+    },
+    {
+     "res": "crew_waterproof",
+     "productivity": 120
+    }
+   ]
+  },
+  {
+   "id": "ar-block20",
+   "d": "architectural",
+   "section": "مباني",
+   "description": "مباني بلوك أسمنتي مصمت/مفرغ 20 سم بالمونة الأسمنتية",
+   "unit": "م²",
+   "components": [
+    {
+     "res": "block_20",
+     "qty": 12.5,
+     "waste": 0.05
+    },
+    {
+     "res": "mortar",
+     "qty": 0.02
+    },
+    {
+     "res": "crew_mason",
+     "productivity": 14
+    }
+   ]
+  },
+  {
+   "id": "ar-block15",
+   "d": "architectural",
+   "section": "مباني",
+   "description": "مباني بلوك أسمنتي 15 سم للقواطع الداخلية",
+   "unit": "م²",
+   "components": [
+    {
+     "res": "block_15",
+     "qty": 12.5,
+     "waste": 0.05
+    },
+    {
+     "res": "mortar",
+     "qty": 0.015
+    },
+    {
+     "res": "crew_mason",
+     "productivity": 16
+    }
+   ]
+  },
+  {
+   "id": "ar-plaster",
+   "d": "architectural",
+   "section": "لياسة",
+   "description": "لياسة أسمنتية داخلية 2 سم على طبقتين مع الشبك والزوايا",
+   "unit": "م²",
+   "components": [
+    {
+     "res": "plaster_mix",
+     "qty": 0.022,
+     "waste": 0.1
+    },
+    {
+     "res": "mesh_corner",
+     "qty": 0.15
+    },
+    {
+     "res": "crew_plaster",
+     "productivity": 25
+    },
+    {
+     "res": "eq_scaffold",
+     "productivity": 150
+    }
+   ]
+  },
+  {
+   "id": "ar-plaster-ext",
+   "d": "architectural",
+   "section": "لياسة",
+   "description": "لياسة أسمنتية خارجية 2.5 سم مع الشبك",
+   "unit": "م²",
+   "components": [
+    {
+     "res": "plaster_mix",
+     "qty": 0.027,
+     "waste": 0.1
+    },
+    {
+     "res": "mesh_corner",
+     "qty": 0.3
+    },
+    {
+     "res": "crew_plaster",
+     "productivity": 18
+    },
+    {
+     "res": "eq_scaffold",
+     "productivity": 60
+    }
+   ]
+  },
+  {
+   "id": "ar-paint-int",
+   "d": "architectural",
+   "section": "دهانات",
+   "description": "دهان داخلي: معجون طبقتين + برايمر + وجهين دهان",
+   "unit": "م²",
+   "components": [
+    {
+     "res": "putty",
+     "qty": 1.0,
+     "waste": 0.05
+    },
+    {
+     "res": "primer",
+     "qty": 0.12
+    },
+    {
+     "res": "paint_int",
+     "qty": 0.22,
+     "waste": 0.05
+    },
+    {
+     "res": "crew_painter",
+     "productivity": 40
+    }
+   ]
+  },
+  {
+   "id": "ar-paint-ext",
+   "d": "architectural",
+   "section": "دهانات",
+   "description": "دهان خارجي: برايمر + طبقتين دهان خارجي",
+   "unit": "م²",
+   "components": [
+    {
+     "res": "primer",
+     "qty": 0.15
+    },
+    {
+     "res": "paint_ext",
+     "qty": 0.35,
+     "waste": 0.05
+    },
+    {
+     "res": "crew_painter",
+     "productivity": 35
+    },
+    {
+     "res": "eq_scaffold",
+     "productivity": 100
+    }
+   ]
+  },
+  {
+   "id": "ar-ceramic-floor",
+   "d": "architectural",
+   "section": "أرضيات وتكسيات",
+   "description": "بلاط سيراميك أرضيات على لاصق مع الروبة",
+   "unit": "م²",
+   "components": [
+    {
+     "res": "tile_ceramic",
+     "qty": 1,
+     "waste": 0.07
+    },
+    {
+     "res": "tile_adhesive",
+     "qty": 5
+    },
+    {
+     "res": "grout",
+     "qty": 0.4
+    },
+    {
+     "res": "crew_tiling",
+     "productivity": 16
+    }
+   ]
+  },
+  {
+   "id": "ar-ceramic-wall",
+   "d": "architectural",
+   "section": "أرضيات وتكسيات",
+   "description": "تكسية جدران سيراميك (حمامات ومطابخ) على لاصق",
+   "unit": "م²",
+   "components": [
+    {
+     "res": "tile_ceramic",
+     "qty": 1,
+     "waste": 0.08
+    },
+    {
+     "res": "tile_adhesive",
+     "qty": 5
+    },
+    {
+     "res": "grout",
+     "qty": 0.4
+    },
+    {
+     "res": "crew_tiling",
+     "productivity": 12
+    }
+   ]
+  },
+  {
+   "id": "ar-porcelain",
+   "d": "architectural",
+   "section": "أرضيات وتكسيات",
+   "description": "بلاط بورسلين أرضيات مقاس كبير على لاصق مع الروبة",
+   "unit": "م²",
+   "components": [
+    {
+     "res": "tile_porcelain",
+     "qty": 1,
+     "waste": 0.08
+    },
+    {
+     "res": "tile_adhesive",
+     "qty": 6
+    },
+    {
+     "res": "grout",
+     "qty": 0.3
+    },
+    {
+     "res": "crew_tiling",
+     "productivity": 12
+    }
+   ]
+  },
+  {
+   "id": "ar-marble",
+   "d": "architectural",
+   "section": "أرضيات وتكسيات",
+   "description": "رخام/جرانيت أرضيات ودرج مع الجلي",
+   "unit": "م²",
+   "components": [
+    {
+     "res": "marble",
+     "qty": 1,
+     "waste": 0.12
+    },
+    {
+     "res": "mortar",
+     "qty": 0.03
+    },
+    {
+     "res": "crew_marble",
+     "productivity": 8
+    }
+   ]
+  },
+  {
+   "id": "ar-skirting",
+   "d": "architectural",
+   "section": "أرضيات وتكسيات",
+   "description": "وزرة (نعلة) ارتفاع 10 سم",
+   "unit": "م.ط",
+   "components": [
+    {
+     "res": "skirting",
+     "qty": 1,
+     "waste": 0.05
+    },
+    {
+     "res": "tile_adhesive",
+     "qty": 0.6
+    },
+    {
+     "res": "crew_tiling",
+     "productivity": 45
+    }
+   ]
+  },
+  {
+   "id": "ar-gypsum",
+   "d": "architectural",
+   "section": "أسقف مستعارة",
+   "description": "سقف مستعار جبس بورد مع الهيكل المعدني والتشطيب",
+   "unit": "م²",
+   "components": [
+    {
+     "res": "gypsum_board_sys",
+     "qty": 1,
+     "waste": 0.08
+    },
+    {
+     "res": "crew_ceiling",
+     "productivity": 20
+    }
+   ]
+  },
+  {
+   "id": "ar-ceiling-tiles",
+   "d": "architectural",
+   "section": "أسقف مستعارة",
+   "description": "سقف مستعار بلاطات 60×60 مع الهيكل المعلق",
+   "unit": "م²",
+   "components": [
+    {
+     "res": "ceiling_tiles_sys",
+     "qty": 1,
+     "waste": 0.05
+    },
+    {
+     "res": "crew_ceiling",
+     "productivity": 35
+    }
+   ]
+  },
+  {
+   "id": "ar-roof-wp",
+   "d": "architectural",
+   "section": "عزل",
+   "description": "عزل مائي للأسطح ممبرين طبقتين مع البرايمر والرفرف",
+   "unit": "م²",
+   "components": [
+    {
+     "res": "wp_primer",
+     "qty": 0.3
+    },
+    {
+     "res": "membrane",
+     "qty": 2.3,
+     "waste": 0.05
+    },
+    {
+     "res": "crew_waterproof",
+     "productivity": 60
+    }
+   ]
+  },
+  {
+   "id": "ar-roof-thermal",
+   "d": "architectural",
+   "section": "عزل",
+   "description": "عزل حراري XPS 5 سم للأسطح مع خرسانة الميول",
+   "unit": "م²",
+   "components": [
+    {
+     "res": "xps_board",
+     "qty": 1,
+     "waste": 0.05
+    },
+    {
+     "res": "screed",
+     "qty": 0.08
+    },
+    {
+     "res": "crew_waterproof",
+     "productivity": 50
+    }
+   ]
+  },
+  {
+   "id": "ar-door-wood",
+   "d": "architectural",
+   "section": "أبواب ونوافذ",
+   "description": "باب خشب داخلي كامل مع الحلق والإكسسوارات توريد وتركيب",
+   "unit": "عدد",
+   "components": [
+    {
+     "res": "door_wood",
+     "qty": 1
+    },
+    {
+     "res": "crew_joinery",
+     "productivity": 4
+    }
+   ]
+  },
+  {
+   "id": "ar-door-steel",
+   "d": "architectural",
+   "section": "أبواب ونوافذ",
+   "description": "باب حديد / مقاوم للحريق كامل توريد وتركيب",
+   "unit": "عدد",
+   "components": [
+    {
+     "res": "door_steel",
+     "qty": 1
+    },
+    {
+     "res": "crew_joinery",
+     "productivity": 3
+    }
+   ]
+  },
+  {
+   "id": "ar-window",
+   "d": "architectural",
+   "section": "أبواب ونوافذ",
+   "description": "نوافذ ألمنيوم مع الزجاج المزدوج توريد وتركيب",
+   "unit": "م²",
+   "components": [
+    {
+     "res": "aluminium_window",
+     "qty": 1
+    }
+   ]
+  },
+  {
+   "id": "el-light-point",
+   "d": "electrical",
+   "section": "تمديدات",
+   "description": "نقطة إنارة كاملة: مواسير + أسلاك 1.5 مم² + علبة + مفتاح",
+   "unit": "نقطة",
+   "components": [
+    {
+     "res": "conduit_20",
+     "qty": 7,
+     "waste": 0.05
+    },
+    {
+     "res": "wire_1_5",
+     "qty": 22,
+     "waste": 0.05
+    },
+    {
+     "res": "back_box",
+     "qty": 1.5
+    },
+    {
+     "res": "switch",
+     "qty": 0.5
+    },
+    {
+     "res": "crew_electrician",
+     "productivity": 12
+    }
+   ]
+  },
+  {
+   "id": "el-socket-point",
+   "d": "electrical",
+   "section": "تمديدات",
+   "description": "نقطة بريزة 13 أمبير كاملة: مواسير + أسلاك 2.5 مم² + علبة + بريزة",
+   "unit": "نقطة",
+   "components": [
+    {
+     "res": "conduit_20",
+     "qty": 7,
+     "waste": 0.05
+    },
+    {
+     "res": "wire_2_5",
+     "qty": 22,
+     "waste": 0.05
+    },
+    {
+     "res": "back_box",
+     "qty": 1
+    },
+    {
+     "res": "socket",
+     "qty": 1
+    },
+    {
+     "res": "crew_electrician",
+     "productivity": 10
+    }
+   ]
+  },
+  {
+   "id": "el-power-point",
+   "d": "electrical",
+   "section": "تمديدات",
+   "description": "نقطة باور (مكيف/سخان) أسلاك 4 مم² مع مفتاح عزل",
+   "unit": "نقطة",
+   "components": [
+    {
+     "res": "conduit_25",
+     "qty": 10,
+     "waste": 0.05
+    },
+    {
+     "res": "wire_4",
+     "qty": 32,
+     "waste": 0.05
+    },
+    {
+     "res": "isolator",
+     "qty": 1
+    },
+    {
+     "res": "crew_electrician",
+     "productivity": 6
+    }
+   ]
+  },
+  {
+   "id": "el-data",
+   "d": "electrical",
+   "section": "تيار خفيف",
+   "description": "مخرج بيانات Cat6 كامل مع الكابل والمواسير",
+   "unit": "نقطة",
+   "components": [
+    {
+     "res": "data_outlet",
+     "qty": 1
+    },
+    {
+     "res": "conduit_20",
+     "qty": 10
+    },
+    {
+     "res": "crew_electrician",
+     "productivity": 10
+    }
+   ]
+  },
+  {
+   "id": "el-fire-alarm",
+   "d": "electrical",
+   "section": "تيار خفيف",
+   "description": "جهاز إنذار حريق (كاشف/زر/جرس) مع التمديد",
+   "unit": "عدد",
+   "components": [
+    {
+     "res": "fire_alarm_device",
+     "qty": 1
+    },
+    {
+     "res": "conduit_20",
+     "qty": 8
+    },
+    {
+     "res": "crew_electrician",
+     "productivity": 12
+    }
+   ]
+  },
+  {
+   "id": "el-luminaire",
+   "d": "electrical",
+   "section": "إنارة",
+   "description": "كشاف إنارة LED توريد وتركيب وتوصيل",
+   "unit": "عدد",
+   "components": [
+    {
+     "res": "luminaire_led",
+     "qty": 1,
+     "waste": 0.01
+    },
+    {
+     "res": "crew_electrician",
+     "productivity": 16
+    }
+   ]
+  },
+  {
+   "id": "el-cable-16",
+   "d": "electrical",
+   "section": "كابلات ولوحات",
+   "description": "كابل نحاس 4×16 مم² XLPE سحب على حوامل/مواسير",
+   "unit": "م.ط",
+   "components": [
+    {
+     "res": "cable_4x16",
+     "qty": 1,
+     "waste": 0.03
+    },
+    {
+     "res": "crew_cable",
+     "productivity": 100
+    }
+   ]
+  },
+  {
+   "id": "el-cable-50",
+   "d": "electrical",
+   "section": "كابلات ولوحات",
+   "description": "كابل نحاس 4×50 مم² XLPE سحب على حوامل",
+   "unit": "م.ط",
+   "components": [
+    {
+     "res": "cable_4x50",
+     "qty": 1,
+     "waste": 0.03
+    },
+    {
+     "res": "crew_cable",
+     "productivity": 60
+    }
+   ]
+  },
+  {
+   "id": "el-tray",
+   "d": "electrical",
+   "section": "كابلات ولوحات",
+   "description": "حامل كابلات مجلفن عرض 300 مم مع الحوامل والأكواع",
+   "unit": "م.ط",
+   "components": [
+    {
+     "res": "cable_tray",
+     "qty": 1,
+     "waste": 0.05
+    },
+    {
+     "res": "crew_electrician",
+     "productivity": 25
+    }
+   ]
+  },
+  {
+   "id": "el-db",
+   "d": "electrical",
+   "section": "كابلات ولوحات",
+   "description": "لوحة توزيع فرعية كاملة مع القواطع والتوصيل والاختبار",
+   "unit": "عدد",
+   "components": [
+    {
+     "res": "db_panel",
+     "qty": 1
+    },
+    {
+     "res": "cable_lugs",
+     "qty": 1
+    },
+    {
+     "res": "crew_electrician",
+     "productivity": 1
+    }
+   ]
+  },
+  {
+   "id": "el-mdb",
+   "d": "electrical",
+   "section": "كابلات ولوحات",
+   "description": "لوحة توزيع رئيسية MDB توريد وتركيب واختبار",
+   "unit": "عدد",
+   "components": [
+    {
+     "res": "mdb_panel",
+     "qty": 1
+    },
+    {
+     "res": "cable_lugs",
+     "qty": 4
+    },
+    {
+     "res": "crew_electrician",
+     "productivity": 0.25
+    }
+   ]
+  },
+  {
+   "id": "el-earth",
+   "d": "electrical",
+   "section": "تأريض",
+   "description": "حفرة تأريض كاملة مع القضيب والاختبار",
+   "unit": "عدد",
+   "components": [
+    {
+     "res": "earthing_pit",
+     "qty": 1
+    }
+   ]
+  },
+  {
+   "id": "hv-split",
+   "d": "hvac",
+   "section": "وحدات",
+   "description": "وحدة سبليت 2 طن توريد وتركيب مع 5 م مواسير نحاس والتصريف",
+   "unit": "عدد",
+   "components": [
+    {
+     "res": "split_unit_2tr",
+     "qty": 1
+    },
+    {
+     "res": "copper_pair",
+     "qty": 5,
+     "waste": 0.05
+    },
+    {
+     "res": "drain_pipe_hvac",
+     "qty": 5
+    },
+    {
+     "res": "crew_hvac",
+     "productivity": 2
+    }
+   ]
+  },
+  {
+   "id": "hv-package",
+   "d": "hvac",
+   "section": "وحدات",
+   "description": "وحدة باكدج 10 طن مع القاعدة ومانع الاهتزاز والرفع",
+   "unit": "عدد",
+   "components": [
+    {
+     "res": "package_unit_10tr",
+     "qty": 1
+    },
+    {
+     "res": "eq_crane",
+     "productivity": 4
+    },
+    {
+     "res": "crew_hvac",
+     "productivity": 0.5
+    }
+   ]
+  },
+  {
+   "id": "hv-duct",
+   "d": "hvac",
+   "section": "مجاري هواء",
+   "description": "مجاري هواء صاج مجلفن مع العزل والحوامل (بالمساحة السطحية)",
+   "unit": "م²",
+   "components": [
+    {
+     "res": "gi_sheet",
+     "qty": 1.15
+    },
+    {
+     "res": "duct_insulation",
+     "qty": 1.1
+    },
+    {
+     "res": "duct_accessories",
+     "qty": 1
+    },
+    {
+     "res": "crew_duct",
+     "productivity": 18
+    }
+   ]
+  },
+  {
+   "id": "hv-copper",
+   "d": "hvac",
+   "section": "مواسير",
+   "description": "مواسير نحاس للمبرد (زوج) معزولة إضافية",
+   "unit": "م.ط",
+   "components": [
+    {
+     "res": "copper_pair",
+     "qty": 1,
+     "waste": 0.05
+    },
+    {
+     "res": "crew_hvac",
+     "productivity": 30
+    }
+   ]
+  },
+  {
+   "id": "hv-diffuser",
+   "d": "hvac",
+   "section": "مخارج هواء",
+   "description": "مخرج هواء (ديفيوزر/جريل) مع الوصلة المرنة",
+   "unit": "عدد",
+   "components": [
+    {
+     "res": "diffuser",
+     "qty": 1
+    },
+    {
+     "res": "crew_duct",
+     "productivity": 14
+    }
+   ]
+  },
+  {
+   "id": "hv-exhaust",
+   "d": "hvac",
+   "section": "تهوية",
+   "description": "مروحة شفط (حمامات/مطابخ) مع التوصيل",
+   "unit": "عدد",
+   "components": [
+    {
+     "res": "exhaust_fan",
+     "qty": 1
+    },
+    {
+     "res": "crew_hvac",
+     "productivity": 6
+    }
+   ]
+  },
+  {
+   "id": "hv-tab",
+   "d": "hvac",
+   "section": "اختبار وتشغيل",
+   "description": "الاختبار والموازنة والتشغيل TAB لكل طن تبريد",
+   "unit": "طن تبريد",
+   "components": [
+    {
+     "res": "tab_hvac",
+     "qty": 1
+    }
+   ]
+  },
+  {
+   "id": "pl-water-point",
+   "d": "plumbing_fire",
+   "section": "تغذية مياه",
+   "description": "نقطة تغذية مياه (بارد/حار) PPR كاملة مع المحبس",
+   "unit": "نقطة",
+   "components": [
+    {
+     "res": "ppr_20",
+     "qty": 6,
+     "waste": 0.05
+    },
+    {
+     "res": "valve_small",
+     "qty": 1
+    },
+    {
+     "res": "crew_plumber",
+     "productivity": 8
+    }
+   ]
+  },
+  {
+   "id": "pl-drain-point",
+   "d": "plumbing_fire",
+   "section": "صرف",
+   "description": "نقطة صرف uPVC كاملة مع القطع والتهوية",
+   "unit": "نقطة",
+   "components": [
+    {
+     "res": "upvc_drain",
+     "qty": 4,
+     "waste": 0.05
+    },
+    {
+     "res": "crew_plumber",
+     "productivity": 8
+    }
+   ]
+  },
+  {
+   "id": "pl-floor-drain",
+   "d": "plumbing_fire",
+   "section": "صرف",
+   "description": "صفاية أرضية مع الوصلة",
+   "unit": "عدد",
+   "components": [
+    {
+     "res": "floor_drain",
+     "qty": 1
+    },
+    {
+     "res": "upvc_drain",
+     "qty": 2
+    },
+    {
+     "res": "crew_plumber",
+     "productivity": 10
+    }
+   ]
+  },
+  {
+   "id": "pl-wc",
+   "d": "plumbing_fire",
+   "section": "أدوات صحية",
+   "description": "مرحاض كامل مع الخلاط والشطاف توريد وتركيب",
+   "unit": "عدد",
+   "components": [
+    {
+     "res": "wc_set",
+     "qty": 1
+    },
+    {
+     "res": "crew_plumber",
+     "productivity": 5
+    }
+   ]
+  },
+  {
+   "id": "pl-basin",
+   "d": "plumbing_fire",
+   "section": "أدوات صحية",
+   "description": "مغسلة كاملة مع الخلاط توريد وتركيب",
+   "unit": "عدد",
+   "components": [
+    {
+     "res": "basin_set",
+     "qty": 1
+    },
+    {
+     "res": "crew_plumber",
+     "productivity": 6
+    }
+   ]
+  },
+  {
+   "id": "pl-heater",
+   "d": "plumbing_fire",
+   "section": "أدوات صحية",
+   "description": "سخان مياه توريد وتركيب مع المحابس",
+   "unit": "عدد",
+   "components": [
+    {
+     "res": "water_heater",
+     "qty": 1
+    },
+    {
+     "res": "valve_small",
+     "qty": 2
+    },
+    {
+     "res": "crew_plumber",
+     "productivity": 6
+    }
+   ]
+  },
+  {
+   "id": "pl-fire-pipe",
+   "d": "plumbing_fire",
+   "section": "مكافحة حريق",
+   "description": "مواسير حديد أسود لشبكة الحريق مع القطع والحوامل والدهان",
+   "unit": "م.ط",
+   "components": [
+    {
+     "res": "black_steel_pipe",
+     "qty": 1,
+     "waste": 0.05
+    },
+    {
+     "res": "crew_fire",
+     "productivity": 20
+    }
+   ]
+  },
+  {
+   "id": "pl-sprinkler",
+   "d": "plumbing_fire",
+   "section": "مكافحة حريق",
+   "description": "رشاش حريق مع الوصلة المرنة/الفرعية",
+   "unit": "عدد",
+   "components": [
+    {
+     "res": "sprinkler_head",
+     "qty": 1
+    },
+    {
+     "res": "crew_fire",
+     "productivity": 25
+    }
+   ]
+  },
+  {
+   "id": "pl-fhc",
+   "d": "plumbing_fire",
+   "section": "مكافحة حريق",
+   "description": "صندوق حريق كامل مع البكرة والطفاية",
+   "unit": "عدد",
+   "components": [
+    {
+     "res": "fire_hose_cabinet",
+     "qty": 1
+    },
+    {
+     "res": "fire_extinguisher",
+     "qty": 1
+    },
+    {
+     "res": "crew_fire",
+     "productivity": 3
+    }
+   ]
+  },
+  {
+   "id": "wn-hc-water",
+   "d": "water_networks",
+   "section": "توصيلات",
+   "description": "توصيلة منزلية مياه قطر 32 مم بطول حتى 10 م شاملة صندوق العداد",
+   "unit": "عدد",
+   "components": [
+    {
+     "res": "water_hc_kit",
+     "qty": 1
+    },
+    {
+     "res": "crew_plumber",
+     "productivity": 5
+    },
+    {
+     "res": "asphalt_patch",
+     "qty": 2.5
+    }
+   ]
+  },
+  {
+   "id": "wn-valve-400",
+   "d": "water_networks",
+   "section": "محابس وغرف",
+   "description": "محبس بوابي قطر 400 مم داخل غرفة خرسانية شاملة الغطاء D400",
+   "unit": "عدد",
+   "components": [
+    {
+     "res": "gate_valve_400",
+     "qty": 1
+    },
+    {
+     "res": "valve_chamber",
+     "qty": 1
+    },
+    {
+     "res": "crew_plumber",
+     "productivity": 1.5
+    }
+   ]
+  },
+  {
+   "id": "wn-manhole",
+   "d": "water_networks",
+   "section": "محابس وغرف",
+   "description": "غرفة تفتيش صرف مسبقة الصب حتى 3 م شاملة الحفر والردم والغطاء",
+   "unit": "عدد",
+   "components": [
+    {
+     "res": "manhole_precast",
+     "qty": 1
+    },
+    {
+     "res": "eq_excavator",
+     "productivity": 2
+    },
+    {
+     "res": "eq_crane",
+     "productivity": 3
+    },
+    {
+     "res": "crew_general",
+     "productivity": 2
+    }
+   ]
+  },
+  {
+   "id": "rd-subgrade",
+   "d": "roads",
+   "section": "أعمال ترابية",
+   "description": "تجهيز ودمك طبقة التأسيس (Subgrade) 95%",
+   "unit": "م²",
+   "components": [
+    {
+     "res": "water_compaction",
+     "qty": 0.02
+    },
+    {
+     "res": "eq_grader",
+     "productivity": 2500
+    },
+    {
+     "res": "eq_roller",
+     "productivity": 2000
+    },
+    {
+     "res": "crew_roads",
+     "productivity": 2000
+    }
+   ]
+  },
+  {
+   "id": "rd-subbase",
+   "d": "roads",
+   "section": "طبقات",
+   "description": "طبقة تحت الأساس (Subbase) فرد ودمك",
+   "unit": "م³",
+   "components": [
+    {
+     "res": "subbase",
+     "qty": 1.3
+    },
+    {
+     "res": "eq_grader",
+     "productivity": 400
+    },
+    {
+     "res": "eq_roller",
+     "productivity": 350
+    },
+    {
+     "res": "crew_roads",
+     "productivity": 350
+    }
+   ]
+  },
+  {
+   "id": "rd-base",
+   "d": "roads",
+   "section": "طبقات",
+   "description": "طبقة أساس مكسرة (Base course) فرد ودمك",
+   "unit": "م³",
+   "components": [
+    {
+     "res": "basecourse",
+     "qty": 1.3
+    },
+    {
+     "res": "eq_grader",
+     "productivity": 350
+    },
+    {
+     "res": "eq_roller",
+     "productivity": 300
+    },
+    {
+     "res": "crew_roads",
+     "productivity": 300
+    }
+   ]
+  },
+  {
+   "id": "rd-prime",
+   "d": "roads",
+   "section": "أسفلت",
+   "description": "طبقة تشريب MC-70",
+   "unit": "م²",
+   "components": [
+    {
+     "res": "prime_coat",
+     "qty": 1.0,
+     "waste": 0.05
+    },
+    {
+     "res": "crew_roads",
+     "productivity": 4000
+    }
+   ]
+  },
+  {
+   "id": "rd-asphalt",
+   "d": "roads",
+   "section": "أسفلت",
+   "description": "طبقة أسفلت سطحية سماكة 5 سم (≈ 0.12 طن/م²)",
+   "unit": "م²",
+   "components": [
+    {
+     "res": "asphalt_wearing",
+     "qty": 0.12,
+     "waste": 0.03
+    }
+   ]
+  },
+  {
+   "id": "rd-kerb",
+   "d": "roads",
+   "section": "بردورات وأرصفة",
+   "description": "بردورة خرسانية مسبقة الصب على قاعدة خرسانية",
+   "unit": "م.ط",
+   "components": [
+    {
+     "res": "kerb_precast",
+     "qty": 1,
+     "waste": 0.03
+    },
+    {
+     "res": "concrete_c15",
+     "qty": 0.04
+    },
+    {
+     "res": "crew_roads",
+     "productivity": 60
+    }
+   ]
+  },
+  {
+   "id": "rd-interlock",
+   "d": "roads",
+   "section": "بردورات وأرصفة",
+   "description": "بلاط متداخل (إنترلوك) 8 سم على فرشة رملية",
+   "unit": "م²",
+   "components": [
+    {
+     "res": "interlock",
+     "qty": 1,
+     "waste": 0.05
+    },
+    {
+     "res": "sand_bedding",
+     "qty": 0.05
+    },
+    {
+     "res": "crew_roads",
+     "productivity": 60
+    }
+   ]
+  },
+  {
+   "id": "rd-marking",
+   "d": "roads",
+   "section": "علامات",
+   "description": "دهانات طرق حرارية",
+   "unit": "م²",
+   "components": [
+    {
+     "res": "road_marking",
+     "qty": 1
+    }
+   ]
+  }
+ ],
+ "checks": [
+  {
+   "kind": "ratio",
+   "num": [
+    "st-rebar"
+   ],
+   "den": [
+    "st-footing",
+    "st-column",
+    "st-slab"
+   ],
+   "factor": 1000,
+   "min": 80,
+   "max": 160,
+   "label": "نسبة حديد التسليح إلى الخرسانة المسلحة",
+   "unit": "كجم/م³"
+  },
+  {
+   "kind": "requires",
+   "if": [
+    "el-light-point",
+    "el-socket-point",
+    "el-power-point"
+   ],
+   "then": [
+    "el-db",
+    "el-mdb"
+   ],
+   "msg": "توجد نقاط كهرباء بدون لوحات توزيع — تأكد أن اللوحات مسعّرة (أو موردة من المالك)."
+  },
+  {
+   "kind": "requires",
+   "if": [
+    "el-db",
+    "el-mdb"
+   ],
+   "then": [
+    "el-earth"
+   ],
+   "msg": "توجد لوحات بدون نظام تأريض — تأكد من تسعير التأريض."
+  },
+  {
+   "kind": "requires",
+   "if": [
+    "hv-split",
+    "hv-package"
+   ],
+   "then": [
+    "hv-tab"
+   ],
+   "msg": "توجد وحدات تكييف بدون بند الاختبار والموازنة والتشغيل."
+  },
+  {
+   "kind": "requires",
+   "if": [
+    "hv-package"
+   ],
+   "then": [
+    "hv-duct",
+    "hv-diffuser"
+   ],
+   "msg": "وحدات باكدج بدون مجاري هواء أو مخارج — تأكد من نطاق التوزيع."
+  },
+  {
+   "kind": "requires",
+   "if": [
+    "pl-wc",
+    "pl-basin"
+   ],
+   "then": [
+    "pl-water-point",
+    "pl-drain-point"
+   ],
+   "msg": "أدوات صحية بدون نقاط تغذية/صرف — تأكد من تسعير التمديدات."
+  },
+  {
+   "kind": "requires",
+   "if": [
+    "pl-sprinkler"
+   ],
+   "then": [
+    "pl-fire-pipe"
+   ],
+   "msg": "رشاشات حريق بدون شبكة مواسير."
+  },
+  {
+   "kind": "requires",
+   "if": [
+    "ar-block20",
+    "ar-block15"
+   ],
+   "then": [
+    "ar-plaster"
+   ],
+   "msg": "مباني بلوك بدون لياسة — تأكد أن اللياسة مسعّرة أو غير مطلوبة."
+  },
+  {
+   "kind": "requires",
+   "if": [
+    "ar-plaster"
+   ],
+   "then": [
+    "ar-paint-int",
+    "ar-ceramic-wall"
+   ],
+   "msg": "لياسة داخلية بدون دهان أو تكسية."
+  },
+  {
+   "kind": "requires",
+   "if": [
+    "rd-asphalt"
+   ],
+   "then": [
+    "rd-prime"
+   ],
+   "msg": "طبقة أسفلت بدون طبقة تشريب."
+  },
+  {
+   "kind": "requires",
+   "if": [
+    "st-footing",
+    "st-column",
+    "st-slab"
+   ],
+   "then": [
+    "st-rebar"
+   ],
+   "msg": "خرسانة مسلحة بدون بند حديد تسليح — تأكد أن الحديد مسعّر (البنود هنا بدون الحديد)."
+  }
+ ]
+}

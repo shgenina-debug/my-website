@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>منصة تسعير المياه</title>
+<title>منصة التسعير الهندسي</title>
 <style>
 :root{
   --bg:#f6f7f9;--surface:#fff;--surface-2:#f0f2f5;--text:#16202b;--muted:#5b6876;--border:#dde2e8;
@@ -27,8 +27,8 @@ body{margin:0;background:var(--bg);color:var(--text);font:14px/1.6 "Segoe UI",Ta
 header{background:var(--surface);border-bottom:1px solid var(--border);padding:12px 16px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:5}
 header h1{font-size:17px;margin:0}
 header .sub{color:var(--muted);font-size:12px}
-.toolbar{display:flex;flex-wrap:wrap;gap:6px}
-button,.btn{background:var(--surface-2);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:6px 10px;font:inherit;cursor:pointer}
+.toolbar{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+button{background:var(--surface-2);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:6px 10px;font:inherit;cursor:pointer}
 button.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
 button.ghost{background:transparent}
 button.del{color:var(--bad);background:transparent;border-color:transparent;padding:2px 6px}
@@ -40,11 +40,13 @@ section.tab{display:none;background:var(--surface);border:1px solid var(--border
 section.tab.on{display:block}
 h2{font-size:15px;margin:18px 0 8px}
 h2:first-child{margin-top:0}
+h3{font-size:14px;margin:14px 0 6px;color:var(--accent)}
 .note{color:var(--muted);font-size:12px}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
 label.f{display:flex;flex-direction:column;gap:3px;font-size:12px;color:var(--muted)}
 input,select{background:var(--surface);color:var(--text);border:1px solid var(--border);border-radius:5px;padding:5px 7px;font:inherit;min-width:0;width:100%}
 input[type=checkbox]{width:auto}
+input.missing{border-color:var(--bad);background:var(--warn-soft)}
 .tw{overflow-x:auto;border:1px solid var(--border);border-radius:6px;margin:6px 0 12px}
 table{border-collapse:collapse;width:100%;font-size:13px}
 th,td{padding:6px 8px;border-bottom:1px solid var(--border);text-align:right;vertical-align:middle}
@@ -53,6 +55,7 @@ td.n,th.n{text-align:left;direction:ltr;font-variant-numeric:tabular-nums;white-
 td input{min-width:70px}
 td input.wide{min-width:240px}
 tr.total td{font-weight:700;background:var(--surface-2)}
+tr.sec td{background:var(--accent-soft);color:var(--accent);font-weight:600}
 .kpis{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px;margin-bottom:14px}
 .kpi{background:var(--surface-2);border:1px solid var(--border);border-radius:8px;padding:10px}
 .kpi .l{font-size:12px;color:var(--muted)}
@@ -65,96 +68,58 @@ tr.total td{font-weight:700;background:var(--surface-2)}
 .item{border:1px solid var(--border);border-radius:8px;padding:10px;margin-bottom:10px}
 .item .head{display:grid;grid-template-columns:90px 1fr 80px 110px auto;gap:8px;align-items:end}
 .tag{display:inline-block;padding:1px 6px;border-radius:4px;background:var(--accent-soft);color:var(--accent);font-size:11px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 10px}
+.chips button.on{background:var(--accent);color:#fff;border-color:var(--accent)}
 .two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}
 .two>div{min-width:0}
-@media (max-width:760px){.two{grid-template-columns:minmax(0,1fr)}.item .head{grid-template-columns:1fr 1fr}}
+.sticky-actions{position:sticky;bottom:0;background:var(--surface);padding:8px 0;border-top:1px solid var(--border);display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .toast{position:fixed;bottom:16px;left:16px;right:16px;margin:auto;max-width:520px;background:var(--text);color:var(--bg);padding:10px 14px;border-radius:8px;z-index:20;white-space:pre-line}
 .ask{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;z-index:30;padding:16px}
 .ask[hidden],.toast[hidden]{display:none}
-.ask .box{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;max-width:380px;width:100%}
-@media print{header,nav,section.tab:not(#t-results){display:none!important}section.tab{border:none}#t-results{display:block!important}body{background:#fff;color:#000}}
+.ask .box{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;max-width:420px;width:100%}
+@media (max-width:760px){.two{grid-template-columns:minmax(0,1fr)}.item .head{grid-template-columns:1fr 1fr}}
+@media print{header,nav,.sticky-actions,section.tab:not(#t-results){display:none!important}section.tab{border:none}#t-results{display:block!important}body{background:#fff;color:#000}}
 </style>
 </head>
 <body>
 <header>
   <div>
-    <h1>منصة تسعير مشاريع المياه والصرف</h1>
-    <div class="sub">تفكيك هندسي للبنود • تحليل سعر الوحدة • ملخص العرض • باريتو • حساسية — نفس صيغة ملفات <code>pricing_calc.py</code></div>
+    <h1>منصة التسعير الهندسي</h1>
+    <div class="sub">اختر نوع المشروع ← بنود التخصص من المكتبة ← تفكيك كل بند ← أسعار الموارد ← العرض والتحليل</div>
   </div>
   <div class="toolbar">
+    <button class="primary" onclick="newProject()">＋ مشروع جديد</button>
     <button onclick="document.getElementById('file').click()">📂 استيراد JSON</button>
     <input id="file" type="file" accept=".json,application/json" hidden>
     <button onclick="exportSource()">💾 حفظ المشروع</button>
     <button onclick="exportPriced()">⬇️ ملف للحاسبة</button>
     <button onclick="exportCSV()">⬇️ CSV</button>
     <button onclick="window.print()">🖨️ طباعة</button>
-    <button class="ghost" onclick="resetExample()">↺ المثال</button>
+    <select id="exsel" style="width:auto;max-width:190px" onchange="loadExample(this.value);this.value=''"><option value="">↺ الأمثلة…</option></select>
     <button class="ghost" onclick="toggleTheme()">🌓 الوضع</button>
   </div>
 </header>
-<nav id="tabs"></nav>
 <div id="toast" class="toast" role="status" hidden></div>
-<div id="ask" class="ask" hidden><div class="box"><p></p><div class="toolbar"><button class="primary yes">نعم</button><button class="no">إلغاء</button></div></div></div>
+<div id="ask" class="ask" hidden><div class="box"><p></p><div class="extra"></div><div class="toolbar"><button class="primary yes">موافق</button><button class="no">إلغاء</button></div></div></div>
+<nav id="tabs"></nav>
 <main>
   <section class="tab" id="t-project"></section>
-  <section class="tab" id="t-rates"></section>
-  <section class="tab" id="t-pipes"></section>
+  <section class="tab" id="t-library"></section>
   <section class="tab" id="t-boq"></section>
+  <section class="tab" id="t-resources"></section>
+  <section class="tab" id="t-pipes"></section>
   <section class="tab" id="t-oh"></section>
   <section class="tab" id="t-results"></section>
 </main>
 
 <script>
 "use strict";
-/* ===================== Example (illustrative only) ===================== */
-const EXAMPLE = {
-  "_note":"مثال توضيحي فقط — كل الأسعار والإنتاجيات افتراضية ويجب استبدالها بعروض موردين وسجلات الشركة.",
-  "project":{"name":"مثال: إحلال شبكة مياه وتوصيلات منزلية لحي سكني","location":"الرياض","currency":"ر.س","duration_months":8,"vat_rate":0.15,"working_days_per_month":26},
-  "design":{"min_cover_m":1.0},
-  "rates":{
-    "excavation_m3":{"type":"equipment","key":"excavation","rate":14},
-    "rock_excavation_m3":{"type":"equipment","key":"excavation","rate":65},
-    "bedding_m3":{"type":"material","key":"sand","rate":55},
-    "surround_m3":{"type":"material","key":"sand","rate":60},
-    "backfill_m3":{"type":"equipment","key":"backfill","rate":12},
-    "disposal_m3":{"type":"equipment","key":"disposal","rate":18},
-    "shoring_m2":{"type":"equipment","key":"shoring","rate":22},
-    "asphalt_m2":{"type":"subcontract","key":"asphalt","rate":70},
-    "dewatering_m":{"type":"subcontract","key":"dewatering","rate":40},
-    "testing_m":{"type":"subcontract","key":"testing","rate":6},
-    "tape_m":{"type":"material","key":"sundries","rate":1.5}
-  },
-  "pipelines":[
-    {"code":"W-01","description":"توريد وتمديد واختبار أنابيب HDPE PE100 SDR11 قطر 160 مم شاملاً الحفر والردم وإعادة الأسفلت","material":"HDPE","dn_mm":160,"od_m":0.16,"length_m":9500,"cover_m":1.2,"surface":"asphalt","rock_ratio":0,"ground_water":false,"pipe_rate_per_m":48,"fittings_allowance":0.08,"lay_crew_daily_cost":1450,"lay_equipment_daily_cost":450,"lay_productivity_m_day":220,"crews":2,"productivity_factors":[{"name":"العمل داخل حي مأهول","factor":0.75}]},
-    {"code":"W-02","description":"توريد وتمديد واختبار أنابيب حديد دكتايل K9 قطر 400 مم شاملاً الحفر والتدعيم والردم وإعادة الأسفلت","material":"DI","dn_mm":400,"od_m":0.429,"length_m":2200,"cover_m":1.5,"surface":"asphalt","rock_ratio":0.15,"ground_water":false,"pipe_rate_per_m":520,"fittings_allowance":0.10,"lay_crew_daily_cost":1900,"lay_equipment_daily_cost":1600,"lay_productivity_m_day":60,"crews":1,"productivity_factors":[{"name":"العمل داخل حي مأهول","factor":0.8}]}
-  ],
-  "boq":[
-    {"code":"HC-01","description":"توصيلة منزلية مياه قطر 32 مم بطول حتى 10 م شاملة صندوق العداد","unit":"عدد","qty":1400,"components":[
-      {"type":"material","name":"سرج + محبس + أنبوب + صندوق عداد","key":"fittings","qty":1,"rate":340},
-      {"type":"labor","name":"فني + عاملان","key":"labor","daily_cost":750,"productivity":5},
-      {"type":"subcontract","name":"إعادة أسفلت/بلاط موضعي","key":"asphalt","qty":2.5,"rate":70}]},
-    {"code":"V-01","description":"محبس بوابي قطر 400 مم داخل غرفة خرسانية شاملة الغطاء D400","unit":"عدد","qty":18,"components":[
-      {"type":"material","name":"محبس بوابي DN400","key":"valves","qty":1,"rate":9800},
-      {"type":"subcontract","name":"غرفة محبس خرسانية مع الغطاء","key":"chambers","qty":1,"rate":7500},
-      {"type":"labor","name":"فرقة تركيب","key":"labor","daily_cost":1900,"productivity":1.5}]}
-  ],
-  "site_overheads":[
-    {"name":"مدير مشروع","count":1,"monthly_cost":28000},
-    {"name":"مهندس موقع","count":2,"monthly_cost":15000},
-    {"name":"مساح + معدات مساحة","count":1,"monthly_cost":11000},
-    {"name":"مسؤول سلامة","count":1,"monthly_cost":9000},
-    {"name":"مسؤول جودة","count":1,"monthly_cost":10000},
-    {"name":"سيارات الموقع","count":3,"monthly_cost":3500},
-    {"name":"مكتب ومستودع الموقع","count":1,"monthly_cost":9000},
-    {"name":"إدارة المرور والحواجز واللوحات","count":1,"monthly_cost":12000},
-    {"name":"التعبئة والتسريح","lump_sum":60000},
-    {"name":"مخططات حسب التنفيذ وبيانات GIS","lump_sum":45000},
-    {"name":"رسوم وتصاريح الحفر (يُتحقق من مسؤوليتها)","lump_sum":50000}
-  ],
-  "markups":{"head_office":0.05,"finance":0.015,"bonds_insurance":0.012,"contingency":0.04,"profit":0.08}
-};
+/* Generated content — edit library.json / examples, then run
+   python3 .claude/skills/cost-estimating/scripts/build_platform.py */
+const LIBRARY = /*LIB*/{"_note":"مكتبة بنود التسعير — معدلات الاستهلاك والإنتاجية إرشادية للبدء فقط ويجب معايرتها بسجلات الشركة ومواصفات المشروع. المكتبة لا تحتوي أي أسعار عمداً: الأسعار تُدخل لكل مشروع في resources.","version":1,"disciplines":{"structural":{"name":"إنشائي (خرسانة وحديد وأعمال ترابية)","prefix":"ST"},"architectural":{"name":"معماري وتشطيبات","prefix":"AR"},"electrical":{"name":"كهرباء وتيار خفيف","prefix":"EL"},"hvac":{"name":"تكييف وتهوية","prefix":"HV"},"plumbing_fire":{"name":"سباكة ومكافحة حريق","prefix":"PL"},"water_networks":{"name":"شبكات مياه وصرف","prefix":"WN"},"roads":{"name":"طرق وأعمال خارجية","prefix":"RD"}},"project_types":{"building_full":{"name":"مبنى متكامل","disciplines":["structural","architectural","electrical","hvac","plumbing_fire"]},"electromechanical":{"name":"إلكتروميكانيك (كهرباء + تكييف + سباكة وحريق)","disciplines":["electrical","hvac","plumbing_fire"]},"architectural":{"name":"معماري وتشطيبات","disciplines":["architectural"]},"structural":{"name":"إنشائي / هيكل خرساني","disciplines":["structural"]},"electrical":{"name":"كهرباء فقط","disciplines":["electrical"]},"hvac":{"name":"تكييف فقط","disciplines":["hvac"]},"plumbing_fire":{"name":"سباكة وحريق فقط","disciplines":["plumbing_fire"]},"water_networks":{"name":"شبكات مياه وصرف","disciplines":["water_networks"]},"roads":{"name":"طرق وأعمال خارجية","disciplines":["roads"]},"infrastructure":{"name":"بنية تحتية (شبكات + طرق)","disciplines":["water_networks","roads"]}},"resources":{"crew_general":{"name":"فرقة عمالة عادية","type":"labor","unit":"يوم","group":"labor"},"crew_concrete":{"name":"فرقة صب خرسانة","type":"labor","unit":"يوم","group":"labor"},"crew_carpentry":{"name":"فرقة نجارة مسلحة (شدات)","type":"labor","unit":"يوم","group":"labor"},"crew_steel":{"name":"فرقة حدادة مسلحة","type":"labor","unit":"يوم","group":"labor"},"crew_mason":{"name":"فرقة بناء بلوك","type":"labor","unit":"يوم","group":"labor"},"crew_plaster":{"name":"فرقة لياسة","type":"labor","unit":"يوم","group":"labor"},"crew_painter":{"name":"فرقة دهانات","type":"labor","unit":"يوم","group":"labor"},"crew_tiling":{"name":"فرقة بلاط وسيراميك","type":"labor","unit":"يوم","group":"labor"},"crew_marble":{"name":"فرقة رخام","type":"labor","unit":"يوم","group":"labor"},"crew_ceiling":{"name":"فرقة أسقف مستعارة","type":"labor","unit":"يوم","group":"labor"},"crew_waterproof":{"name":"فرقة عزل","type":"labor","unit":"يوم","group":"labor"},"crew_joinery":{"name":"فرقة تركيب أبواب ونجارة","type":"labor","unit":"يوم","group":"labor"},"crew_electrician":{"name":"فرقة كهربائيين","type":"labor","unit":"يوم","group":"labor"},"crew_cable":{"name":"فرقة سحب كابلات","type":"labor","unit":"يوم","group":"labor"},"crew_hvac":{"name":"فرقة فنيي تكييف","type":"labor","unit":"يوم","group":"labor"},"crew_duct":{"name":"فرقة مجاري هواء","type":"labor","unit":"يوم","group":"labor"},"crew_plumber":{"name":"فرقة سباكين","type":"labor","unit":"يوم","group":"labor"},"crew_fire":{"name":"فرقة أنظمة حريق","type":"labor","unit":"يوم","group":"labor"},"crew_roads":{"name":"فرقة أعمال طرق","type":"labor","unit":"يوم","group":"labor"},"eq_excavator":{"name":"حفار مع مشغل ووقود","type":"equipment","unit":"يوم","group":"equipment"},"eq_truck":{"name":"قلاب نقل","type":"equipment","unit":"يوم","group":"equipment"},"eq_roller":{"name":"هراس / دكاك","type":"equipment","unit":"يوم","group":"equipment"},"eq_grader":{"name":"جريدر","type":"equipment","unit":"يوم","group":"equipment"},"eq_crane":{"name":"رافعة","type":"equipment","unit":"يوم","group":"equipment"},"eq_scaffold":{"name":"سقالات (إيجار)","type":"equipment","unit":"يوم","group":"equipment"},"fill_selected":{"name":"تربة ردم مختارة (مورّدة)","type":"material","unit":"م³","group":"earthworks"},"water_compaction":{"name":"مياه دمك ورش","type":"material","unit":"م³","group":"earthworks"},"concrete_c15":{"name":"خرسانة جاهزة C15 (نظافة)","type":"material","unit":"م³","group":"concrete"},"concrete_c35":{"name":"خرسانة جاهزة C35 مع المضخة","type":"material","unit":"م³","group":"concrete"},"formwork_mat":{"name":"مواد شدات (استهلاك/إهلاك)","type":"material","unit":"م²","group":"formwork"},"rebar":{"name":"حديد تسليح Grade 60","type":"material","unit":"طن","group":"rebar"},"tie_wire":{"name":"سلك رباط وكراسي","type":"material","unit":"كجم","group":"rebar"},"curing":{"name":"مواد معالجة","type":"material","unit":"م²","group":"concrete"},"bitumen_coat":{"name":"دهان بيتوميني","type":"material","unit":"لتر","group":"waterproofing"},"block_20":{"name":"بلوك أسمنتي 20 سم","type":"material","unit":"حبة","group":"masonry"},"block_15":{"name":"بلوك أسمنتي 15 سم","type":"material","unit":"حبة","group":"masonry"},"mortar":{"name":"مونة أسمنتية (مواد)","type":"material","unit":"م³","group":"masonry"},"plaster_mix":{"name":"مونة لياسة جاهزة/ممزوجة","type":"material","unit":"م³","group":"plaster"},"mesh_corner":{"name":"شبك وزوايا لياسة","type":"material","unit":"م²","group":"plaster"},"putty":{"name":"معجون","type":"material","unit":"كجم","group":"paint"},"primer":{"name":"برايمر","type":"material","unit":"لتر","group":"paint"},"paint_int":{"name":"دهان داخلي (بلاستيك/أكريليك)","type":"material","unit":"لتر","group":"paint"},"paint_ext":{"name":"دهان خارجي (تكستشر/أكريليك خارجي)","type":"material","unit":"لتر","group":"paint"},"tile_ceramic":{"name":"بلاط سيراميك","type":"material","unit":"م²","group":"tiles"},"tile_porcelain":{"name":"بلاط بورسلين","type":"material","unit":"م²","group":"tiles"},"marble":{"name":"رخام/جرانيت","type":"material","unit":"م²","group":"stone"},"tile_adhesive":{"name":"لاصق بلاط","type":"material","unit":"كجم","group":"tiles"},"grout":{"name":"روبة","type":"material","unit":"كجم","group":"tiles"},"skirting":{"name":"وزرة (نعلة)","type":"material","unit":"م.ط","group":"tiles"},"gypsum_board_sys":{"name":"نظام جبس بورد (ألواح + هيكل + تشطيب)","type":"material","unit":"م²","group":"ceilings"},"ceiling_tiles_sys":{"name":"نظام سقف بلاطات 60×60 مع الهيكل","type":"material","unit":"م²","group":"ceilings"},"membrane":{"name":"عزل مائي رولات (ممبرين)","type":"material","unit":"م²","group":"waterproofing"},"wp_primer":{"name":"برايمر عزل","type":"material","unit":"لتر","group":"waterproofing"},"xps_board":{"name":"عزل حراري ألواح XPS","type":"material","unit":"م²","group":"insulation"},"screed":{"name":"خرسانة ميول (فوم/رملية)","type":"material","unit":"م³","group":"concrete"},"door_wood":{"name":"باب خشب كامل (حلق + ضلفة + إكسسوارات)","type":"material","unit":"عدد","group":"doors"},"door_steel":{"name":"باب حديد/مقاوم حريق كامل","type":"material","unit":"عدد","group":"doors"},"aluminium_window":{"name":"نوافذ ألمنيوم مع الزجاج (توريد وتركيب - باطن)","type":"subcontract","unit":"م²","group":"aluminium"},"conduit_20":{"name":"ماسورة PVC 20 مم مع الملحقات","type":"material","unit":"م.ط","group":"conduits"},"conduit_25":{"name":"ماسورة PVC 25 مم مع الملحقات","type":"material","unit":"م.ط","group":"conduits"},"wire_1_5":{"name":"سلك نحاس 1.5 مم²","type":"material","unit":"م.ط","group":"wires"},"wire_2_5":{"name":"سلك نحاس 2.5 مم²","type":"material","unit":"م.ط","group":"wires"},"wire_4":{"name":"سلك نحاس 4 مم²","type":"material","unit":"م.ط","group":"wires"},"back_box":{"name":"علبة كهرباء","type":"material","unit":"عدد","group":"wiring_devices"},"switch":{"name":"مفتاح إنارة","type":"material","unit":"عدد","group":"wiring_devices"},"socket":{"name":"بريزة 13 أمبير","type":"material","unit":"عدد","group":"wiring_devices"},"isolator":{"name":"مفتاح عزل (مكيف/سخان)","type":"material","unit":"عدد","group":"wiring_devices"},"data_outlet":{"name":"مخرج بيانات Cat6 مع الكابل","type":"material","unit":"عدد","group":"low_current"},"luminaire_led":{"name":"كشاف LED","type":"material","unit":"عدد","group":"lighting"},"cable_4x16":{"name":"كابل نحاس 4×16 مم² XLPE","type":"material","unit":"م.ط","group":"cables"},"cable_4x50":{"name":"كابل نحاس 4×50 مم² XLPE","type":"material","unit":"م.ط","group":"cables"},"cable_lugs":{"name":"أطراف وجلاندات كابلات","type":"material","unit":"مجموعة","group":"cables"},"cable_tray":{"name":"حامل كابلات مجلفن مع الحوامل","type":"material","unit":"م.ط","group":"cables"},"db_panel":{"name":"لوحة توزيع فرعية مع القواطع","type":"material","unit":"عدد","group":"panels"},"mdb_panel":{"name":"لوحة توزيع رئيسية MDB","type":"material","unit":"عدد","group":"panels"},"earthing_pit":{"name":"حفرة تأريض كاملة (باطن)","type":"subcontract","unit":"عدد","group":"earthing"},"fire_alarm_device":{"name":"كاشف/جهاز إنذار حريق مع التمديد","type":"material","unit":"عدد","group":"low_current"},"split_unit_2tr":{"name":"وحدة سبليت 2 طن","type":"material","unit":"عدد","group":"hvac_units"},"package_unit_10tr":{"name":"وحدة باكدج 10 طن","type":"material","unit":"عدد","group":"hvac_units"},"copper_pair":{"name":"مواسير نحاس للمبرد (زوج) مع العزل","type":"material","unit":"م.ط","group":"hvac_piping"},"drain_pipe_hvac":{"name":"ماسورة تصريف مكثف","type":"material","unit":"م.ط","group":"hvac_piping"},"gi_sheet":{"name":"صاج مجلفن لمجاري الهواء","type":"material","unit":"م²","group":"ductwork"},"duct_insulation":{"name":"عزل مجاري الهواء","type":"material","unit":"م²","group":"ductwork"},"duct_accessories":{"name":"حوامل وفلنجات ومواد لحام مجاري","type":"material","unit":"م²","group":"ductwork"},"diffuser":{"name":"مخرج هواء (ديفيوزر/جريل)","type":"material","unit":"عدد","group":"air_outlets"},"exhaust_fan":{"name":"مروحة شفط","type":"material","unit":"عدد","group":"fans"},"tab_hvac":{"name":"الاختبار والموازنة TAB (باطن)","type":"subcontract","unit":"طن تبريد","group":"testing"},"ppr_20":{"name":"ماسورة PPR 20–25 مم مع القطع","type":"material","unit":"م.ط","group":"plumbing_pipes"},"upvc_drain":{"name":"ماسورة صرف uPVC 50–110 مم مع القطع","type":"material","unit":"م.ط","group":"plumbing_pipes"},"valve_small":{"name":"محبس زاوية/كروي صغير","type":"material","unit":"عدد","group":"plumbing_fittings"},"floor_drain":{"name":"صفاية أرضية","type":"material","unit":"عدد","group":"plumbing_fittings"},"wc_set":{"name":"طقم مرحاض كامل مع الخلاط","type":"material","unit":"عدد","group":"sanitary"},"basin_set":{"name":"مغسلة كاملة مع الخلاط","type":"material","unit":"عدد","group":"sanitary"},"water_heater":{"name":"سخان مياه 50–80 لتر","type":"material","unit":"عدد","group":"sanitary"},"black_steel_pipe":{"name":"ماسورة حديد أسود (حريق) مع القطع والدهان","type":"material","unit":"م.ط","group":"fire_pipes"},"sprinkler_head":{"name":"رشاش حريق مع الوصلة","type":"material","unit":"عدد","group":"fire_devices"},"fire_hose_cabinet":{"name":"صندوق حريق كامل","type":"material","unit":"عدد","group":"fire_devices"},"fire_extinguisher":{"name":"طفاية حريق","type":"material","unit":"عدد","group":"fire_devices"},"subbase":{"name":"طبقة تحت الأساس (مورّدة)","type":"material","unit":"م³","group":"aggregates"},"basecourse":{"name":"طبقة أساس مكسرة (مورّدة)","type":"material","unit":"م³","group":"aggregates"},"prime_coat":{"name":"طبقة تشريب MC-70","type":"material","unit":"لتر","group":"asphalt"},"asphalt_wearing":{"name":"خلطة أسفلتية سطحية (فرد ودمك - باطن)","type":"subcontract","unit":"طن","group":"asphalt"},"kerb_precast":{"name":"بردورة خرسانية مسبقة الصب","type":"material","unit":"م.ط","group":"kerbs"},"interlock":{"name":"بلاط متداخل (إنترلوك) 8 سم","type":"material","unit":"م²","group":"paving"},"sand_bedding":{"name":"رمل فرشة","type":"material","unit":"م³","group":"earthworks"},"road_marking":{"name":"دهانات طرق حرارية (باطن)","type":"subcontract","unit":"م²","group":"road_marking"},"water_hc_kit":{"name":"مجموعة توصيلة مياه منزلية (سرج + محبس + أنبوب + صندوق عداد)","type":"material","unit":"عدد","group":"fittings"},"gate_valve_400":{"name":"محبس بوابي DN400","type":"material","unit":"عدد","group":"valves"},"valve_chamber":{"name":"غرفة محبس خرسانية مع غطاء D400 (باطن)","type":"subcontract","unit":"عدد","group":"chambers"},"manhole_precast":{"name":"غرفة تفتيش مسبقة الصب حتى 3 م مع الغطاء","type":"material","unit":"عدد","group":"chambers"},"asphalt_patch":{"name":"إعادة أسفلت/بلاط موضعي (باطن)","type":"subcontract","unit":"م²","group":"asphalt"}},"templates":[{"id":"st-exc","d":"structural","section":"أعمال ترابية","description":"حفر عام في تربة عادية حتى منسوب التأسيس شاملاً النقل داخل الموقع","unit":"م³","components":[{"res":"eq_excavator","productivity":300},{"res":"eq_truck","productivity":150},{"res":"crew_general","productivity":150}]},{"id":"st-fill","d":"structural","section":"أعمال ترابية","description":"ردم بتربة مختارة مورّدة على طبقات 25 سم مع الدمك 95%","unit":"م³","components":[{"res":"fill_selected","qty":1.25},{"res":"water_compaction","qty":0.1},{"res":"eq_roller","productivity":200},{"res":"crew_general","productivity":100}]},{"id":"st-pcc","d":"structural","section":"خرسانة","description":"خرسانة عادية نظافة C15 سماكة 10 سم تحت القواعد","unit":"م³","components":[{"res":"concrete_c15","qty":1,"waste":0.05},{"res":"crew_concrete","productivity":40}]},{"id":"st-footing","d":"structural","section":"خرسانة","description":"خرسانة مسلحة C35 للقواعد والميد (بدون الحديد) شاملة الشدات والمعالجة","unit":"م³","components":[{"res":"concrete_c35","qty":1,"waste":0.03},{"res":"formwork_mat","qty":1.5},{"res":"curing","qty":1},{"res":"crew_carpentry","productivity":25},{"res":"crew_concrete","productivity":60}]},{"id":"st-column","d":"structural","section":"خرسانة","description":"خرسانة مسلحة C35 للأعمدة والجدران الخرسانية (بدون الحديد) شاملة الشدات","unit":"م³","components":[{"res":"concrete_c35","qty":1,"waste":0.03},{"res":"formwork_mat","qty":9},{"res":"crew_carpentry","productivity":6},{"res":"crew_concrete","productivity":25}]},{"id":"st-slab","d":"structural","section":"خرسانة","description":"خرسانة مسلحة C35 للأسقف والكمرات (بدون الحديد) شاملة الشدات والمعالجة","unit":"م³","components":[{"res":"concrete_c35","qty":1,"waste":0.03},{"res":"formwork_mat","qty":6.5},{"res":"curing","qty":5},{"res":"crew_carpentry","productivity":10},{"res":"crew_concrete","productivity":50},{"res":"eq_scaffold","productivity":12}]},{"id":"st-rebar","d":"structural","section":"حديد تسليح","description":"حديد تسليح Grade 60 توريد وقص وتشكيل وتركيب","unit":"طن","components":[{"res":"rebar","qty":1,"waste":0.05},{"res":"tie_wire","qty":10},{"res":"crew_steel","productivity":1.6}]},{"id":"st-bitumen","d":"structural","section":"عزل","description":"دهان بيتوميني وجهين للأسطح الخرسانية الملامسة للتربة","unit":"م²","components":[{"res":"bitumen_coat","qty":0.8,"waste":0.05},{"res":"crew_waterproof","productivity":120}]},{"id":"ar-block20","d":"architectural","section":"مباني","description":"مباني بلوك أسمنتي مصمت/مفرغ 20 سم بالمونة الأسمنتية","unit":"م²","components":[{"res":"block_20","qty":12.5,"waste":0.05},{"res":"mortar","qty":0.02},{"res":"crew_mason","productivity":14}]},{"id":"ar-block15","d":"architectural","section":"مباني","description":"مباني بلوك أسمنتي 15 سم للقواطع الداخلية","unit":"م²","components":[{"res":"block_15","qty":12.5,"waste":0.05},{"res":"mortar","qty":0.015},{"res":"crew_mason","productivity":16}]},{"id":"ar-plaster","d":"architectural","section":"لياسة","description":"لياسة أسمنتية داخلية 2 سم على طبقتين مع الشبك والزوايا","unit":"م²","components":[{"res":"plaster_mix","qty":0.022,"waste":0.1},{"res":"mesh_corner","qty":0.15},{"res":"crew_plaster","productivity":25},{"res":"eq_scaffold","productivity":150}]},{"id":"ar-plaster-ext","d":"architectural","section":"لياسة","description":"لياسة أسمنتية خارجية 2.5 سم مع الشبك","unit":"م²","components":[{"res":"plaster_mix","qty":0.027,"waste":0.1},{"res":"mesh_corner","qty":0.3},{"res":"crew_plaster","productivity":18},{"res":"eq_scaffold","productivity":60}]},{"id":"ar-paint-int","d":"architectural","section":"دهانات","description":"دهان داخلي: معجون طبقتين + برايمر + وجهين دهان","unit":"م²","components":[{"res":"putty","qty":1.0,"waste":0.05},{"res":"primer","qty":0.12},{"res":"paint_int","qty":0.22,"waste":0.05},{"res":"crew_painter","productivity":40}]},{"id":"ar-paint-ext","d":"architectural","section":"دهانات","description":"دهان خارجي: برايمر + طبقتين دهان خارجي","unit":"م²","components":[{"res":"primer","qty":0.15},{"res":"paint_ext","qty":0.35,"waste":0.05},{"res":"crew_painter","productivity":35},{"res":"eq_scaffold","productivity":100}]},{"id":"ar-ceramic-floor","d":"architectural","section":"أرضيات وتكسيات","description":"بلاط سيراميك أرضيات على لاصق مع الروبة","unit":"م²","components":[{"res":"tile_ceramic","qty":1,"waste":0.07},{"res":"tile_adhesive","qty":5},{"res":"grout","qty":0.4},{"res":"crew_tiling","productivity":16}]},{"id":"ar-ceramic-wall","d":"architectural","section":"أرضيات وتكسيات","description":"تكسية جدران سيراميك (حمامات ومطابخ) على لاصق","unit":"م²","components":[{"res":"tile_ceramic","qty":1,"waste":0.08},{"res":"tile_adhesive","qty":5},{"res":"grout","qty":0.4},{"res":"crew_tiling","productivity":12}]},{"id":"ar-porcelain","d":"architectural","section":"أرضيات وتكسيات","description":"بلاط بورسلين أرضيات مقاس كبير على لاصق مع الروبة","unit":"م²","components":[{"res":"tile_porcelain","qty":1,"waste":0.08},{"res":"tile_adhesive","qty":6},{"res":"grout","qty":0.3},{"res":"crew_tiling","productivity":12}]},{"id":"ar-marble","d":"architectural","section":"أرضيات وتكسيات","description":"رخام/جرانيت أرضيات ودرج مع الجلي","unit":"م²","components":[{"res":"marble","qty":1,"waste":0.12},{"res":"mortar","qty":0.03},{"res":"crew_marble","productivity":8}]},{"id":"ar-skirting","d":"architectural","section":"أرضيات وتكسيات","description":"وزرة (نعلة) ارتفاع 10 سم","unit":"م.ط","components":[{"res":"skirting","qty":1,"waste":0.05},{"res":"tile_adhesive","qty":0.6},{"res":"crew_tiling","productivity":45}]},{"id":"ar-gypsum","d":"architectural","section":"أسقف مستعارة","description":"سقف مستعار جبس بورد مع الهيكل المعدني والتشطيب","unit":"م²","components":[{"res":"gypsum_board_sys","qty":1,"waste":0.08},{"res":"crew_ceiling","productivity":20}]},{"id":"ar-ceiling-tiles","d":"architectural","section":"أسقف مستعارة","description":"سقف مستعار بلاطات 60×60 مع الهيكل المعلق","unit":"م²","components":[{"res":"ceiling_tiles_sys","qty":1,"waste":0.05},{"res":"crew_ceiling","productivity":35}]},{"id":"ar-roof-wp","d":"architectural","section":"عزل","description":"عزل مائي للأسطح ممبرين طبقتين مع البرايمر والرفرف","unit":"م²","components":[{"res":"wp_primer","qty":0.3},{"res":"membrane","qty":2.3,"waste":0.05},{"res":"crew_waterproof","productivity":60}]},{"id":"ar-roof-thermal","d":"architectural","section":"عزل","description":"عزل حراري XPS 5 سم للأسطح مع خرسانة الميول","unit":"م²","components":[{"res":"xps_board","qty":1,"waste":0.05},{"res":"screed","qty":0.08},{"res":"crew_waterproof","productivity":50}]},{"id":"ar-door-wood","d":"architectural","section":"أبواب ونوافذ","description":"باب خشب داخلي كامل مع الحلق والإكسسوارات توريد وتركيب","unit":"عدد","components":[{"res":"door_wood","qty":1},{"res":"crew_joinery","productivity":4}]},{"id":"ar-door-steel","d":"architectural","section":"أبواب ونوافذ","description":"باب حديد / مقاوم للحريق كامل توريد وتركيب","unit":"عدد","components":[{"res":"door_steel","qty":1},{"res":"crew_joinery","productivity":3}]},{"id":"ar-window","d":"architectural","section":"أبواب ونوافذ","description":"نوافذ ألمنيوم مع الزجاج المزدوج توريد وتركيب","unit":"م²","components":[{"res":"aluminium_window","qty":1}]},{"id":"el-light-point","d":"electrical","section":"تمديدات","description":"نقطة إنارة كاملة: مواسير + أسلاك 1.5 مم² + علبة + مفتاح","unit":"نقطة","components":[{"res":"conduit_20","qty":7,"waste":0.05},{"res":"wire_1_5","qty":22,"waste":0.05},{"res":"back_box","qty":1.5},{"res":"switch","qty":0.5},{"res":"crew_electrician","productivity":12}]},{"id":"el-socket-point","d":"electrical","section":"تمديدات","description":"نقطة بريزة 13 أمبير كاملة: مواسير + أسلاك 2.5 مم² + علبة + بريزة","unit":"نقطة","components":[{"res":"conduit_20","qty":7,"waste":0.05},{"res":"wire_2_5","qty":22,"waste":0.05},{"res":"back_box","qty":1},{"res":"socket","qty":1},{"res":"crew_electrician","productivity":10}]},{"id":"el-power-point","d":"electrical","section":"تمديدات","description":"نقطة باور (مكيف/سخان) أسلاك 4 مم² مع مفتاح عزل","unit":"نقطة","components":[{"res":"conduit_25","qty":10,"waste":0.05},{"res":"wire_4","qty":32,"waste":0.05},{"res":"isolator","qty":1},{"res":"crew_electrician","productivity":6}]},{"id":"el-data","d":"electrical","section":"تيار خفيف","description":"مخرج بيانات Cat6 كامل مع الكابل والمواسير","unit":"نقطة","components":[{"res":"data_outlet","qty":1},{"res":"conduit_20","qty":10},{"res":"crew_electrician","productivity":10}]},{"id":"el-fire-alarm","d":"electrical","section":"تيار خفيف","description":"جهاز إنذار حريق (كاشف/زر/جرس) مع التمديد","unit":"عدد","components":[{"res":"fire_alarm_device","qty":1},{"res":"conduit_20","qty":8},{"res":"crew_electrician","productivity":12}]},{"id":"el-luminaire","d":"electrical","section":"إنارة","description":"كشاف إنارة LED توريد وتركيب وتوصيل","unit":"عدد","components":[{"res":"luminaire_led","qty":1,"waste":0.01},{"res":"crew_electrician","productivity":16}]},{"id":"el-cable-16","d":"electrical","section":"كابلات ولوحات","description":"كابل نحاس 4×16 مم² XLPE سحب على حوامل/مواسير","unit":"م.ط","components":[{"res":"cable_4x16","qty":1,"waste":0.03},{"res":"crew_cable","productivity":100}]},{"id":"el-cable-50","d":"electrical","section":"كابلات ولوحات","description":"كابل نحاس 4×50 مم² XLPE سحب على حوامل","unit":"م.ط","components":[{"res":"cable_4x50","qty":1,"waste":0.03},{"res":"crew_cable","productivity":60}]},{"id":"el-tray","d":"electrical","section":"كابلات ولوحات","description":"حامل كابلات مجلفن عرض 300 مم مع الحوامل والأكواع","unit":"م.ط","components":[{"res":"cable_tray","qty":1,"waste":0.05},{"res":"crew_electrician","productivity":25}]},{"id":"el-db","d":"electrical","section":"كابلات ولوحات","description":"لوحة توزيع فرعية كاملة مع القواطع والتوصيل والاختبار","unit":"عدد","components":[{"res":"db_panel","qty":1},{"res":"cable_lugs","qty":1},{"res":"crew_electrician","productivity":1}]},{"id":"el-mdb","d":"electrical","section":"كابلات ولوحات","description":"لوحة توزيع رئيسية MDB توريد وتركيب واختبار","unit":"عدد","components":[{"res":"mdb_panel","qty":1},{"res":"cable_lugs","qty":4},{"res":"crew_electrician","productivity":0.25}]},{"id":"el-earth","d":"electrical","section":"تأريض","description":"حفرة تأريض كاملة مع القضيب والاختبار","unit":"عدد","components":[{"res":"earthing_pit","qty":1}]},{"id":"hv-split","d":"hvac","section":"وحدات","description":"وحدة سبليت 2 طن توريد وتركيب مع 5 م مواسير نحاس والتصريف","unit":"عدد","components":[{"res":"split_unit_2tr","qty":1},{"res":"copper_pair","qty":5,"waste":0.05},{"res":"drain_pipe_hvac","qty":5},{"res":"crew_hvac","productivity":2}]},{"id":"hv-package","d":"hvac","section":"وحدات","description":"وحدة باكدج 10 طن مع القاعدة ومانع الاهتزاز والرفع","unit":"عدد","components":[{"res":"package_unit_10tr","qty":1},{"res":"eq_crane","productivity":4},{"res":"crew_hvac","productivity":0.5}]},{"id":"hv-duct","d":"hvac","section":"مجاري هواء","description":"مجاري هواء صاج مجلفن مع العزل والحوامل (بالمساحة السطحية)","unit":"م²","components":[{"res":"gi_sheet","qty":1.15},{"res":"duct_insulation","qty":1.1},{"res":"duct_accessories","qty":1},{"res":"crew_duct","productivity":18}]},{"id":"hv-copper","d":"hvac","section":"مواسير","description":"مواسير نحاس للمبرد (زوج) معزولة إضافية","unit":"م.ط","components":[{"res":"copper_pair","qty":1,"waste":0.05},{"res":"crew_hvac","productivity":30}]},{"id":"hv-diffuser","d":"hvac","section":"مخارج هواء","description":"مخرج هواء (ديفيوزر/جريل) مع الوصلة المرنة","unit":"عدد","components":[{"res":"diffuser","qty":1},{"res":"crew_duct","productivity":14}]},{"id":"hv-exhaust","d":"hvac","section":"تهوية","description":"مروحة شفط (حمامات/مطابخ) مع التوصيل","unit":"عدد","components":[{"res":"exhaust_fan","qty":1},{"res":"crew_hvac","productivity":6}]},{"id":"hv-tab","d":"hvac","section":"اختبار وتشغيل","description":"الاختبار والموازنة والتشغيل TAB لكل طن تبريد","unit":"طن تبريد","components":[{"res":"tab_hvac","qty":1}]},{"id":"pl-water-point","d":"plumbing_fire","section":"تغذية مياه","description":"نقطة تغذية مياه (بارد/حار) PPR كاملة مع المحبس","unit":"نقطة","components":[{"res":"ppr_20","qty":6,"waste":0.05},{"res":"valve_small","qty":1},{"res":"crew_plumber","productivity":8}]},{"id":"pl-drain-point","d":"plumbing_fire","section":"صرف","description":"نقطة صرف uPVC كاملة مع القطع والتهوية","unit":"نقطة","components":[{"res":"upvc_drain","qty":4,"waste":0.05},{"res":"crew_plumber","productivity":8}]},{"id":"pl-floor-drain","d":"plumbing_fire","section":"صرف","description":"صفاية أرضية مع الوصلة","unit":"عدد","components":[{"res":"floor_drain","qty":1},{"res":"upvc_drain","qty":2},{"res":"crew_plumber","productivity":10}]},{"id":"pl-wc","d":"plumbing_fire","section":"أدوات صحية","description":"مرحاض كامل مع الخلاط والشطاف توريد وتركيب","unit":"عدد","components":[{"res":"wc_set","qty":1},{"res":"crew_plumber","productivity":5}]},{"id":"pl-basin","d":"plumbing_fire","section":"أدوات صحية","description":"مغسلة كاملة مع الخلاط توريد وتركيب","unit":"عدد","components":[{"res":"basin_set","qty":1},{"res":"crew_plumber","productivity":6}]},{"id":"pl-heater","d":"plumbing_fire","section":"أدوات صحية","description":"سخان مياه توريد وتركيب مع المحابس","unit":"عدد","components":[{"res":"water_heater","qty":1},{"res":"valve_small","qty":2},{"res":"crew_plumber","productivity":6}]},{"id":"pl-fire-pipe","d":"plumbing_fire","section":"مكافحة حريق","description":"مواسير حديد أسود لشبكة الحريق مع القطع والحوامل والدهان","unit":"م.ط","components":[{"res":"black_steel_pipe","qty":1,"waste":0.05},{"res":"crew_fire","productivity":20}]},{"id":"pl-sprinkler","d":"plumbing_fire","section":"مكافحة حريق","description":"رشاش حريق مع الوصلة المرنة/الفرعية","unit":"عدد","components":[{"res":"sprinkler_head","qty":1},{"res":"crew_fire","productivity":25}]},{"id":"pl-fhc","d":"plumbing_fire","section":"مكافحة حريق","description":"صندوق حريق كامل مع البكرة والطفاية","unit":"عدد","components":[{"res":"fire_hose_cabinet","qty":1},{"res":"fire_extinguisher","qty":1},{"res":"crew_fire","productivity":3}]},{"id":"wn-hc-water","d":"water_networks","section":"توصيلات","description":"توصيلة منزلية مياه قطر 32 مم بطول حتى 10 م شاملة صندوق العداد","unit":"عدد","components":[{"res":"water_hc_kit","qty":1},{"res":"crew_plumber","productivity":5},{"res":"asphalt_patch","qty":2.5}]},{"id":"wn-valve-400","d":"water_networks","section":"محابس وغرف","description":"محبس بوابي قطر 400 مم داخل غرفة خرسانية شاملة الغطاء D400","unit":"عدد","components":[{"res":"gate_valve_400","qty":1},{"res":"valve_chamber","qty":1},{"res":"crew_plumber","productivity":1.5}]},{"id":"wn-manhole","d":"water_networks","section":"محابس وغرف","description":"غرفة تفتيش صرف مسبقة الصب حتى 3 م شاملة الحفر والردم والغطاء","unit":"عدد","components":[{"res":"manhole_precast","qty":1},{"res":"eq_excavator","productivity":2},{"res":"eq_crane","productivity":3},{"res":"crew_general","productivity":2}]},{"id":"rd-subgrade","d":"roads","section":"أعمال ترابية","description":"تجهيز ودمك طبقة التأسيس (Subgrade) 95%","unit":"م²","components":[{"res":"water_compaction","qty":0.02},{"res":"eq_grader","productivity":2500},{"res":"eq_roller","productivity":2000},{"res":"crew_roads","productivity":2000}]},{"id":"rd-subbase","d":"roads","section":"طبقات","description":"طبقة تحت الأساس (Subbase) فرد ودمك","unit":"م³","components":[{"res":"subbase","qty":1.3},{"res":"eq_grader","productivity":400},{"res":"eq_roller","productivity":350},{"res":"crew_roads","productivity":350}]},{"id":"rd-base","d":"roads","section":"طبقات","description":"طبقة أساس مكسرة (Base course) فرد ودمك","unit":"م³","components":[{"res":"basecourse","qty":1.3},{"res":"eq_grader","productivity":350},{"res":"eq_roller","productivity":300},{"res":"crew_roads","productivity":300}]},{"id":"rd-prime","d":"roads","section":"أسفلت","description":"طبقة تشريب MC-70","unit":"م²","components":[{"res":"prime_coat","qty":1.0,"waste":0.05},{"res":"crew_roads","productivity":4000}]},{"id":"rd-asphalt","d":"roads","section":"أسفلت","description":"طبقة أسفلت سطحية سماكة 5 سم (≈ 0.12 طن/م²)","unit":"م²","components":[{"res":"asphalt_wearing","qty":0.12,"waste":0.03}]},{"id":"rd-kerb","d":"roads","section":"بردورات وأرصفة","description":"بردورة خرسانية مسبقة الصب على قاعدة خرسانية","unit":"م.ط","components":[{"res":"kerb_precast","qty":1,"waste":0.03},{"res":"concrete_c15","qty":0.04},{"res":"crew_roads","productivity":60}]},{"id":"rd-interlock","d":"roads","section":"بردورات وأرصفة","description":"بلاط متداخل (إنترلوك) 8 سم على فرشة رملية","unit":"م²","components":[{"res":"interlock","qty":1,"waste":0.05},{"res":"sand_bedding","qty":0.05},{"res":"crew_roads","productivity":60}]},{"id":"rd-marking","d":"roads","section":"علامات","description":"دهانات طرق حرارية","unit":"م²","components":[{"res":"road_marking","qty":1}]}],"checks":[{"kind":"ratio","num":["st-rebar"],"den":["st-footing","st-column","st-slab"],"factor":1000,"min":80,"max":160,"label":"نسبة حديد التسليح إلى الخرسانة المسلحة","unit":"كجم/م³"},{"kind":"requires","if":["el-light-point","el-socket-point","el-power-point"],"then":["el-db","el-mdb"],"msg":"توجد نقاط كهرباء بدون لوحات توزيع — تأكد أن اللوحات مسعّرة (أو موردة من المالك)."},{"kind":"requires","if":["el-db","el-mdb"],"then":["el-earth"],"msg":"توجد لوحات بدون نظام تأريض — تأكد من تسعير التأريض."},{"kind":"requires","if":["hv-split","hv-package"],"then":["hv-tab"],"msg":"توجد وحدات تكييف بدون بند الاختبار والموازنة والتشغيل."},{"kind":"requires","if":["hv-package"],"then":["hv-duct","hv-diffuser"],"msg":"وحدات باكدج بدون مجاري هواء أو مخارج — تأكد من نطاق التوزيع."},{"kind":"requires","if":["pl-wc","pl-basin"],"then":["pl-water-point","pl-drain-point"],"msg":"أدوات صحية بدون نقاط تغذية/صرف — تأكد من تسعير التمديدات."},{"kind":"requires","if":["pl-sprinkler"],"then":["pl-fire-pipe"],"msg":"رشاشات حريق بدون شبكة مواسير."},{"kind":"requires","if":["ar-block20","ar-block15"],"then":["ar-plaster"],"msg":"مباني بلوك بدون لياسة — تأكد أن اللياسة مسعّرة أو غير مطلوبة."},{"kind":"requires","if":["ar-plaster"],"then":["ar-paint-int","ar-ceramic-wall"],"msg":"لياسة داخلية بدون دهان أو تكسية."},{"kind":"requires","if":["rd-asphalt"],"then":["rd-prime"],"msg":"طبقة أسفلت بدون طبقة تشريب."},{"kind":"requires","if":["st-footing","st-column","st-slab"],"then":["st-rebar"],"msg":"خرسانة مسلحة بدون بند حديد تسليح — تأكد أن الحديد مسعّر (البنود هنا بدون الحديد)."}]}/*LIB-END*/;
+const EXAMPLES = /*EX*/{"electromechanical":{"_note":"مثال توضيحي فقط — الكميات والأسعار افتراضية لتوضيح طريقة الإدخال ويجب استبدالها بعروض موردين وسجلات الشركة.","project":{"name":"مثال: أعمال الإلكتروميكانيك لمبنى إداري (أرضي + 3 أدوار)","type":"electromechanical","location":"جدة","currency":"ر.س","duration_months":8,"vat_rate":0.15,"working_days_per_month":26,"area_m2":3200},"resources":{"conduit_20":{"name":"ماسورة PVC 20 مم مع الملحقات","type":"material","unit":"م.ط","group":"conduits","rate":3.2},"wire_1_5":{"name":"سلك نحاس 1.5 مم²","type":"material","unit":"م.ط","group":"wires","rate":1.1},"back_box":{"name":"علبة كهرباء","type":"material","unit":"عدد","group":"wiring_devices","rate":4},"switch":{"name":"مفتاح إنارة","type":"material","unit":"عدد","group":"wiring_devices","rate":18},"crew_electrician":{"name":"فرقة كهربائيين","type":"labor","unit":"يوم","group":"labor","rate":1100},"wire_2_5":{"name":"سلك نحاس 2.5 مم²","type":"material","unit":"م.ط","group":"wires","rate":1.7},"socket":{"name":"بريزة 13 أمبير","type":"material","unit":"عدد","group":"wiring_devices","rate":22},"conduit_25":{"name":"ماسورة PVC 25 مم مع الملحقات","type":"material","unit":"م.ط","group":"conduits","rate":4.5},"wire_4":{"name":"سلك نحاس 4 مم²","type":"material","unit":"م.ط","group":"wires","rate":2.7},"isolator":{"name":"مفتاح عزل (مكيف/سخان)","type":"material","unit":"عدد","group":"wiring_devices","rate":65},"data_outlet":{"name":"مخرج بيانات Cat6 مع الكابل","type":"material","unit":"عدد","group":"low_current","rate":140},"fire_alarm_device":{"name":"كاشف/جهاز إنذار حريق مع التمديد","type":"material","unit":"عدد","group":"low_current","rate":230},"luminaire_led":{"name":"كشاف LED","type":"material","unit":"عدد","group":"lighting","rate":165},"cable_4x16":{"name":"كابل نحاس 4×16 مم² XLPE","type":"material","unit":"م.ط","group":"cables","rate":78},"crew_cable":{"name":"فرقة سحب كابلات","type":"labor","unit":"يوم","group":"labor","rate":900},"cable_4x50":{"name":"كابل نحاس 4×50 مم² XLPE","type":"material","unit":"م.ط","group":"cables","rate":215},"cable_tray":{"name":"حامل كابلات مجلفن مع الحوامل","type":"material","unit":"م.ط","group":"cables","rate":95},"db_panel":{"name":"لوحة توزيع فرعية مع القواطع","type":"material","unit":"عدد","group":"panels","rate":4200},"cable_lugs":{"name":"أطراف وجلاندات كابلات","type":"material","unit":"مجموعة","group":"cables","rate":220},"mdb_panel":{"name":"لوحة توزيع رئيسية MDB","type":"material","unit":"عدد","group":"panels","rate":48000},"earthing_pit":{"name":"حفرة تأريض كاملة (باطن)","type":"subcontract","unit":"عدد","group":"earthing","rate":1800},"split_unit_2tr":{"name":"وحدة سبليت 2 طن","type":"material","unit":"عدد","group":"hvac_units","rate":3300},"copper_pair":{"name":"مواسير نحاس للمبرد (زوج) مع العزل","type":"material","unit":"م.ط","group":"hvac_piping","rate":55},"drain_pipe_hvac":{"name":"ماسورة تصريف مكثف","type":"material","unit":"م.ط","group":"hvac_piping","rate":6},"crew_hvac":{"name":"فرقة فنيي تكييف","type":"labor","unit":"يوم","group":"labor","rate":1300},"package_unit_10tr":{"name":"وحدة باكدج 10 طن","type":"material","unit":"عدد","group":"hvac_units","rate":38000},"eq_crane":{"name":"رافعة","type":"equipment","unit":"يوم","group":"equipment","rate":2500},"gi_sheet":{"name":"صاج مجلفن لمجاري الهواء","type":"material","unit":"م²","group":"ductwork","rate":42},"duct_insulation":{"name":"عزل مجاري الهواء","type":"material","unit":"م²","group":"ductwork","rate":24},"duct_accessories":{"name":"حوامل وفلنجات ومواد لحام مجاري","type":"material","unit":"م²","group":"ductwork","rate":14},"crew_duct":{"name":"فرقة مجاري هواء","type":"labor","unit":"يوم","group":"labor","rate":1150},"diffuser":{"name":"مخرج هواء (ديفيوزر/جريل)","type":"material","unit":"عدد","group":"air_outlets","rate":160},"exhaust_fan":{"name":"مروحة شفط","type":"material","unit":"عدد","group":"fans","rate":320},"tab_hvac":{"name":"الاختبار والموازنة TAB (باطن)","type":"subcontract","unit":"طن تبريد","group":"testing","rate":120},"ppr_20":{"name":"ماسورة PPR 20–25 مم مع القطع","type":"material","unit":"م.ط","group":"plumbing_pipes","rate":9},"valve_small":{"name":"محبس زاوية/كروي صغير","type":"material","unit":"عدد","group":"plumbing_fittings","rate":35},"crew_plumber":{"name":"فرقة سباكين","type":"labor","unit":"يوم","group":"labor","rate":1000},"upvc_drain":{"name":"ماسورة صرف uPVC 50–110 مم مع القطع","type":"material","unit":"م.ط","group":"plumbing_pipes","rate":18},"floor_drain":{"name":"صفاية أرضية","type":"material","unit":"عدد","group":"plumbing_fittings","rate":55},"wc_set":{"name":"طقم مرحاض كامل مع الخلاط","type":"material","unit":"عدد","group":"sanitary","rate":850},"basin_set":{"name":"مغسلة كاملة مع الخلاط","type":"material","unit":"عدد","group":"sanitary","rate":620},"water_heater":{"name":"سخان مياه 50–80 لتر","type":"material","unit":"عدد","group":"sanitary","rate":780},"black_steel_pipe":{"name":"ماسورة حديد أسود (حريق) مع القطع والدهان","type":"material","unit":"م.ط","group":"fire_pipes","rate":95},"crew_fire":{"name":"فرقة أنظمة حريق","type":"labor","unit":"يوم","group":"labor","rate":1100},"sprinkler_head":{"name":"رشاش حريق مع الوصلة","type":"material","unit":"عدد","group":"fire_devices","rate":48},"fire_hose_cabinet":{"name":"صندوق حريق كامل","type":"material","unit":"عدد","group":"fire_devices","rate":2400},"fire_extinguisher":{"name":"طفاية حريق","type":"material","unit":"عدد","group":"fire_devices","rate":180}},"boq":[{"code":"EL-01","template":"el-light-point","section":"تمديدات","description":"نقطة إنارة كاملة: مواسير + أسلاك 1.5 مم² + علبة + مفتاح","unit":"نقطة","qty":420,"components":[{"res":"conduit_20","qty":7,"waste":0.05},{"res":"wire_1_5","qty":22,"waste":0.05},{"res":"back_box","qty":1.5},{"res":"switch","qty":0.5},{"res":"crew_electrician","productivity":12}]},{"code":"EL-02","template":"el-socket-point","section":"تمديدات","description":"نقطة بريزة 13 أمبير كاملة: مواسير + أسلاك 2.5 مم² + علبة + بريزة","unit":"نقطة","qty":380,"components":[{"res":"conduit_20","qty":7,"waste":0.05},{"res":"wire_2_5","qty":22,"waste":0.05},{"res":"back_box","qty":1},{"res":"socket","qty":1},{"res":"crew_electrician","productivity":10}]},{"code":"EL-03","template":"el-power-point","section":"تمديدات","description":"نقطة باور (مكيف/سخان) أسلاك 4 مم² مع مفتاح عزل","unit":"نقطة","qty":60,"components":[{"res":"conduit_25","qty":10,"waste":0.05},{"res":"wire_4","qty":32,"waste":0.05},{"res":"isolator","qty":1},{"res":"crew_electrician","productivity":6}]},{"code":"EL-04","template":"el-data","section":"تيار خفيف","description":"مخرج بيانات Cat6 كامل مع الكابل والمواسير","unit":"نقطة","qty":150,"components":[{"res":"data_outlet","qty":1},{"res":"conduit_20","qty":10},{"res":"crew_electrician","productivity":10}]},{"code":"EL-05","template":"el-fire-alarm","section":"تيار خفيف","description":"جهاز إنذار حريق (كاشف/زر/جرس) مع التمديد","unit":"عدد","qty":140,"components":[{"res":"fire_alarm_device","qty":1},{"res":"conduit_20","qty":8},{"res":"crew_electrician","productivity":12}]},{"code":"EL-06","template":"el-luminaire","section":"إنارة","description":"كشاف إنارة LED توريد وتركيب وتوصيل","unit":"عدد","qty":520,"components":[{"res":"luminaire_led","qty":1,"waste":0.01},{"res":"crew_electrician","productivity":16}]},{"code":"EL-07","template":"el-cable-16","section":"كابلات ولوحات","description":"كابل نحاس 4×16 مم² XLPE سحب على حوامل/مواسير","unit":"م.ط","qty":900,"components":[{"res":"cable_4x16","qty":1,"waste":0.03},{"res":"crew_cable","productivity":100}]},{"code":"EL-08","template":"el-cable-50","section":"كابلات ولوحات","description":"كابل نحاس 4×50 مم² XLPE سحب على حوامل","unit":"م.ط","qty":260,"components":[{"res":"cable_4x50","qty":1,"waste":0.03},{"res":"crew_cable","productivity":60}]},{"code":"EL-09","template":"el-tray","section":"كابلات ولوحات","description":"حامل كابلات مجلفن عرض 300 مم مع الحوامل والأكواع","unit":"م.ط","qty":350,"components":[{"res":"cable_tray","qty":1,"waste":0.05},{"res":"crew_electrician","productivity":25}]},{"code":"EL-10","template":"el-db","section":"كابلات ولوحات","description":"لوحة توزيع فرعية كاملة مع القواطع والتوصيل والاختبار","unit":"عدد","qty":8,"components":[{"res":"db_panel","qty":1},{"res":"cable_lugs","qty":1},{"res":"crew_electrician","productivity":1}]},{"code":"EL-11","template":"el-mdb","section":"كابلات ولوحات","description":"لوحة توزيع رئيسية MDB توريد وتركيب واختبار","unit":"عدد","qty":1,"components":[{"res":"mdb_panel","qty":1},{"res":"cable_lugs","qty":4},{"res":"crew_electrician","productivity":0.25}]},{"code":"EL-12","template":"el-earth","section":"تأريض","description":"حفرة تأريض كاملة مع القضيب والاختبار","unit":"عدد","qty":3,"components":[{"res":"earthing_pit","qty":1}]},{"code":"HV-01","template":"hv-split","section":"وحدات","description":"وحدة سبليت 2 طن توريد وتركيب مع 5 م مواسير نحاس والتصريف","unit":"عدد","qty":12,"components":[{"res":"split_unit_2tr","qty":1},{"res":"copper_pair","qty":5,"waste":0.05},{"res":"drain_pipe_hvac","qty":5},{"res":"crew_hvac","productivity":2}]},{"code":"HV-02","template":"hv-package","section":"وحدات","description":"وحدة باكدج 10 طن مع القاعدة ومانع الاهتزاز والرفع","unit":"عدد","qty":8,"components":[{"res":"package_unit_10tr","qty":1},{"res":"eq_crane","productivity":4},{"res":"crew_hvac","productivity":0.5}]},{"code":"HV-03","template":"hv-duct","section":"مجاري هواء","description":"مجاري هواء صاج مجلفن مع العزل والحوامل (بالمساحة السطحية)","unit":"م²","qty":2400,"components":[{"res":"gi_sheet","qty":1.15},{"res":"duct_insulation","qty":1.1},{"res":"duct_accessories","qty":1},{"res":"crew_duct","productivity":18}]},{"code":"HV-04","template":"hv-copper","section":"مواسير","description":"مواسير نحاس للمبرد (زوج) معزولة إضافية","unit":"م.ط","qty":120,"components":[{"res":"copper_pair","qty":1,"waste":0.05},{"res":"crew_hvac","productivity":30}]},{"code":"HV-05","template":"hv-diffuser","section":"مخارج هواء","description":"مخرج هواء (ديفيوزر/جريل) مع الوصلة المرنة","unit":"عدد","qty":260,"components":[{"res":"diffuser","qty":1},{"res":"crew_duct","productivity":14}]},{"code":"HV-06","template":"hv-exhaust","section":"تهوية","description":"مروحة شفط (حمامات/مطابخ) مع التوصيل","unit":"عدد","qty":24,"components":[{"res":"exhaust_fan","qty":1},{"res":"crew_hvac","productivity":6}]},{"code":"HV-07","template":"hv-tab","section":"اختبار وتشغيل","description":"الاختبار والموازنة والتشغيل TAB لكل طن تبريد","unit":"طن تبريد","qty":104,"components":[{"res":"tab_hvac","qty":1}]},{"code":"PL-01","template":"pl-water-point","section":"تغذية مياه","description":"نقطة تغذية مياه (بارد/حار) PPR كاملة مع المحبس","unit":"نقطة","qty":96,"components":[{"res":"ppr_20","qty":6,"waste":0.05},{"res":"valve_small","qty":1},{"res":"crew_plumber","productivity":8}]},{"code":"PL-02","template":"pl-drain-point","section":"صرف","description":"نقطة صرف uPVC كاملة مع القطع والتهوية","unit":"نقطة","qty":88,"components":[{"res":"upvc_drain","qty":4,"waste":0.05},{"res":"crew_plumber","productivity":8}]},{"code":"PL-03","template":"pl-floor-drain","section":"صرف","description":"صفاية أرضية مع الوصلة","unit":"عدد","qty":32,"components":[{"res":"floor_drain","qty":1},{"res":"upvc_drain","qty":2},{"res":"crew_plumber","productivity":10}]},{"code":"PL-04","template":"pl-wc","section":"أدوات صحية","description":"مرحاض كامل مع الخلاط والشطاف توريد وتركيب","unit":"عدد","qty":28,"components":[{"res":"wc_set","qty":1},{"res":"crew_plumber","productivity":5}]},{"code":"PL-05","template":"pl-basin","section":"أدوات صحية","description":"مغسلة كاملة مع الخلاط توريد وتركيب","unit":"عدد","qty":30,"components":[{"res":"basin_set","qty":1},{"res":"crew_plumber","productivity":6}]},{"code":"PL-06","template":"pl-heater","section":"أدوات صحية","description":"سخان مياه توريد وتركيب مع المحابس","unit":"عدد","qty":10,"components":[{"res":"water_heater","qty":1},{"res":"valve_small","qty":2},{"res":"crew_plumber","productivity":6}]},{"code":"PL-07","template":"pl-fire-pipe","section":"مكافحة حريق","description":"مواسير حديد أسود لشبكة الحريق مع القطع والحوامل والدهان","unit":"م.ط","qty":1100,"components":[{"res":"black_steel_pipe","qty":1,"waste":0.05},{"res":"crew_fire","productivity":20}]},{"code":"PL-08","template":"pl-sprinkler","section":"مكافحة حريق","description":"رشاش حريق مع الوصلة المرنة/الفرعية","unit":"عدد","qty":520,"components":[{"res":"sprinkler_head","qty":1},{"res":"crew_fire","productivity":25}]},{"code":"PL-09","template":"pl-fhc","section":"مكافحة حريق","description":"صندوق حريق كامل مع البكرة والطفاية","unit":"عدد","qty":12,"components":[{"res":"fire_hose_cabinet","qty":1},{"res":"fire_extinguisher","qty":1},{"res":"crew_fire","productivity":3}]}],"site_overheads":[{"name":"مدير مشروع MEP (ربع تفرغ)","count":0.25,"monthly_cost":30000},{"name":"مهندس كهرباء (نصف تفرغ)","count":0.5,"monthly_cost":16000},{"name":"مهندس ميكانيكا (نصف تفرغ)","count":0.5,"monthly_cost":16000},{"name":"مسؤول سلامة (ربع تفرغ)","count":0.25,"monthly_cost":8000},{"name":"سيارة موقع","count":1,"monthly_cost":3500},{"name":"مخططات تنفيذية وحسب التنفيذ","lump_sum":25000},{"name":"اختبارات وتشغيل وتسليم","lump_sum":25000}],"markups":{"head_office":0.05,"finance":0.01,"bonds_insurance":0.01,"contingency":0.03,"profit":0.08}},"water_networks":{"_note":"مثال توضيحي فقط — كل الأسعار والإنتاجيات افتراضية لتوضيح طريقة الإدخال ويجب استبدالها بعروض موردين وسجلات الشركة.","project":{"name":"مثال: إحلال شبكة مياه وتوصيلات منزلية لحي سكني","type":"water_networks","location":"الرياض","currency":"ر.س","duration_months":8,"vat_rate":0.15,"working_days_per_month":26},"design":{"min_cover_m":1.0},"rates":{"excavation_m3":{"type":"equipment","key":"excavation","rate":14},"rock_excavation_m3":{"type":"equipment","key":"excavation","rate":65},"bedding_m3":{"type":"material","key":"sand","rate":55},"surround_m3":{"type":"material","key":"sand","rate":60},"backfill_m3":{"type":"equipment","key":"backfill","rate":12},"disposal_m3":{"type":"equipment","key":"disposal","rate":18},"shoring_m2":{"type":"equipment","key":"shoring","rate":22},"asphalt_m2":{"type":"subcontract","key":"asphalt","rate":70},"dewatering_m":{"type":"subcontract","key":"dewatering","rate":40},"testing_m":{"type":"subcontract","key":"testing","rate":6},"tape_m":{"type":"material","key":"sundries","rate":1.5}},"pipelines":[{"code":"W-01","description":"توريد وتمديد واختبار أنابيب HDPE PE100 SDR11 قطر 160 مم شاملاً الحفر والردم وإعادة الأسفلت","material":"HDPE","dn_mm":160,"od_m":0.16,"length_m":9500,"cover_m":1.2,"surface":"asphalt","rock_ratio":0.0,"ground_water":false,"pipe_rate_per_m":48,"fittings_allowance":0.08,"lay_crew_daily_cost":1450,"lay_equipment_daily_cost":450,"lay_productivity_m_day":220,"crews":2,"productivity_factors":[{"name":"العمل داخل حي مأهول","factor":0.75}]},{"code":"W-02","description":"توريد وتمديد واختبار أنابيب حديد دكتايل K9 قطر 400 مم شاملاً الحفر والتدعيم والردم وإعادة الأسفلت","material":"DI","dn_mm":400,"od_m":0.429,"length_m":2200,"cover_m":1.5,"surface":"asphalt","rock_ratio":0.15,"ground_water":false,"pipe_rate_per_m":520,"fittings_allowance":0.1,"lay_crew_daily_cost":1900,"lay_equipment_daily_cost":1600,"lay_productivity_m_day":60,"crews":1,"productivity_factors":[{"name":"العمل داخل حي مأهول","factor":0.8}]}],"boq":[{"code":"HC-01","description":"توصيلة منزلية مياه قطر 32 مم بطول حتى 10 م شاملة صندوق العداد","unit":"عدد","qty":1400,"components":[{"type":"material","name":"سرج + محبس + أنبوب + صندوق عداد","key":"fittings","qty":1,"rate":340},{"type":"labor","name":"فني + عاملان","key":"labor","daily_cost":750,"productivity":5},{"type":"subcontract","name":"إعادة أسفلت/بلاط موضعي","key":"asphalt","qty":2.5,"rate":70}]},{"code":"V-01","description":"محبس بوابي قطر 400 مم داخل غرفة خرسانية شاملة الغطاء D400","unit":"عدد","qty":18,"components":[{"type":"material","name":"محبس بوابي DN400","key":"valves","qty":1,"rate":9800},{"type":"subcontract","name":"غرفة محبس خرسانية مع الغطاء","key":"chambers","qty":1,"rate":7500},{"type":"labor","name":"فرقة تركيب","key":"labor","daily_cost":1900,"productivity":1.5}]}],"site_overheads":[{"name":"مدير مشروع","count":1,"monthly_cost":28000},{"name":"مهندس موقع","count":2,"monthly_cost":15000},{"name":"مساح + معدات مساحة","count":1,"monthly_cost":11000},{"name":"مسؤول سلامة","count":1,"monthly_cost":9000},{"name":"مسؤول جودة","count":1,"monthly_cost":10000},{"name":"سيارات الموقع","count":3,"monthly_cost":3500},{"name":"مكتب ومستودع الموقع","count":1,"monthly_cost":9000},{"name":"إدارة المرور والحواجز واللوحات","count":1,"monthly_cost":12000},{"name":"التعبئة والتسريح","lump_sum":60000},{"name":"مخططات حسب التنفيذ وبيانات GIS","lump_sum":45000},{"name":"رسوم وتصاريح الحفر (يُتحقق من مسؤوليتها)","lump_sum":50000}],"markups":{"head_office":0.05,"finance":0.015,"bonds_insurance":0.012,"contingency":0.04,"profit":0.08}}}/*EX-END*/;
 
-/* ===================== Engine (mirrors water_assemblies.py + pricing_calc.py) ===================== */
+/* ===================== Engine (mirrors build_project.py + water_assemblies.py + pricing_calc.py) ===================== */
 const TYPES = {material:"مواد",labor:"عمالة",equipment:"معدات",subcontract:"مقاول باطن"};
 const MARKUPS = {head_office:"المصاريف العامة للشركة",finance:"تكلفة التمويل",bonds_insurance:"الضمانات البنكية والتأمين",contingency:"المخاطر والطوارئ"};
 const DEFAULT_DESIGN = {min_width_m:0.60,clearance_small_m:0.20,clearance_large_m:0.30,bedding_m:0.15,surround_above_m:0.30,min_cover_m:1.00,shoring_depth_m:1.50,deep_trench_m:4.00,bulking:1.25,asphalt_overlap_m:0.30,pipe_waste:0.02};
@@ -163,16 +128,15 @@ const RATE_KEYS = {excavation_m3:"حفر خندق (م³)",rock_excavation_m3:"ح
 const NORMS = [["HDPE",0,160,150,300],["HDPE",161,400,80,150],["DI",0,300,80,150],["DI",301,600,40,80],["DI",601,1200,20,40],["GRP",301,600,40,80],["GRP",601,1600,20,40],["UPVC",0,400,50,100]];
 const FLEXIBLE = new Set(["HDPE","GRP","UPVC","PVC"]);
 const r4 = x => Math.round(x*1e4)/1e4, r3 = x => Math.round(x*1e3)/1e3, r2 = x => Math.round(x*100)/100;
+const TPL = Object.fromEntries(LIBRARY.templates.map(t=>[t.id,t]));
 
 function geometry(p,d){
-  const od=+p.od_m, clearance = (+p.dn_mm<=300)?d.clearance_small_m:d.clearance_large_m;
-  const width=Math.max(d.min_width_m, od+2*clearance), depth=(+p.cover_m)+od+d.bedding_m;
+  const od=+p.od_m, clearance=(+p.dn_mm<=300)?d.clearance_small_m:d.clearance_large_m;
+  const width=Math.max(d.min_width_m,od+2*clearance), depth=(+p.cover_m)+od+d.bedding_m;
   const pipeA=Math.PI*od*od/4, exc=width*depth, bed=width*d.bedding_m, sur=width*(od+d.surround_above_m)-pipeA;
-  const backfill=exc-bed-sur-pipeA, imp=p.import_backfill?backfill:0;
-  const rock=exc*(+p.rock_ratio||0);
-  return {width,depth,excavation:exc-rock,rock,bedding:bed,surround:sur,backfill,
-    disposal:(pipeA+bed+sur+imp)*d.bulking, shoring: depth>d.shoring_depth_m?2*depth:0,
-    asphalt: p.surface==="asphalt"? width+2*d.asphalt_overlap_m:0};
+  const backfill=exc-bed-sur-pipeA, imp=p.import_backfill?backfill:0, rock=exc*(+p.rock_ratio||0);
+  return {width,depth,excavation:exc-rock,rock,bedding:bed,surround:sur,backfill,disposal:(pipeA+bed+sur+imp)*d.bulking,
+    shoring:depth>d.shoring_depth_m?2*depth:0, asphalt:p.surface==="asphalt"?width+2*d.asphalt_overlap_m:0};
 }
 function prodFactor(p){return (p.productivity_factors||[]).reduce((a,f)=>a*(+f.factor||1),1);}
 function buildPipeItem(p,rates,d,missing){
@@ -187,7 +151,7 @@ function buildPipeItem(p,rates,d,missing){
     if(q<=0) continue;
     const r=rates[k]; comps.push({type:r.type||"subcontract",name,key:r.key||k,qty:r4(q),rate:+r.rate});
   }
-  return {item:{code:p.code,description:p.description,unit:"م.ط",qty:+p.length_m,components:comps},g,f};
+  return {item:{code:p.code,description:p.description,unit:"م.ط",qty:+p.length_m,components:comps,section:"خطوط",discipline:"water_networks"},g,f};
 }
 function pipeChecks(p,g,d,f,proj){
   const w=[], mat=String(p.material).toUpperCase();
@@ -202,13 +166,40 @@ function pipeChecks(p,g,d,f,proj){
   if(avail && days>avail*0.7) w.push(`مدة التمديد ${days.toFixed(0)} يوم عمل بـ ${crews} فرقة تتجاوز 70% من المدة المتاحة (${avail} يوم) — زِد الفرق وحمّل تكلفتها أو راجع البرنامج.`);
   return {w,days,crews};
 }
-function expand(src){
-  const d={...DEFAULT_DESIGN,...(src.design||{})}, rates=src.rates||{}, missing=new Set(), gen=[], geo=[];
-  for(const p of (src.pipelines||[])){const {item,g,f}=buildPipeItem(p,rates,d,missing); gen.push(item); geo.push({p,g,f,...pipeChecks(p,g,d,f,src.project)});}
-  return {priced:{project:src.project,boq:[...gen,...(src.boq||[])],site_overheads:src.site_overheads||[],markups:src.markups||{}},geo,missing:[...missing].sort(),design:d};
+function resInfo(key){ return {...(LIBRARY.resources[key]||{}),...((S.resources||{})[key]||{})}; }
+function resolveComp(c,code,missing){
+  if(!("res" in c)) return {...c};
+  const r=resInfo(c.res), rate=r.rate;
+  if(typeof rate!=="number"||!Number.isFinite(rate)||!r.type){ missing.add(`${c.res} — ${r.name||"مورد غير معرّف"} (${r.unit||""}) [البند ${code}]`); return null; }
+  const o={type:r.type,name:c.name||r.name||c.res,key:r.group||c.res};
+  if("productivity" in c){o.daily_cost=rate;o.productivity=c.productivity;} else {o.qty=c.qty;o.rate=rate;}
+  if(+c.waste) o.waste=c.waste;
+  return o;
 }
-function compCost(c){ const base = ("productivity" in c) ? (c.productivity>0? c.daily_cost/c.productivity : NaN) : c.qty*c.rate; return base*(1+(+c.waste||0)); }
-function itemUnit(item,ov){ const b={material:0,labor:0,equipment:0,subcontract:0}; for(const c of item.components||[]){ let x=compCost(c); if(ov && c.key in ov) x*=1+ov[c.key]; b[c.type]=(b[c.type]||0)+x; } return {unit:Object.values(b).reduce((a,v)=>a+v,0),b}; }
+function disciplineOf(it){ return it.discipline || (TPL[it.template]||{}).d || "other"; }
+function libChecks(items){
+  const q={}; for(const it of items) if(it.template) q[it.template]=(q[it.template]||0)+(+it.qty||0);
+  const present=new Set(Object.keys(q).filter(k=>q[k]>0)), out=[];
+  for(const c of LIBRARY.checks||[]){
+    if(c.kind==="ratio"){ const num=c.num.reduce((a,i)=>a+(q[i]||0),0), den=c.den.reduce((a,i)=>a+(q[i]||0),0);
+      if(num&&den){const v=num/den*(c.factor||1); if(!(v>=c.min&&v<=c.max)) out.push(`${c.label} = ${v.toFixed(0)} ${c.unit} خارج النطاق الإرشادي ${c.min}–${c.max}.`);} }
+    else if(c.kind==="requires"){ if(c.if.some(i=>present.has(i)) && !c.then.some(i=>present.has(i))) out.push(c.msg); }
+  }
+  return out;
+}
+function expand(src){
+  const d={...DEFAULT_DESIGN,...(src.design||{})}, missing=new Set(), items=[], dropped=[], geo=[], pipes=[];
+  for(const it of (src.boq||[])){
+    if(!+it.qty){dropped.push(it.code);continue;}
+    const comps=(it.components||[]).map(c=>resolveComp(c,it.code,missing)).filter(Boolean);
+    items.push({...it,components:comps,discipline:disciplineOf(it)});
+  }
+  for(const p of (src.pipelines||[])){const {item,g,f}=buildPipeItem(p,src.rates||{},d,missing); pipes.push(item); geo.push({p,g,f,...pipeChecks(p,g,d,f,src.project)});}
+  return {priced:{project:src.project,boq:[...pipes,...items],site_overheads:src.site_overheads||[],markups:src.markups||{}},
+    geo,missing:[...missing].sort(),design:d,dropped,checks:libChecks(src.boq||[])};
+}
+function compCost(c){ const base=("productivity" in c)?(c.productivity>0?c.daily_cost/c.productivity:NaN):c.qty*c.rate; return base*(1+(+c.waste||0)); }
+function itemUnit(item,ov){ const b={material:0,labor:0,equipment:0,subcontract:0}; for(const c of item.components||[]){ let x=compCost(c); if(ov&&c.key in ov) x*=1+ov[c.key]; b[c.type]=(b[c.type]||0)+x; } return {unit:Object.values(b).reduce((a,v)=>a+v,0),b}; }
 function price(proj,ov){
   let direct=0; const items=(proj.boq||[]).map(it=>{const {unit,b}=itemUnit(it,ov); const t=unit*it.qty; direct+=t; return {...it,direct_unit:unit,breakdown:b,direct_total:t};});
   let site=0; const siteRows=(proj.site_overheads||[]).map(o=>{const a=("monthly_cost" in o)?(o.count??1)*o.monthly_cost*(o.months??proj.project.duration_months):+o.lump_sum; site+=a; return [o.name,a];});
@@ -232,10 +223,13 @@ function sensitivity(proj,base,delta){
 }
 
 /* ===================== State, persistence ===================== */
-const STORE="water-pricing-platform-v1";
-let S, ACTIVE="results", DELTA=0.10;
-function clone(x){return JSON.parse(JSON.stringify(x));}
-function load(){ try{const t=localStorage.getItem(STORE); if(t) return JSON.parse(t);}catch(e){} return clone(EXAMPLE); }
+const STORE="general-pricing-platform-v2";
+let S, ACTIVE="project", DELTA=0.10, LIBSEL={disc:null,all:false,q:{}};
+const clone=x=>JSON.parse(JSON.stringify(x));
+function blank(type,name){ return {project:{name:name||"مشروع جديد",type,location:"",currency:"ر.س",duration_months:12,vat_rate:0.15,working_days_per_month:26},
+  resources:{},boq:[],site_overheads:[],markups:{head_office:0.05,finance:0.01,bonds_insurance:0.01,contingency:0.03,profit:0.08}}; }
+function normalize(d){ d.project=d.project||{}; for(const k of ["boq","pipelines","site_overheads"]) d[k]=d[k]||[]; for(const k of ["resources","rates","markups"]) d[k]=d[k]||{}; return d; }
+function load(){ try{const t=localStorage.getItem(STORE); if(t){ACTIVE="results"; return normalize(JSON.parse(t));}}catch(e){} return normalize(blank("electromechanical")); }
 function save(){ try{localStorage.setItem(STORE,JSON.stringify(S));}catch(e){} }
 S=load();
 
@@ -251,149 +245,216 @@ function inp(path,kind="num",cls=""){
   return `<input class="${cls}" ${kind==="num"?'type="number" step="any" inputmode="decimal"':'type="text"'} data-p="${path}" data-k="${kind}" value="${esc(v??"")}">`;
 }
 function sel(path,opts){const v=getPath(S,path); return `<select data-p="${path}" data-k="text">${Object.entries(opts).map(([k,l])=>`<option value="${k}" ${k===v?"selected":""}>${esc(l)}</option>`).join("")}</select>`;}
-function cur(){return S.project.currency||"ر.س";}
+const cur=()=>S.project.currency||"ر.س";
+const ptype=()=>LIBRARY.project_types[S.project.type];
+const typeDiscs=()=>ptype()?ptype().disciplines:Object.keys(LIBRARY.disciplines);
+const hasWater=()=>typeDiscs().includes("water_networks")||(S.pipelines||[]).length>0;
+const dname=d=>(LIBRARY.disciplines[d]||{}).name||"أخرى";
+const typeOptions=()=>Object.fromEntries(Object.entries(LIBRARY.project_types).map(([k,t])=>[k,t.name]));
+function usedResources(){ const s=new Set(); for(const it of S.boq) for(const c of it.components||[]) if(c.res) s.add(c.res); return [...s]; }
+function isPriced(key){ const r=resInfo(key).rate; return typeof r==="number"&&Number.isFinite(r); }
 
 /* ===================== Tabs ===================== */
-const TABS=[["project","المشروع والافتراضات"],["rates","مكتبة الأسعار"],["pipes","الخطوط (تفكيك هندسي)"],["boq","البنود الأخرى"],["oh","مصاريف الموقع والإضافات"],["results","النتائج والتحليل"]];
-function renderTabs(){document.getElementById("tabs").innerHTML=TABS.map(([k,l])=>`<button class="${k===ACTIVE?"on":""}" onclick="go('${k}')">${l}</button>`).join(""); for(const [k] of TABS) document.getElementById("t-"+k).classList.toggle("on",k===ACTIVE);}
-function go(k){ACTIVE=k; try{sessionStorage.setItem(STORE+"-tab",k);}catch(e){} renderTabs(); renderAll();}
-try{const t=sessionStorage.getItem(STORE+"-tab"); if(t) ACTIVE=t;}catch(e){}
+function tabs(){ const t=[["project","المشروع"],["library","مكتبة البنود"],["boq","جدول الكميات والتفكيك"],["resources","أسعار الموارد"]];
+  if(hasWater()) t.push(["pipes","الخطوط (تفكيك الخندق)"]); t.push(["oh","المصاريف والإضافات"],["results","النتائج والتحليل"]); return t; }
+function renderTabs(){ const T=tabs(); if(!T.some(([k])=>k===ACTIVE)) ACTIVE="project";
+  const miss=usedResources().filter(k=>!isPriced(k)).length;
+  document.getElementById("tabs").innerHTML=T.map(([k,l])=>`<button class="${k===ACTIVE?"on":""}" onclick="go('${k}')">${l}${k==="resources"&&miss?` <span class="tag">${miss} ناقص</span>`:""}</button>`).join("");
+  for(const k of ["project","library","boq","resources","pipes","oh","results"]) document.getElementById("t-"+k).classList.toggle("on",k===ACTIVE); }
+function go(k){ACTIVE=k; renderAll(); window.scrollTo(0,0);}
 
+/* ----- Project ----- */
 function renderProject(){
-  S.design=S.design||{};
+  const T=ptype();
   document.getElementById("t-project").innerHTML=`
   <h2>بيانات المشروع</h2>
   <div class="grid">
     <label class="f">اسم المشروع${inp("project.name","text")}</label>
+    <label class="f">نوع المشروع${sel("project.type",typeOptions())}</label>
     <label class="f">الموقع${inp("project.location","text")}</label>
-    <label class="f">العملة${inp("project.currency","text")}</label>
+    <label class="f">مسطح البناء م² (لمؤشر تكلفة المتر)${inp("project.area_m2")}</label>
     <label class="f">المدة (شهر)${inp("project.duration_months")}</label>
     <label class="f">أيام العمل في الشهر${inp("project.working_days_per_month")}</label>
+    <label class="f">العملة${inp("project.currency","text")}</label>
     <label class="f">ضريبة القيمة المضافة (كسر عشري)${inp("project.vat_rate")}</label>
   </div>
-  <h2>الافتراضات التصميمية للخنادق</h2>
-  <p class="note">قيم إرشادية — طابقها مع مواصفات المشروع ومعايير شركة المياه الوطنية. اترك الحقل فارغاً لاستخدام القيمة الافتراضية (بين القوسين).</p>
-  <div class="grid">${Object.keys(DEFAULT_DESIGN).map(k=>`<label class="f">${DESIGN_LABELS[k]} (${DEFAULT_DESIGN[k]})${inp("design."+k)}</label>`).join("")}</div>
+  ${T?`<p class="note">التخصصات المشمولة: ${T.disciplines.map(d=>`<span class="tag">${esc(dname(d))}</span>`).join(" ")}</p>`:""}
+  <h2>الخطوات</h2>
+  <ol class="note" style="font-size:13px">
+    <li><b>مكتبة البنود:</b> اختر بنود التخصص وأدخل الكميات — كل بند يأتي مفككاً إلى مواد وعمالة ومعدات بمعدلات استهلاك وإنتاجية إرشادية.</li>
+    <li><b>جدول الكميات والتفكيك:</b> عدّل الوصف والمعدلات لتطابق جدول المالك والمواصفات، أو أضف بنوداً حرة.</li>
+    <li><b>أسعار الموارد:</b> أدخل سعر كل مورد مرة واحدة (من عروض الموردين) فينعكس على كل البنود. لا تُستخدم أي أسعار افتراضية.</li>
+    ${hasWater()?"<li><b>الخطوط:</b> للخطوط بالمتر الطولي يُحسب الخندق هندسياً (حفر، فرشة، ردم، تدعيم، أسفلت...).</li>":""}
+    <li><b>المصاريف والإضافات</b> ثم <b>النتائج</b>: ملخص العرض، باريتو، الحساسية، والفحوص الهندسية.</li>
+  </ol>
+  ${hasWater()?`<h2>الافتراضات التصميمية للخنادق</h2><p class="note">إرشادية — اترك الحقل فارغاً لاستخدام القيمة بين القوسين.</p>
+  <div class="grid">${Object.keys(DEFAULT_DESIGN).map(k=>`<label class="f">${DESIGN_LABELS[k]} (${DEFAULT_DESIGN[k]})${inp("design."+k)}</label>`).join("")}</div>`:""}
   ${S._note?`<p class="warn">${esc(S._note)}</p>`:""}`;
 }
-function renderRates(){
-  S.rates=S.rates||{};
-  const rows=Object.keys(RATE_KEYS).map(k=>{const has=k in S.rates; return `<tr><td>${RATE_KEYS[k]}<br><span class="note">${k}</span></td>
-    <td>${has?sel(`rates.${k}.type`,TYPES):"—"}</td><td>${has?inp(`rates.${k}.key`,"text"):"—"}</td>
-    <td>${has?inp(`rates.${k}.rate`):`<span class="note">غير مسعّر</span>`}</td>
-    <td>${has?`<button class="del" onclick="delRate('${k}')">حذف</button>`:`<button onclick="addRate('${k}')">+ إضافة سعر</button>`}</td></tr>`;}).join("");
-  document.getElementById("t-rates").innerHTML=`
-  <h2>أسعار الأنشطة المستخدمة في تفكيك الخطوط</h2>
-  <p class="note">كل سعر هو تكلفة مباشرة لوحدة النشاط، من عروض الموردين ومقاولي الباطن أو سجلات الشركة. احذف سعر النشاط إذا كان له بند مستقل في جدول المالك (لتجنّب الازدواج). «المفتاح» يجمع الموارد في تحليل الحساسية.</p>
-  <div class="tw"><table><thead><tr><th>النشاط</th><th>النوع</th><th>المفتاح</th><th>السعر (${esc(cur())})</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>`;
-}
-function addRate(k){S.rates[k]={type:"subcontract",key:k.split("_")[0],rate:0}; changed(true);}
-function delRate(k){delete S.rates[k]; changed(true);}
 
+/* ----- Library ----- */
+function renderLibrary(){
+  const discs=LIBSEL.all?Object.keys(LIBRARY.disciplines):typeDiscs();
+  if(!discs.includes(LIBSEL.disc)) LIBSEL.disc=discs[0];
+  const inBoq=new Set(S.boq.map(i=>i.template).filter(Boolean));
+  const list=LIBRARY.templates.filter(t=>t.d===LIBSEL.disc); let sec="";
+  const rows=list.map(t=>{ const head=t.section!==sec?`<tr class="sec"><td colspan="5">${esc(t.section)}</td></tr>`:""; sec=t.section;
+    const comp=t.components.map(c=>{const r=LIBRARY.resources[c.res]; return esc(r.name)+("productivity" in c?` (${c.productivity} ${esc(t.unit)}/يوم)`:` (${c.qty} ${esc(r.unit)})`);}).join(" + ");
+    return head+`<tr><td><input type="checkbox" data-lib="${t.id}" ${LIBSEL.q[t.id]!=null?"checked":""}></td><td>${esc(t.description)}${inBoq.has(t.id)?' <span class="tag">في الجدول</span>':""}<div class="note">${comp}</div></td><td>${esc(t.unit)}</td><td><input type="number" step="any" min="0" data-libq="${t.id}" value="${esc(LIBSEL.q[t.id]??"")}" placeholder="الكمية"></td></tr>`; }).join("");
+  const nsel=Object.keys(LIBSEL.q).length;
+  document.getElementById("t-library").innerHTML=`<h2>مكتبة البنود — ${esc(ptype()?ptype().name:"كل التخصصات")}</h2>
+  <p class="note">حدّد البنود وأدخل كمياتها ثم «أضف إلى الجدول». معدلات الاستهلاك والإنتاجية إرشادية — عايرها بسجلات الشركة. المكتبة لا تحتوي أسعاراً.</p>
+  <div class="chips">${discs.map(d=>`<button class="${d===LIBSEL.disc?"on":""}" onclick="LIBSEL.disc='${d}';renderLibrary()">${esc(dname(d))} (${LIBRARY.templates.filter(t=>t.d===d).length})</button>`).join("")}
+   <label class="note" style="display:flex;gap:4px;align-items:center"><input type="checkbox" ${LIBSEL.all?"checked":""} onchange="LIBSEL.all=this.checked;renderLibrary()"> عرض كل التخصصات</label></div>
+  <div class="tw"><table><thead><tr><th><input type="checkbox" onchange="selectAllLib(this.checked)"></th><th>البند وتفكيكه</th><th>الوحدة</th><th>الكمية</th></tr></thead><tbody>${rows}</tbody></table></div>
+  <div class="sticky-actions"><button class="primary" onclick="addFromLibrary()">أضف المحدد إلى الجدول (${nsel})</button><span class="note">البنود بكمية صفر تُضاف لكنها لا تدخل التسعير حتى تُدخل كميتها.</span></div>`;
+}
+function selectAllLib(on){ for(const t of LIBRARY.templates.filter(t=>t.d===LIBSEL.disc)){ if(on) LIBSEL.q[t.id]=LIBSEL.q[t.id]??""; else delete LIBSEL.q[t.id]; } renderLibrary(); }
+function nextCode(prefix){ let n=0; for(const it of S.boq){const m=String(it.code).match(new RegExp("^"+prefix+"-(\\d+)$")); if(m) n=Math.max(n,+m[1]);} return `${prefix}-${String(n+1).padStart(2,"0")}`; }
+function addFromLibrary(){
+  const ids=Object.keys(LIBSEL.q); if(!ids.length){toast("لم يتم تحديد أي بند."); return;}
+  for(const id of LIBRARY.templates.map(t=>t.id).filter(i=>ids.includes(i))){
+    const t=TPL[id], prefix=LIBRARY.disciplines[t.d].prefix;
+    S.boq.push({code:nextCode(prefix),template:t.id,section:t.section,description:t.description,unit:t.unit,qty:+LIBSEL.q[id]||0,components:clone(t.components)});
+    for(const c of t.components) if(!S.resources[c.res]) S.resources[c.res]={...LIBRARY.resources[c.res]};
+  }
+  toast(`أُضيف ${ids.length} بنداً إلى جدول الكميات. أدخل أسعار الموارد الناقصة.`); LIBSEL.q={}; changed(); go("boq");
+}
+
+/* ----- BOQ ----- */
+function renderBoq(){
+  const groups={}; S.boq.forEach((it,i)=>{(groups[disciplineOf(it)] ||= []).push(i);});
+  const resOpts=[...new Set([...Object.keys(S.resources),...Object.keys(LIBRARY.resources)])].map(k=>`<option value="${k}">${esc(resInfo(k).name||k)} (${esc(resInfo(k).unit||"")})</option>`).join("");
+  const card=i=>{const it=S.boq[i], P=`boq.${i}`, miss=new Set(), rc=(it.components||[]).map(c=>resolveComp(c,it.code,miss));
+    const u=rc.every(Boolean)?itemUnit({components:rc}).unit:NaN;
+    const comps=(it.components||[]).map((c,j)=>{const C=`${P}.components.${j}`, prod="productivity" in c;
+      if(c.res){ const r=resInfo(c.res), ok=isPriced(c.res);
+        return `<tr><td>${esc(TYPES[r.type]||"")}</td><td>${esc(r.name||c.res)}<div class="note">${esc(c.res)}</div></td>
+        <td>${prod?`إنتاجية (${esc(it.unit)}/يوم)`:`كمية (${esc(r.unit||"")}/${esc(it.unit)})`}</td><td>${inp(C+(prod?".productivity":".qty"))}</td>
+        <td><input class="${ok?"":"missing"}" type="number" step="any" data-p="resources.${c.res}.rate" data-k="num" value="${esc(S.resources[c.res]?.rate??"")}" placeholder="سعر ${esc(prod?"اليوم":r.unit||"")}"></td>
+        <td>${inp(C+".waste")}</td><td class="n">${ok?fmt(compCost(rc[j])):"—"}</td><td><button class="del" onclick="delComp(${i},${j})">×</button></td></tr>`; }
+      return `<tr><td>${sel(C+".type",TYPES)}</td><td>${inp(C+".name","text","wide")}<div class="note">مفتاح: ${inp(C+".key","text")}</div></td>
+        <td><select onchange="setMode(${i},${j},this.value)"><option value="q" ${prod?"":"selected"}>كمية × سعر</option><option value="p" ${prod?"selected":""}>يومية ÷ إنتاجية</option></select></td>
+        ${prod?`<td>${inp(C+".productivity")}</td><td>${inp(C+".daily_cost")}</td>`:`<td>${inp(C+".qty")}</td><td>${inp(C+".rate")}</td>`}
+        <td>${inp(C+".waste")}</td><td class="n">${fmt(compCost(c))}</td><td><button class="del" onclick="delComp(${i},${j})">×</button></td></tr>`;}).join("");
+    return `<div class="item"><div class="head"><label class="f">الرمز${inp(P+".code","text")}</label><label class="f">الوصف${inp(P+".description","text","wide")}</label>
+    <label class="f">الوحدة${inp(P+".unit","text")}</label><label class="f">الكمية${inp(P+".qty")}</label><button class="del" onclick="delItem(${i})">حذف البند</button></div>
+    <div class="tw"><table><thead><tr><th>النوع</th><th>المورد / المكوّن</th><th>الطريقة</th><th>الكمية / الإنتاجية</th><th>السعر / اليومية</th><th>الهالك</th><th class="n">التكلفة للوحدة</th><th></th></tr></thead><tbody>${comps}
+    <tr class="total"><td colspan="6">التكلفة المباشرة للوحدة ${miss.size?'<span class="note">(أسعار ناقصة)</span>':""}</td><td class="n">${fmt(u)}</td><td></td></tr></tbody></table></div>
+    <div class="toolbar"><select style="width:auto;max-width:260px" id="addres-${i}"><option value="">مورد…</option>${resOpts}</select>
+      <button onclick="addResComp(${i},'q')">+ مورد بالكمية</button><button onclick="addResComp(${i},'p')">+ مورد بالإنتاجية</button><button onclick="addComp(${i})">+ مكوّن حر</button></div></div>`;};
+  const body=Object.entries(groups).map(([d,idx])=>`<h3>${esc(dname(d))} (${idx.length})</h3>${idx.map(card).join("")}`).join("");
+  document.getElementById("t-boq").innerHTML=`<h2>جدول الكميات وتفكيك البنود</h2>
+  <p class="note">تحليل سعر الوحدة = Σ مواد (كمية × سعر × (1 + هالك)) + Σ عمالة ومعدات (اليومية ÷ الإنتاجية) + مقاولو الباطن. سعر المورد يُعدّل هنا أو في «أسعار الموارد» وينعكس على كل البنود.</p>
+  ${body||'<p class="warn">الجدول فارغ — ابدأ من «مكتبة البنود».</p>'}
+  <div class="sticky-actions"><button class="primary" onclick="go('library')">+ من المكتبة</button><button onclick="addItem()">+ بند حر</button></div>`;
+}
+function addItem(){S.boq.push({code:nextCode("X"),description:"",unit:"عدد",qty:1,section:"بنود أخرى",components:[]}); changed();}
+async function delItem(i){ if(await ask("حذف البند؟")){S.boq.splice(i,1); changed();} }
+function addComp(i){S.boq[i].components.push({type:"material",name:"",key:"",qty:1,rate:0}); changed();}
+function addResComp(i,m){ const k=document.getElementById("addres-"+i).value; if(!k){toast("اختر مورداً أولاً."); return;}
+  if(!S.resources[k]) S.resources[k]={...LIBRARY.resources[k]}; S.boq[i].components.push(m==="p"?{res:k,productivity:1}:{res:k,qty:1}); changed(); }
+function delComp(i,j){S.boq[i].components.splice(j,1); changed();}
+function setMode(i,j,m){const c=S.boq[i].components[j]; if(m==="p"){delete c.qty; delete c.rate; c.daily_cost=c.daily_cost||0; c.productivity=c.productivity||1;} else {delete c.daily_cost; delete c.productivity; c.qty=c.qty??1; c.rate=c.rate??0;} changed();}
+
+/* ----- Resources ----- */
+function renderResources(){
+  const used=usedResources(), byGroup={};
+  for(const k of used){ const t=resInfo(k).type||"material"; (byGroup[t] ||= []).push(k); }
+  const count={}; for(const it of S.boq) for(const c of it.components||[]) if(c.res) count[c.res]=(count[c.res]||0)+1;
+  const tables=Object.keys(TYPES).filter(t=>byGroup[t]).map(t=>`<h3>${TYPES[t]}</h3><div class="tw"><table><thead><tr><th>المورد</th><th>الوحدة</th><th>السعر (${esc(cur())})</th><th>المصدر / ملاحظة</th><th class="n">يُستخدم في</th></tr></thead><tbody>
+    ${byGroup[t].map(k=>{const r=resInfo(k); return `<tr><td>${inp(`resources.${k}.name`,"text","wide")}<div class="note">${esc(k)} • مجموعة الحساسية: ${esc(r.group||k)}</div></td><td>${esc(t==="labor"||t==="equipment"?"يوم":r.unit||"")}</td>
+    <td><input class="${isPriced(k)?"":"missing"}" type="number" step="any" data-p="resources.${k}.rate" data-k="num" value="${esc(S.resources[k]?.rate??"")}"></td><td>${inp(`resources.${k}.source`,"text")}</td><td class="n">${count[k]} بند</td></tr>`;}).join("")}</tbody></table></div>`).join("");
+  const miss=used.filter(k=>!isPriced(k)).length;
+  const rateRows=hasWater()?`<h2>أسعار أنشطة تفكيك الخطوط</h2><p class="note">تكلفة مباشرة لوحدة النشاط. احذف النشاط إذا كان له بند مستقل في جدول المالك (لتجنّب الازدواج).</p>
+  <div class="tw"><table><thead><tr><th>النشاط</th><th>النوع</th><th>مفتاح الحساسية</th><th>السعر</th><th></th></tr></thead><tbody>${Object.keys(RATE_KEYS).map(k=>{const has=k in S.rates; return `<tr><td>${RATE_KEYS[k]}</td>
+    <td>${has?sel(`rates.${k}.type`,TYPES):"—"}</td><td>${has?inp(`rates.${k}.key`,"text"):"—"}</td><td>${has?inp(`rates.${k}.rate`):'<span class="note">غير مسعّر</span>'}</td>
+    <td>${has?`<button class="del" onclick="delRate('${k}')">حذف</button>`:`<button onclick="addRate('${k}')">+ إضافة</button>`}</td></tr>`;}).join("")}</tbody></table></div>`:"";
+  document.getElementById("t-resources").innerHTML=`<h2>أسعار الموارد ${miss?`<span class="tag">${miss} بدون سعر</span>`:""}</h2>
+  <p class="note">سعر كل مورد يُدخل مرة واحدة من عروض الموردين أو سجلات الشركة، ويُطبّق على كل البنود التي تستخدمه. العمالة والمعدات بالتكلفة اليومية المحمّلة. اكتب مصدر السعر وتاريخه للتوثيق.</p>
+  ${tables||'<p class="note">لا توجد موارد بعد — أضف بنوداً من المكتبة.</p>'}${rateRows}`;
+}
+function addRate(k){S.rates[k]={type:"subcontract",key:k.split("_")[0],rate:0}; changed();}
+function delRate(k){delete S.rates[k]; changed();}
+
+/* ----- Pipelines ----- */
 function renderPipes(){
-  S.pipelines=S.pipelines||[];
   const {geo}=expand(S);
-  const cards=S.pipelines.map((p,i)=>{const G=geo[i]; const g=G.g; const P=`pipelines.${i}`;
+  const cards=S.pipelines.map((p,i)=>{const G=geo[i], g=G.g, P=`pipelines.${i}`;
     return `<div class="item">
     <div class="head"><label class="f">الرمز${inp(P+".code","text")}</label><label class="f">الوصف${inp(P+".description","text","wide")}</label>
       <label class="f">المادة${sel(P+".material",{HDPE:"HDPE",DI:"حديد دكتايل DI",GRP:"GRP",UPVC:"uPVC",STEEL:"حديد صلب"})}</label>
       <label class="f">الطول (م)${inp(P+".length_m")}</label><button class="del" onclick="delPipe(${i})">حذف الخط</button></div>
     <div class="grid" style="margin-top:8px">
       <label class="f">DN (مم)${inp(P+".dn_mm")}</label><label class="f">القطر الخارجي OD (م)${inp(P+".od_m")}</label>
-      <label class="f">الغطاء فوق الظهر (م)${inp(P+".cover_m")}</label>
-      <label class="f">السطح${sel(P+".surface",{asphalt:"أسفلت",soil:"ترابي / غير مرصوف"})}</label>
-      <label class="f">نسبة الصخر من الحفر${inp(P+".rock_ratio")}</label>
-      <label class="f">مياه جوفية ${inp(P+".ground_water","bool")}</label>
-      <label class="f">ردم بمواد مستوردة ${inp(P+".import_backfill","bool")}</label>
-      <label class="f">سعر الأنبوب (للمتر)${inp(P+".pipe_rate_per_m")}</label>
-      <label class="f">القطع والوصلات (نسبة)${inp(P+".fittings_allowance")}</label>
-      <label class="f">تكلفة فرقة التمديد اليومية${inp(P+".lay_crew_daily_cost")}</label>
-      <label class="f">تكلفة معدات التمديد اليومية${inp(P+".lay_equipment_daily_cost")}</label>
-      <label class="f">الإنتاجية الأساسية (م/يوم)${inp(P+".lay_productivity_m_day")}</label>
-      <label class="f">عدد الفرق${inp(P+".crews")}</label>
-    </div>
+      <label class="f">الغطاء فوق الظهر (م)${inp(P+".cover_m")}</label><label class="f">السطح${sel(P+".surface",{asphalt:"أسفلت",soil:"ترابي / غير مرصوف"})}</label>
+      <label class="f">نسبة الصخر من الحفر${inp(P+".rock_ratio")}</label><label class="f">مياه جوفية ${inp(P+".ground_water","bool")}</label>
+      <label class="f">ردم بمواد مستوردة ${inp(P+".import_backfill","bool")}</label><label class="f">سعر الأنبوب (للمتر)${inp(P+".pipe_rate_per_m")}</label>
+      <label class="f">القطع والوصلات (نسبة)${inp(P+".fittings_allowance")}</label><label class="f">تكلفة فرقة التمديد اليومية${inp(P+".lay_crew_daily_cost")}</label>
+      <label class="f">تكلفة معدات التمديد اليومية${inp(P+".lay_equipment_daily_cost")}</label><label class="f">الإنتاجية الأساسية (م/يوم)${inp(P+".lay_productivity_m_day")}</label>
+      <label class="f">عدد الفرق${inp(P+".crews")}</label></div>
     <div style="margin-top:8px"><span class="note">معاملات تعديل الإنتاجية:</span>
       ${(p.productivity_factors||[]).map((f,j)=>`<span style="display:inline-flex;gap:4px;align-items:center;margin:2px">${inp(`${P}.productivity_factors.${j}.name`,"text")}${inp(`${P}.productivity_factors.${j}.factor`)}<button class="del" onclick="delFactor(${i},${j})">×</button></span>`).join("")}
       <button onclick="addFactor(${i})">+ معامل</button></div>
     <div class="tw"><table><thead><tr><th>العرض</th><th>العمق</th><th>حفر</th><th>صخر</th><th>فرشة</th><th>تغليف</th><th>ردم</th><th>فائض</th><th>تدعيم م²</th><th>أسفلت م²</th><th>إنتاجية فعلية</th><th>مدة التمديد</th></tr></thead>
     <tbody><tr>${[g.width,g.depth,g.excavation,g.rock,g.bedding,g.surround,g.backfill,g.disposal,g.shoring,g.asphalt].map(x=>`<td class="n">${fmt(x,3)}</td>`).join("")}<td>${fmt(p.lay_productivity_m_day*G.f,0)} م/يوم</td><td>${fmt(G.days,0)} يوم</td></tr></tbody></table></div>
-    <div class="note">الكميات لكل متر طولي (م أو م³/م أو م²/م).</div>
-    ${G.w.map(x=>`<div class="warn">⚠️ ${esc(x)}</div>`).join("")}
-  </div>`;}).join("");
+    <div class="note">الكميات لكل متر طولي.</div>${G.w.map(x=>`<div class="warn">⚠️ ${esc(x)}</div>`).join("")}</div>`;}).join("");
   document.getElementById("t-pipes").innerHTML=`<h2>خطوط المياه والصرف — التفكيك الهندسي لكل متر</h2>
-  <p class="note">يُحسب عرض الخندق = max(أقل عرض، OD + 2 × الخلوص)، والعمق = الغطاء + OD + الفرشة. تتحول الكميات تلقائياً إلى مكونات تكلفة باستخدام مكتبة الأسعار.</p>
+  <p class="note">عرض الخندق = max(أقل عرض، OD + 2 × الخلوص)، والعمق = الغطاء + OD + الفرشة. تتحول الكميات إلى مكونات تكلفة بأسعار الأنشطة في «أسعار الموارد».</p>
   ${cards}<button class="primary" onclick="addPipe()">+ إضافة خط</button>`;
 }
-function addPipe(){S.pipelines.push({code:`W-${String(S.pipelines.length+1).padStart(2,"0")}`,description:"",material:"HDPE",dn_mm:110,od_m:0.11,length_m:0,cover_m:1.2,surface:"asphalt",rock_ratio:0,ground_water:false,pipe_rate_per_m:0,fittings_allowance:0.05,lay_crew_daily_cost:0,lay_equipment_daily_cost:0,lay_productivity_m_day:150,crews:1,productivity_factors:[]}); changed(true);}
-async function delPipe(i){ if(await ask("حذف الخط؟")){S.pipelines.splice(i,1); changed(true);} }
-function addFactor(i){(S.pipelines[i].productivity_factors ||= []).push({name:"ظرف",factor:0.9}); changed(true);}
-function delFactor(i,j){S.pipelines[i].productivity_factors.splice(j,1); changed(true);}
+function addPipe(){S.pipelines.push({code:nextPipeCode(),description:"",material:"HDPE",dn_mm:110,od_m:0.11,length_m:0,cover_m:1.2,surface:"asphalt",rock_ratio:0,ground_water:false,pipe_rate_per_m:0,fittings_allowance:0.05,lay_crew_daily_cost:0,lay_equipment_daily_cost:0,lay_productivity_m_day:150,crews:1,productivity_factors:[]}); changed();}
+function nextPipeCode(){return `W-${String(S.pipelines.length+1).padStart(2,"0")}`;}
+async function delPipe(i){ if(await ask("حذف الخط؟")){S.pipelines.splice(i,1); changed();} }
+function addFactor(i){(S.pipelines[i].productivity_factors ||= []).push({name:"ظرف",factor:0.9}); changed();}
+function delFactor(i,j){S.pipelines[i].productivity_factors.splice(j,1); changed();}
 
-function renderBoq(){
-  S.boq=S.boq||[];
-  const cards=S.boq.map((it,i)=>{const P=`boq.${i}`; const u=itemUnit(it).unit;
-    const comps=(it.components||[]).map((c,j)=>{const C=`${P}.components.${j}`; const prod="productivity" in c;
-      return `<tr><td>${sel(C+".type",TYPES)}</td><td>${inp(C+".name","text","wide")}</td><td>${inp(C+".key","text")}</td>
-      <td><select onchange="setMode(${i},${j},this.value)"><option value="q" ${prod?"":"selected"}>كمية × سعر</option><option value="p" ${prod?"selected":""}>يومية ÷ إنتاجية</option></select></td>
-      ${prod?`<td>${inp(C+".daily_cost")}</td><td>${inp(C+".productivity")}</td>`:`<td>${inp(C+".qty")}</td><td>${inp(C+".rate")}</td>`}
-      <td>${inp(C+".waste")}</td><td class="n">${fmt(compCost(c))}</td><td><button class="del" onclick="delComp(${i},${j})">×</button></td></tr>`;}).join("");
-    return `<div class="item"><div class="head"><label class="f">الرمز${inp(P+".code","text")}</label><label class="f">الوصف${inp(P+".description","text","wide")}</label>
-    <label class="f">الوحدة${inp(P+".unit","text")}</label><label class="f">الكمية${inp(P+".qty")}</label><button class="del" onclick="delItem(${i})">حذف البند</button></div>
-    <div class="tw"><table><thead><tr><th>النوع</th><th>المكوّن</th><th>المفتاح</th><th>الطريقة</th><th>الكمية / اليومية</th><th>السعر / الإنتاجية</th><th>الهالك</th><th class="n">التكلفة للوحدة</th><th></th></tr></thead><tbody>${comps}
-    <tr class="total"><td colspan="7">التكلفة المباشرة للوحدة</td><td class="n">${fmt(u)}</td><td></td></tr></tbody></table></div>
-    <button onclick="addComp(${i})">+ مكوّن</button></div>`;}).join("");
-  document.getElementById("t-boq").innerHTML=`<h2>البنود الأخرى (توصيلات، محابس، غرف، أعمال عامة)</h2>
-  <p class="note">تحليل سعر الوحدة: مواد (كمية × سعر × (1 + هالك)) + عمالة ومعدات (التكلفة اليومية ÷ الإنتاجية) + مقاولو الباطن.</p>${cards}
-  <button class="primary" onclick="addItem()">+ إضافة بند</button>`;
-}
-function addItem(){S.boq.push({code:`X-${String(S.boq.length+1).padStart(2,"0")}`,description:"",unit:"عدد",qty:1,components:[]}); changed(true);}
-async function delItem(i){ if(await ask("حذف البند؟")){S.boq.splice(i,1); changed(true);} }
-function addComp(i){S.boq[i].components.push({type:"material",name:"",key:"",qty:1,rate:0}); changed(true);}
-function delComp(i,j){S.boq[i].components.splice(j,1); changed(true);}
-function setMode(i,j,m){const c=S.boq[i].components[j]; if(m==="p"){delete c.qty; delete c.rate; c.daily_cost=c.daily_cost||0; c.productivity=c.productivity||1;} else {delete c.daily_cost; delete c.productivity; c.qty=c.qty??1; c.rate=c.rate??0;} changed(true);}
-
+/* ----- Overheads ----- */
 function renderOH(){
-  S.site_overheads=S.site_overheads||[]; S.markups=S.markups||{};
-  const rows=S.site_overheads.map((o,i)=>{const P=`site_overheads.${i}`; const lump="lump_sum" in o;
+  const rows=S.site_overheads.map((o,i)=>{const P=`site_overheads.${i}`, lump="lump_sum" in o;
     const amt=lump?+o.lump_sum:(o.count??1)*o.monthly_cost*(o.months??S.project.duration_months);
     return `<tr><td>${inp(P+".name","text","wide")}</td><td><select onchange="setOHMode(${i},this.value)"><option value="m" ${lump?"":"selected"}>شهري</option><option value="l" ${lump?"selected":""}>مقطوع</option></select></td>
     ${lump?`<td colspan="3">${inp(P+".lump_sum")}</td>`:`<td>${inp(P+".count")}</td><td>${inp(P+".monthly_cost")}</td><td>${inp(P+".months")}</td>`}
     <td class="n">${fmt(amt)}</td><td><button class="del" onclick="delOH(${i})">×</button></td></tr>`;}).join("");
   document.getElementById("t-oh").innerHTML=`<h2>مصاريف الموقع غير المباشرة</h2>
-  <p class="note">احسبها تفصيلياً من الجهاز الإداري والمعدات والخدمات × المدة. اترك «الأشهر» فارغاً لاستخدام مدة المشروع.</p>
+  <p class="note">احسبها تفصيلياً من الجهاز الإداري والمعدات والخدمات × المدة. التفرغ الجزئي يُكتب كعدد كسري (0.5). اترك «الأشهر» فارغاً لاستخدام مدة المشروع.</p>
   <div class="tw"><table><thead><tr><th>البند</th><th>الطريقة</th><th>العدد</th><th>التكلفة الشهرية</th><th>الأشهر</th><th class="n">المبلغ</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>
   <button onclick="addOH()">+ إضافة</button>
   <h2>الإضافات (كسر عشري)</h2>
   <div class="grid">${Object.entries({...MARKUPS,profit:"الربح (على إجمالي التكلفة)"}).map(([k,l])=>`<label class="f">${l}${inp("markups."+k)}</label>`).join("")}</div>
-  <p class="note">النطاقات المعتادة: المصاريف العامة 3–7%، المخاطر 2–10%، الربح 5–15% — راجع منهجية saudi-project-pricing.</p>`;
+  <p class="note">النطاقات المعتادة: المصاريف العامة 3–7%، المخاطر 2–10%، الربح 5–15%.</p>`;
 }
-function addOH(){S.site_overheads.push({name:"",count:1,monthly_cost:0}); changed(true);}
-function delOH(i){S.site_overheads.splice(i,1); changed(true);}
-function setOHMode(i,m){const o=S.site_overheads[i]; if(m==="l"){const a=(o.count??1)*(o.monthly_cost||0)*(o.months??S.project.duration_months); delete o.count; delete o.monthly_cost; delete o.months; o.lump_sum=a;} else {delete o.lump_sum; o.count=1; o.monthly_cost=0;} changed(true);}
+function addOH(){S.site_overheads.push({name:"",count:1,monthly_cost:0}); changed();}
+function delOH(i){S.site_overheads.splice(i,1); changed();}
+function setOHMode(i,m){const o=S.site_overheads[i]; if(m==="l"){const a=(o.count??1)*(o.monthly_cost||0)*(o.months??S.project.duration_months); delete o.count; delete o.monthly_cost; delete o.months; o.lump_sum=a;} else {delete o.lump_sum; o.count=1; o.monthly_cost=0;} changed();}
 
+/* ----- Results ----- */
 function renderResults(){
-  const el=document.getElementById("t-results");
-  const ex=expand(S);
-  if(ex.missing.length){ el.innerHTML=`<h2>لا يمكن التسعير — أسعار ناقصة</h2><p class="note">لا تُخترع الأسعار. أضفها في «مكتبة الأسعار» من عروض الموردين:</p>${ex.missing.map(m=>`<div class="err">${esc(m)}</div>`).join("")}`; return; }
-  const P=ex.priced; let r;
-  try{ r=price(P); }catch(e){ el.innerHTML=`<div class="err">خطأ في البيانات: ${esc(e.message)}</div>`; return; }
-  const bid=r.bid, C=esc(cur());
+  const el=document.getElementById("t-results"), ex=expand(S);
+  if(ex.missing.length){ el.innerHTML=`<h2>لا يمكن التسعير — أسعار ناقصة (${ex.missing.length})</h2><p class="note">لا تُخترع الأسعار. أدخلها في «أسعار الموارد» من عروض الموردين:</p>${ex.missing.map(m=>`<div class="err">${esc(m)}</div>`).join("")}<button class="primary" onclick="go('resources')">اذهب إلى أسعار الموارد</button>`; return; }
+  const P=ex.priced; if(!P.boq.length){ el.innerHTML='<p class="warn">لا توجد بنود بكميات — أضف بنوداً من المكتبة وأدخل كمياتها.</p>'; return; }
+  const r=price(P), bid=r.bid, C=esc(cur()), area=+S.project.area_m2||0;
   const typeTot={material:0,labor:0,equipment:0,subcontract:0}; r.items.forEach(it=>{for(const t in typeTot) typeTot[t]+=(it.breakdown[t]||0)*it.qty;});
   const maxT=Math.max(...Object.values(typeTot),1);
+  const discTot={}; r.items.forEach(it=>{discTot[it.discipline||"other"]=(discTot[it.discipline||"other"]||0)+it.total_price;});
   const sorted=[...r.items].sort((a,b)=>b.total_price-a.total_price); let cum=0;
   const sens=sensitivity(P,r,DELTA), maxS=Math.max(...sens.map(s=>Math.abs(s[1])),1);
-  const warns=[...sanity(P,r),...ex.geo.flatMap(G=>G.w.map(x=>`${G.p.code}: ${x}`))];
-  const pipeKPI=ex.geo.map(G=>{const it=r.items.find(i=>i.code===G.p.code); const pipeShare=it?(it.breakdown.material?((+G.p.pipe_rate_per_m*(1+(G.p.pipe_waste??ex.design.pipe_waste))+(+G.p.fittings_allowance||0)*G.p.pipe_rate_per_m)/it.direct_unit):0):0; return {G,it,pipeShare};});
+  const warns=[...sanity(P,r),...ex.checks,...ex.geo.flatMap(G=>G.w.map(x=>`${G.p.code}: ${x}`))];
+  let sec="";
+  const boqRows=r.items.map(it=>{const s=dname(it.discipline)+" — "+(it.section||""); const h=s!==sec?`<tr class="sec"><td colspan="${8+Object.keys(TYPES).length-1}">${esc(s)}</td></tr>`:""; sec=s;
+    return h+`<tr><td>${esc(it.code)}</td><td>${esc(it.description)}</td><td>${esc(it.unit)}</td><td class="n">${fmt(it.qty,2)}</td>${Object.keys(TYPES).map(t=>`<td class="n">${fmt(it.breakdown[t]||0)}</td>`).join("")}<td class="n">${fmt(it.direct_unit)}</td><td class="n"><b>${fmt(it.unit_price)}</b></td><td class="n">${fmt(it.total_price)}</td></tr>`;}).join("");
   el.innerHTML=`
-  <h2>${esc(S.project.name)} <span class="tag">${esc(S.project.location||"")}</span></h2>
+  <h2>${esc(S.project.name)} <span class="tag">${esc(ptype()?ptype().name:"")}</span> <span class="tag">${esc(S.project.location||"")}</span></h2>
   <div class="kpis">
     <div class="kpi"><div class="l">سعر العرض قبل الضريبة (مجموع الجدول)</div><div class="v">${fmt(r.sum)}</div></div>
     <div class="kpi"><div class="l">شامل الضريبة ${+(r.vatRate*100).toFixed(2)}%</div><div class="v">${fmt(r.sum*(1+r.vatRate))}</div></div>
     <div class="kpi"><div class="l">التكلفة المباشرة</div><div class="v">${fmt(r.direct)}</div></div>
     <div class="kpi"><div class="l">الربح</div><div class="v">${fmt(r.profit)}</div></div>
+    ${area?`<div class="kpi"><div class="l">سعر المتر المربع من المسطح</div><div class="v">${fmt(r.sum/area)}</div></div>`:""}
     <div class="kpi"><div class="l">معامل التحميل المتوازن</div><div class="v">${r.factor.toFixed(4)}</div></div>
   </div>
   ${warns.length?`<h2>تنبيهات المعقولية والفحوص الهندسية</h2>${warns.map(w=>`<div class="warn">⚠️ ${esc(w)}</div>`).join("")}`:""}
+  ${ex.dropped.length?`<p class="note">بنود مستبعدة لأن كميتها صفر: ${esc(ex.dropped.join("، "))}</p>`:""}
   <div class="two">
    <div><h2>ملخص العرض المالي</h2><div class="tw"><table><thead><tr><th>المكوّن</th><th class="n">المبلغ (${C})</th><th class="n">من سعر العرض</th></tr></thead><tbody>
     <tr><td>التكلفة المباشرة</td><td class="n">${fmt(r.direct)}</td><td class="n">${pct(r.direct,bid)}</td></tr>
@@ -405,41 +466,41 @@ function renderResults(){
     <tr class="total"><td>سعر العرض قبل الضريبة</td><td class="n">${fmt(bid)}</td><td class="n">100.00%</td></tr>
     <tr><td>ضريبة القيمة المضافة</td><td class="n">${fmt(r.vat)}</td><td></td></tr>
     <tr class="total"><td>سعر العرض شامل الضريبة</td><td class="n">${fmt(bid+r.vat)}</td><td></td></tr>
+   </tbody></table></div><p class="note">فرق التقريب بين مجموع الجدول والملخص: ${fmt(r.sum-bid)}. المبلغ المعتمد في خطاب العرض هو مجموع الجدول.</p></div>
+   <div><h2>الملخص حسب التخصص</h2><div class="tw"><table><tbody>
+    ${Object.entries(discTot).sort((a,b)=>b[1]-a[1]).map(([d,v])=>`<tr><td>${esc(dname(d))}</td><td class="n">${fmt(v,0)}</td><td class="n">${pct(v,r.sum)}</td>${area?`<td>${fmt(v/area)} لكل م²</td>`:""}</tr>`).join("")}
    </tbody></table></div>
-   <p class="note">فرق التقريب بين مجموع الجدول والملخص: ${fmt(r.sum-bid)}. المبلغ المعتمد في خطاب العرض هو مجموع الجدول.</p></div>
-   <div><h2>توزيع التكلفة المباشرة حسب النوع</h2><div class="tw"><table><tbody>
+   <h2>توزيع التكلفة المباشرة حسب النوع</h2><div class="tw"><table><tbody>
     ${Object.entries(typeTot).map(([t,v])=>`<tr><td>${TYPES[t]}</td><td class="barcell"><div class="bar" style="width:${(v/maxT*100).toFixed(1)}%"></div></td><td class="n">${fmt(v,0)}</td><td class="n">${pct(v,r.direct)}</td></tr>`).join("")}
-   </tbody></table></div>
-   <h2>مؤشرات الخطوط</h2><div class="tw"><table><thead><tr><th>الخط</th><th class="n">سعر المتر</th><th class="n">نسبة الأنبوب من التكلفة</th><th class="n">مدة التمديد</th></tr></thead><tbody>
-    ${pipeKPI.map(({G,it,pipeShare})=>`<tr><td>${esc(G.p.code)} ${esc(G.p.material)} DN${G.p.dn_mm}</td><td class="n">${it?fmt(it.unit_price):"—"}</td><td class="n">${(pipeShare*100).toFixed(1)}%</td><td>${fmt(G.days,0)} يوم عمل — ${G.crews} فرقة</td></tr>`).join("")}
    </tbody></table></div></div>
   </div>
   <h2>جدول الكميات المسعّر وتحليل أسعار البنود</h2>
   <div class="tw"><table><thead><tr><th>البند</th><th>الوصف</th><th>الوحدة</th><th class="n">الكمية</th>${Object.values(TYPES).map(t=>`<th class="n">${t}</th>`).join("")}<th class="n">التكلفة المباشرة</th><th class="n">سعر الوحدة</th><th class="n">الإجمالي</th></tr></thead><tbody>
-   ${r.items.map(it=>`<tr><td>${esc(it.code)}</td><td>${esc(it.description)}</td><td>${esc(it.unit)}</td><td class="n">${fmt(it.qty,2)}</td>${Object.keys(TYPES).map(t=>`<td class="n">${fmt(it.breakdown[t]||0)}</td>`).join("")}<td class="n">${fmt(it.direct_unit)}</td><td class="n"><b>${fmt(it.unit_price)}</b></td><td class="n">${fmt(it.total_price)}</td></tr>`).join("")}
-   <tr class="total"><td colspan="${7+Object.keys(TYPES).length-1}">الإجمالي قبل الضريبة</td><td class="n">${fmt(r.sum)}</td></tr>
-  </tbody></table></div>
+   ${boqRows}<tr class="total"><td colspan="${7+Object.keys(TYPES).length-1}">الإجمالي قبل الضريبة</td><td class="n">${fmt(r.sum)}</td></tr></tbody></table></div>
   <div class="two">
    <div><h2>تحليل باريتو (أين تتركز القيمة)</h2><div class="tw"><table><thead><tr><th>البند</th><th class="n">الإجمالي</th><th class="n">النسبة</th><th class="n">التراكمي</th><th>الفئة</th></tr></thead><tbody>
-    ${sorted.map(it=>{const prev=cum; cum+=it.total_price; const cls=prev/r.sum<0.8?"A":(prev/r.sum<0.95?"B":"C"); return `<tr><td>${esc(it.code)}</td><td class="n">${fmt(it.total_price,0)}</td><td class="n">${pct(it.total_price,r.sum)}</td><td class="n">${pct(cum,r.sum)}</td><td><span class="tag">${cls}</span></td></tr>`;}).join("")}
+    ${sorted.map(it=>{const prev=cum; cum+=it.total_price; const cls=prev/r.sum<0.8?"A":(prev/r.sum<0.95?"B":"C"); return `<tr><td>${esc(it.code)} <span class="note">${esc(String(it.description).slice(0,40))}</span></td><td class="n">${fmt(it.total_price,0)}</td><td class="n">${pct(it.total_price,r.sum)}</td><td class="n">${pct(cum,r.sum)}</td><td><span class="tag">${cls}</span></td></tr>`;}).join("")}
    </tbody></table></div><p class="note">بنود الفئة A تستحق تدقيق الكميات و3 عروض أسعار على الأقل.</p></div>
-   <div><h2>تحليل الحساسية (±<input type="number" step="1" style="width:60px" value="${DELTA*100}" onchange="DELTA=(+this.value||10)/100;renderResults()">% على تكلفة المورد)</h2><div class="tw"><table><thead><tr><th>المورد (المفتاح)</th><th class="barcell"></th><th class="n">الأثر على العرض</th><th class="n">النسبة</th></tr></thead><tbody>
+   <div><h2>تحليل الحساسية (±<input type="number" step="1" style="width:60px" value="${DELTA*100}" onchange="DELTA=(+this.value||10)/100;renderResults()">% على تكلفة المورد)</h2><div class="tw"><table><thead><tr><th>مجموعة الموارد</th><th class="barcell"></th><th class="n">الأثر على العرض</th><th class="n">النسبة</th></tr></thead><tbody>
     ${sens.map(([k,d])=>`<tr><td>${esc(k)}</td><td class="barcell"><div class="bar b2" style="width:${(Math.abs(d)/maxS*100).toFixed(1)}%"></div></td><td class="n">±${fmt(Math.abs(d),0)}</td><td class="n">±${pct(Math.abs(d),bid)}</td></tr>`).join("")}
    </tbody></table></div></div>
   </div>
   <h2>مصاريف الموقع</h2><div class="tw"><table><tbody>${r.siteRows.map(([n,a])=>`<tr><td>${esc(n)}</td><td class="n">${fmt(a)}</td></tr>`).join("")}<tr class="total"><td>الإجمالي</td><td class="n">${fmt(r.site)}</td></tr></tbody></table></div>
-  <p class="note">كل الأسعار غير شاملة الضريبة في الجدول. الأرقام من مدخلات المستخدم — راجع قائمة التحقق قبل التسليم.</p>`;
+  <p class="note">الأسعار غير شاملة الضريبة في الجدول. الأرقام من مدخلات المستخدم، ومعدلات الاستهلاك والإنتاجية في المكتبة إرشادية — راجع قائمة التحقق قبل التسليم.</p>`;
 }
 
 /* ===================== Wiring ===================== */
-function renderAll(){ ({project:renderProject,rates:renderRates,pipes:renderPipes,boq:renderBoq,oh:renderOH,results:renderResults})[ACTIVE](); }
-function changed(rerender){ save(); if(rerender) renderAll(); }
+function renderAll(){ renderTabs(); ({project:renderProject,library:renderLibrary,boq:renderBoq,resources:renderResources,pipes:renderPipes,oh:renderOH,results:renderResults})[ACTIVE](); }
+function changed(){ save(); renderAll(); }
 document.addEventListener("change",e=>{
-  const t=e.target, p=t.dataset&&t.dataset.p; if(!p) return;
+  const t=e.target;
+  if(t.dataset&&t.dataset.lib){ if(t.checked) LIBSEL.q[t.dataset.lib]=LIBSEL.q[t.dataset.lib]??""; else delete LIBSEL.q[t.dataset.lib]; renderLibrary(); return; }
+  if(t.dataset&&t.dataset.libq){ LIBSEL.q[t.dataset.libq]=t.value; renderLibrary(); return; }
+  const p=t.dataset&&t.dataset.p; if(!p) return;
   const k=t.dataset.k; let v;
   if(k==="bool") v=t.checked; else if(k==="num"){ if(t.value===""){ v=undefined; } else { v=parseFloat(t.value); if(!Number.isFinite(v)) return; } } else v=t.value;
   if(v===undefined){ const ks=p.split("."), last=ks.pop(), parent=getPath(S,ks.join(".")); if(parent) delete parent[last]; } else setPath(S,p,v);
-  changed(true);
+  changed();
 });
 /* hosted on claude.ai: save through the downloads capability; opened locally: plain link */
 let DLP=null;
@@ -452,14 +513,14 @@ async function download(name,text,type){
   const b=new Blob([text],{type}); const a=document.createElement("a"); a.href=URL.createObjectURL(b); a.download=name; document.body.appendChild(a); a.click(); setTimeout(()=>{URL.revokeObjectURL(a.href); a.remove();},500);
 }
 function toast(msg){ const t=document.getElementById("toast"); t.textContent=msg; t.hidden=false; clearTimeout(toast.h); toast.h=setTimeout(()=>{t.hidden=true;},6000); }
-function ask(msg){ return new Promise(res=>{ const d=document.getElementById("ask"); d.querySelector("p").textContent=msg; d.hidden=false;
+function ask(msg,extra=""){ return new Promise(res=>{ const d=document.getElementById("ask"); d.querySelector("p").textContent=msg; d.querySelector(".extra").innerHTML=extra; d.hidden=false;
   const done=v=>{d.hidden=true; d.querySelector(".yes").onclick=d.querySelector(".no").onclick=null; res(v);};
   d.querySelector(".yes").onclick=()=>done(true); d.querySelector(".no").onclick=()=>done(false); }); }
-const slug=()=>(S.project.name||"project").replace(/[^\p{L}\p{N}]+/gu,"_").slice(0,40);
-function exportSource(){download(slug()+".water.json",JSON.stringify(S,null,2),"application/json");}
-function exportPriced(){const ex=expand(S); if(ex.missing.length){toast("أسعار ناقصة:\n"+ex.missing.join("\n")); return;} download(slug()+".priced_input.json",JSON.stringify(ex.priced,null,2),"application/json");}
+const slug=()=>(S.project.name||"project").replace(/[^\p{L}\p{N}]+/gu,"_").slice(0,40)||"project";
+function exportSource(){download(slug()+".project.json",JSON.stringify(S,null,2),"application/json");}
+function exportPriced(){const ex=expand(S); if(ex.missing.length){toast("أسعار ناقصة:\n"+ex.missing.slice(0,8).join("\n")); return;} download(slug()+".priced_input.json",JSON.stringify(ex.priced,null,2),"application/json");}
 function exportCSV(){
-  const ex=expand(S); if(ex.missing.length){toast("أسعار ناقصة:\n"+ex.missing.join("\n")); return;}
+  const ex=expand(S); if(ex.missing.length){toast("أسعار ناقصة:\n"+ex.missing.slice(0,8).join("\n")); return;}
   const r=price(ex.priced), q=s=>`"${String(s).replace(/"/g,'""')}"`;
   const lines=[["البند","الوصف","الوحدة","الكمية","التكلفة المباشرة للوحدة","سعر الوحدة","الإجمالي"].map(q).join(",")];
   r.items.forEach(it=>lines.push([it.code,it.description,it.unit,it.qty,r2(it.direct_unit),it.unit_price,it.total_price].map(q).join(",")));
@@ -470,12 +531,19 @@ function exportCSV(){
 }
 document.getElementById("file").addEventListener("change",e=>{
   const f=e.target.files[0]; if(!f) return; const rd=new FileReader();
-  rd.onload=()=>{ try{ const d=JSON.parse(rd.result); if(!d.project) throw new Error("الملف لا يحتوي على project"); d.boq=d.boq||[]; d.pipelines=d.pipelines||[]; d.rates=d.rates||{}; d.site_overheads=d.site_overheads||[]; d.markups=d.markups||{}; S=d; changed(true); go("results"); }catch(err){ toast("تعذر قراءة الملف: "+err.message); } };
+  rd.onload=()=>{ try{ const d=JSON.parse(rd.result); if(!d.project) throw new Error("الملف لا يحتوي على project"); S=normalize(d); changed(); go("results"); }catch(err){ toast("تعذر قراءة الملف: "+err.message); } };
   rd.readAsText(f,"utf-8"); e.target.value="";
 });
-async function resetExample(){ if(await ask("استبدال البيانات الحالية بالمثال التوضيحي؟")){ S=clone(EXAMPLE); changed(true); } }
+async function newProject(){
+  const extra=`<label class="f">اسم المشروع<input id="np-name" type="text" value=""></label><label class="f" style="margin-top:8px">نوع المشروع<select id="np-type">${Object.entries(typeOptions()).map(([k,l])=>`<option value="${k}">${esc(l)}</option>`).join("")}</select></label><p class="note">سيتم استبدال المشروع الحالي — احفظه أولاً إن احتجته.</p>`;
+  const p=ask("مشروع جديد",extra); const nm=document.getElementById("np-name"); nm.focus();
+  if(!(await p)) return; const type=document.getElementById("np-type").value;
+  S=normalize(blank(type,document.getElementById("np-name").value.trim()||"مشروع جديد")); LIBSEL={disc:null,all:false,q:{}}; changed(); go("library");
+}
+async function loadExample(k){ if(!k) return; if(await ask(`تحميل المثال «${EXAMPLES[k].project.name}» بدلاً من المشروع الحالي؟`)){ S=normalize(clone(EXAMPLES[k])); changed(); go("results"); } }
+document.getElementById("exsel").insertAdjacentHTML("beforeend",Object.entries(EXAMPLES).map(([k,e])=>`<option value="${k}">${esc(e.project.name)}</option>`).join(""));
 function toggleTheme(){const h=document.documentElement; const dark=h.dataset.theme? h.dataset.theme==="dark" : matchMedia("(prefers-color-scheme: dark)").matches; h.dataset.theme=dark?"light":"dark";}
-renderTabs(); renderAll();
+renderAll();
 </script>
 </body>
 </html>

@@ -29,4 +29,4 @@ tools: Read, Write, Edit, Glob, Grep, Bash, WebSearch, WebFetch
 ## مخرجاتك
 - `opportunities/pipeline.csv` محدّث.
 - `opportunities/ranked.md` — الترتيب والقرار.
-- في ردك: أهم 3–5 فرص بتوصية واضحة، المواعيد خلال 14 يوماً، فرص الباطن من الترسيات الأخيرة، والخطوة التالية لكل فرصة Go (تسليمها لـ `proposal-writer` و`water-pricing-engineer`).
+- في ردك: أهم 3–5 فرص بتوصية واضحة، المواعيد خلال 14 يوماً، فرص الباطن من الترسيات الأخيرة، والخطوة التالية لكل فرصة Go (تسليمها لـ `proposal-writer` و`pricing-engineer`).

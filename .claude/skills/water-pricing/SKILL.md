@@ -7,7 +7,7 @@ metadata:
 
 # تسعير مشاريع المياه بالتفكيك الهندسي
 
-يبني على منهجية `saudi-project-pricing` (اقرأ `SKILL.md` و`references/methodology.md` هناك) ويضيف طبقة هندسية خاصة بالخطوط والشبكات.
+طبقة متخصصة ضمن التسعير العام `cost-estimating` (نوع المشروع «شبكات مياه وصرف»)، تضيف التفكيك الهندسي للخنادق والخطوط. منهجية التكلفة في `saudi-project-pricing`. البنود العددية (توصيلات، محابس، غرف) من مكتبة `cost-estimating`.
 
 ## سير العمل
 1. **استلام جدول الكميات** وتصنيف البنود:
@@ -19,9 +19,11 @@ metadata:
 4. **الإنتاجية**: من سجلات الشركة، مع معاملات تعديل (`productivity_factors`) للظروف — قارنها بـ `water-projects-knowledge/references/productivity-norms.md`.
 5. **التشغيل**:
    ```bash
-   python3 .claude/skills/water-pricing/scripts/water_assemblies.py project.json --out priced_input.json --sheet engineering_sheet.md
+   python3 .claude/skills/cost-estimating/scripts/build_project.py build project.json --out priced_input.json --sheet engineering_sheet.md
    python3 .claude/skills/saudi-project-pricing/scripts/pricing_calc.py priced_input.json --csv priced_boq.csv
    ```
+   (`water_assemblies.py` يعمل منفرداً أيضاً لملفات بها خطوط وبنود حرة فقط.)
+
 6. **المنصة التفاعلية**: `pricing-platform/index.html` تقرأ وتصدر نفس صيغة JSON — للتعديل السريع، سيناريوهات الربح، الحساسية، وتحليل باريتو أمام صاحب القرار.
 
 ## التحليل الهندسي المطلوب في كل تسعير
