@@ -1,0 +1,136 @@
+<title>رسائل واتساب للعملاء</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: one column of message cards under a sticky search + category bar; RTL, phone-first */
+:root{
+  --bg:#eef3f2; --surface:#ffffff; --ink:#132225; --muted:#5b6d70; --line:#d5e0df;
+  --accent:#0b6f6a; --accent-ink:#ffffff; --bubble:#e3f4ec; --ph-bg:#fff1c9; --ph-ink:#6b4a00; --opt:#7a6f9c;
+  --font:"IBM Plex Sans Arabic",system-ui,"Segoe UI",Tahoma,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0d1719; --surface:#152225; --ink:#e3eeed; --muted:#93a7a9; --line:#26393c;
+  --accent:#3fb8a8; --accent-ink:#06201d; --bubble:#173a33; --ph-bg:#4a3a0e; --ph-ink:#ffd978; --opt:#b3a7dd; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0d1719; --surface:#152225; --ink:#e3eeed; --muted:#93a7a9; --line:#26393c;
+  --accent:#3fb8a8; --accent-ink:#06201d; --bubble:#173a33; --ph-bg:#4a3a0e; --ph-ink:#ffd978; --opt:#b3a7dd; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:15px;line-height:1.6;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 48px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:720px;margin:0 auto}
+header.top{padding-block:20px 8px}
+h1{font-size:1.45rem;margin:0;font-weight:700;text-wrap:balance}
+.sub{color:var(--muted);margin:2px 0 0;font-size:.9rem}
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding-block:10px;display:grid;gap:10px;border-bottom:1px solid var(--line)}
+.search{width:100%;font:inherit;padding:10px 14px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink)}
+.search:focus,.chip:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.chips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;font:inherit;font-size:.85rem;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:5px 12px;border-radius:999px;cursor:pointer;white-space:nowrap}
+.chip[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.chip .n{opacity:.7;font-size:.75rem;margin-inline-start:4px}
+details.me{background:var(--surface);border:1px solid var(--line);border-radius:12px;margin-block:14px 4px}
+details.me summary{cursor:pointer;padding:12px 14px;font-weight:600;list-style:none;display:flex;justify-content:space-between;gap:8px}
+details.me summary::after{content:"▾";color:var(--muted)}
+details.me[open] summary::after{content:"▴"}
+.me .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;padding:0 14px 14px}
+.me label{display:grid;gap:3px;font-size:.82rem;color:var(--muted)}
+.me input[type=text]{font:inherit;font-size:.95rem;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);min-width:0}
+.toggle{display:flex;align-items:center;gap:8px;padding:0 14px 14px;font-size:.88rem}
+.note{font-size:.8rem;color:var(--muted);padding:0 14px 14px;margin:0}
+h2{font-size:1.05rem;margin:26px 0 10px;color:var(--accent);font-weight:700}
+.list{display:grid;gap:12px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px;display:grid;gap:10px;min-width:0}
+.head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.head h3{margin:0;font-size:.98rem;font-weight:600;min-width:0;text-wrap:balance}
+.num{color:var(--muted);font-variant-numeric:tabular-nums;font-weight:500;margin-inline-end:6px}
+.copy{flex:none;font:inherit;font-size:.88rem;font-weight:600;border:0;border-radius:9px;padding:7px 14px;background:var(--accent);color:var(--accent-ink);cursor:pointer;display:inline-flex;align-items:center;gap:6px;min-height:36px}
+.copy.done{background:var(--ink);color:var(--surface)}
+.copy svg{width:16px;height:16px}
+.bubble{background:var(--bubble);border-radius:12px 4px 12px 12px;padding:10px 12px;white-space:pre-wrap;overflow-wrap:anywhere;font-size:.93rem;line-height:1.75;min-width:0}
+.ph{background:var(--ph-bg);color:var(--ph-ink);border-radius:4px;padding:0 3px;font-size:.88em;font-weight:500}
+.filled{border-bottom:1.5px dotted var(--accent)}
+.optl{color:var(--opt)}
+.empty{text-align:center;color:var(--muted);padding:40px 0}
+.toast{position:fixed;left:50%;transform:translateX(-50%) translateY(20px);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--surface);padding:9px 18px;border-radius:999px;font-size:.9rem;opacity:0;transition:.2s;pointer-events:none;z-index:20}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.sel{position:fixed;opacity:0;pointer-events:none}
+@media (prefers-reduced-motion:reduce){.toast{transition:none}}
+</style>
+<div class="wrap" dir="rtl" lang="ar">
+  <header class="top">
+    <h1>رسائل واتساب للعملاء</h1>
+    <p class="sub">الغازات الطبية والصناعية • صيانة أجهزة المختبرات • المعايرة — اضغط «نسخ» والصق في واتساب</p>
+  </header>
+  <details class="me" id="me">
+    <summary>بياناتي (تُعبّأ في الرسائل تلقائياً)</summary>
+    <div class="grid">
+      <label>اسم الشركة<input type="text" id="f-company" data-k="اسم_الشركة"></label>
+      <label>اسم الموظف<input type="text" id="f-emp" data-k="اسم_الموظف"></label>
+      <label>رقم التواصل<input type="text" id="f-phone" data-k="رقم_التواصل" inputmode="tel"></label>
+      <label>رقم الطوارئ<input type="text" id="f-emg" data-k="رقم_الطوارئ" inputmode="tel"></label>
+      <label>الموقع الإلكتروني<input type="text" id="f-web" data-k="الموقع_الإلكتروني"></label>
+      <label>اسم العميل (للرسالة الحالية)<input type="text" id="f-client" data-k="اسم_العميل"></label>
+    </div>
+    <label class="toggle"><input type="checkbox" id="f-opt"> حذف الأسطر الاختيارية [اختياري: …] عند النسخ</label>
+    <p class="note">البيانات تُحفظ على جهازك فقط. الحقول المظللة بالأصفر تبقى في الرسالة لتعديلها يدوياً قبل الإرسال.</p>
+  </details>
+  <div class="bar">
+    <input class="search" id="q" type="search" placeholder="ابحث: معايرة، تسريب، عرض سعر…" aria-label="بحث في الرسائل">
+    <div class="chips" id="chips" role="toolbar" aria-label="الأقسام"></div>
+  </div>
+  <main id="out"></main>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<textarea class="sel" id="sel" aria-hidden="true" tabindex="-1"></textarea>
+<script>
+const DATA=__DATA__;
+const SHORT=["عامة","غازات طبية","غازات صناعية","صيانة المختبرات","المعايرة","مناسبات"];
+const COPY_ICON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>';
+let n=0; DATA.forEach(s=>s.items.forEach(it=>it.n=++n));
+const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+const inputs=[...document.querySelectorAll('.me input[type=text]')];
+inputs.forEach(i=>{i.value=store.get('wa-'+i.dataset.k)||'';i.addEventListener('input',()=>{store.set('wa-'+i.dataset.k,i.value);render()})});
+const opt=document.getElementById('f-opt'); opt.checked=store.get('wa-opt')==='1';
+opt.addEventListener('change',()=>{store.set('wa-opt',opt.checked?'1':'0');render()});
+function vals(){const v={};inputs.forEach(i=>{if(i.value.trim())v[i.dataset.k]=i.value.trim()});return v}
+function fill(text){const v=vals();let t=text.replace(/\{\{([^{}]+)\}\}/g,(m,k)=>v[k.trim()]!==undefined?v[k.trim()]:m);
+  if(opt.checked)t=t.split('\n').filter(l=>!/^\s*\[اختياري/.test(l)).join('\n').replace(/\[اختياري:\s*([^\]]*)\]/g,'$1');
+  return t}
+const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function pretty(raw){const v=vals();
+  let h=esc(raw);
+  h=h.replace(/\{\{([^{}]+)\}\}/g,(m,k)=>v[k.trim()]!==undefined?'<span class="filled">'+esc(v[k.trim()])+'</span>':'<span class="ph">'+k+'</span>');
+  h=h.replace(/(^|[\s(])\*([^*\n]+)\*/g,'$1<b>$2</b>').replace(/(^|[\s(])_([^_\n]+)_/g,'$1<i>$2</i>');
+  h=h.split('\n').map(l=>/^\s*\[اختياري/.test(l)?'<span class="optl">'+l+'</span>':l).join('\n');
+  return h}
+let cat=-1;
+const chips=document.getElementById('chips');
+function chip(label,i,count){const b=document.createElement('button');b.className='chip';b.type='button';b.innerHTML=label+'<span class="n">'+count+'</span>';b.onclick=()=>{cat=i;render();window.scrollTo({top:0})};return b}
+chips.append(chip('الكل',-1,n));DATA.forEach((s,i)=>chips.append(chip(SHORT[i]||s.name,i,s.items.length)));
+const q=document.getElementById('q');q.addEventListener('input',render);
+function render(){
+  [...chips.children].forEach((c,i)=>c.setAttribute('aria-pressed',String(i-1===cat)));
+  const term=q.value.trim();const out=document.getElementById('out');out.innerHTML='';let shown=0;
+  DATA.forEach((s,i)=>{if(cat!==-1&&cat!==i)return;
+    const items=s.items.filter(it=>!term||(it.t+' '+it.b).includes(term));if(!items.length)return;
+    const h=document.createElement('h2');h.textContent=s.name;out.append(h);
+    const list=document.createElement('div');list.className='list';
+    items.forEach(it=>{shown++;const c=document.createElement('article');c.className='card';
+      c.innerHTML='<div class="head"><h3><span class="num">'+it.n+'</span>'+esc(it.t)+'</h3><button class="copy" type="button">'+COPY_ICON+'نسخ</button></div><div class="bubble">'+pretty(it.b)+'</div>';
+      c.querySelector('.copy').onclick=e=>copy(fill(it.b),e.currentTarget);list.append(c)});
+    out.append(list)});
+  if(!shown)out.innerHTML='<p class="empty">لا توجد رسالة تطابق «'+esc(term)+'». جرّب كلمة أخرى.</p>';
+}
+const toast=document.getElementById('toast');let tt;
+function say(m){toast.textContent=m;toast.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>toast.classList.remove('show'),1800)}
+function mark(btn){btn.classList.add('done');btn.innerHTML=COPY_ICON+'تم النسخ';setTimeout(()=>{btn.classList.remove('done');btn.innerHTML=COPY_ICON+'نسخ'},1600)}
+function fallback(text,btn){const ta=document.getElementById('sel');ta.value=text;ta.focus();ta.select();ta.setSelectionRange(0,text.length);
+  let ok=false;try{ok=document.execCommand('copy')}catch(e){}
+  if(ok){mark(btn);say('تم النسخ — الصقها في واتساب')}else{say('تعذّر النسخ التلقائي، حدّد النص وانسخه يدوياً');
+    const b=btn.closest('.card').querySelector('.bubble');const r=document.createRange();r.selectNodeContents(b);const s=getSelection();s.removeAllRanges();s.addRange(r)}}
+function copy(text,btn){if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(()=>{mark(btn);say('تم النسخ — الصقها في واتساب')},()=>fallback(text,btn))}else fallback(text,btn)}
+render();
+</script>
