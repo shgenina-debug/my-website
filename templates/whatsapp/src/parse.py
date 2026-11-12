@@ -16,4 +16,4 @@ while i<len(lines):
         while not lines[j].startswith('```'): buf.append(lines[j]); j+=1
         cur['items'].append({'t':title,'b':'\n'.join(buf)}); i=j
     i+=1
-print(json.dumps(sections,ensure_ascii=False))
+print(json.dumps([x for x in sections if x['items']],ensure_ascii=False))
