@@ -62,7 +62,7 @@ h2{font-size:1.05rem;margin:26px 0 10px;color:var(--accent);font-weight:700}
 <div class="wrap" dir="rtl" lang="ar">
   <header class="top">
     <h1>رسائل واتساب للعملاء</h1>
-    <p class="sub">الغازات الطبية والصناعية • صيانة أجهزة المختبرات • المعايرة — اضغط «نسخ» والصق في واتساب</p>
+    <p class="sub">الغازات الطبية والصناعية • صيانة أجهزة المختبرات • المعايرة — اضغط «نسخ» وألصقها في الواتساب على طول</p>
   </header>
   <details class="me" id="me">
     <summary>بياناتي (تُعبّأ في الرسائل تلقائياً)</summary>
@@ -122,7 +122,7 @@ function render(){
       c.innerHTML='<div class="head"><h3><span class="num">'+it.n+'</span>'+esc(it.t)+'</h3><button class="copy" type="button">'+COPY_ICON+'نسخ</button></div><div class="bubble">'+pretty(it.b)+'</div>';
       c.querySelector('.copy').onclick=e=>copy(fill(it.b),e.currentTarget);list.append(c)});
     out.append(list)});
-  if(!shown)out.innerHTML='<p class="empty">لا توجد رسالة تطابق «'+esc(term)+'». جرّب كلمة أخرى.</p>';
+  if(!shown)out.innerHTML='<p class="empty">لا توجد رسالة تطابق «'+esc(term)+'». جرّب كلمة ثانية.</p>';
 }
 const toast=document.getElementById('toast');let tt;
 function say(m){toast.textContent=m;toast.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>toast.classList.remove('show'),1800)}
