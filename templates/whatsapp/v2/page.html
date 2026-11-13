@@ -1,0 +1,65 @@
+<title>رسالة الماسية المجمّعة</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
+<style>
+__CSS__
+.card{margin-top:14px}
+.ver{display:inline-block;font-size:.78rem;font-weight:600;color:var(--accent);border:1px solid var(--accent);border-radius:999px;padding:1px 10px;margin-bottom:6px}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+.count{color:var(--muted);font-size:.8rem;font-variant-numeric:tabular-nums}
+</style>
+<div class="wrap" dir="rtl" lang="ar">
+  <header class="top">
+    <span class="ver">الإصدار الثاني</span>
+    <h1>رسالة الماسية المجمّعة</h1>
+    <p class="sub">رسالة واحدة تعرّف بكل خدمات شركة الماسية: الغازات الطبية والصناعية، وصيانة أجهزة المختبرات، والمعايرة. عبّئ بياناتك ثم اضغط «نسخ» والصقها في واتساب.</p>
+  </header>
+  <details class="me" id="me" open>
+    <summary>البيانات (تُعبّأ في الرسالة تلقائياً)</summary>
+    <div class="grid">
+      <label>اسم العميل<input type="text" id="f-client" data-k="اسم_العميل"></label>
+      <label>اسم الموظف<input type="text" id="f-emp" data-k="اسم_الموظف"></label>
+      <label>رقم التواصل<input type="text" id="f-phone" data-k="رقم_التواصل" inputmode="tel"></label>
+      <label>رقم الطوارئ<input type="text" id="f-emg" data-k="رقم_الطوارئ" inputmode="tel"></label>
+      <label>الموقع الإلكتروني<input type="text" id="f-web" data-k="الموقع_الإلكتروني"></label>
+    </div>
+    <label class="toggle"><input type="checkbox" id="f-opt" checked><span>حذف السطر الاختياري الخاص باعتماد المعايرة عند النسخ</span></label>
+    <p class="note">تُحفظ البيانات على جهازك فقط. الحقول المظللة بالأصفر تبقى في الرسالة لتعديلها قبل الإرسال.</p>
+  </details>
+  <article class="card">
+    <div class="head"><h3>رسالة تعريفية شاملة <span class="count" id="count"></span></h3><button class="copy" type="button" id="copy"></button></div>
+    <div class="bubble" id="bubble"></div>
+  </article>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<textarea class="sel" id="sel" aria-hidden="true" tabindex="-1"></textarea>
+<script>
+const MSG=__MSG__;
+const COPY_ICON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>';
+const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+const inputs=[...document.querySelectorAll('.me input[type=text]')];
+inputs.forEach(i=>{i.value=store.get('wa-'+i.dataset.k)||'';i.addEventListener('input',()=>{store.set('wa-'+i.dataset.k,i.value);render()})});
+const opt=document.getElementById('f-opt');const so=store.get('wa2-opt');if(so!==null)opt.checked=so==='1';
+opt.addEventListener('change',()=>{store.set('wa2-opt',opt.checked?'1':'0');render()});
+function vals(){const v={};inputs.forEach(i=>{if(i.value.trim())v[i.dataset.k]=i.value.trim()});return v}
+const isOpt=l=>/^\s*\[اختياري/.test(l);
+function fill(){const v=vals();let t=MSG;if(opt.checked)t=t.split('\n').filter(l=>!isOpt(l)).join('\n');
+  return t.replace(/\{\{([^{}]+)\}\}/g,(m,k)=>v[k.trim()]!==undefined?v[k.trim()]:m)}
+const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function render(){const v=vals();let raw=MSG;if(opt.checked)raw=raw.split('\n').filter(l=>!isOpt(l)).join('\n');
+  let h=esc(raw).replace(/\{\{([^{}]+)\}\}/g,(m,k)=>v[k.trim()]!==undefined?'<span class="filled">'+esc(v[k.trim()])+'</span>':'<span class="ph">'+k+'</span>');
+  h=h.replace(/(^|[\s(])\*([^*\n]+)\*/g,'$1<b>$2</b>');
+  h=h.split('\n').map(l=>isOpt(l)?'<span class="optl">'+l+'</span>':l).join('\n');
+  document.getElementById('bubble').innerHTML=h;document.getElementById('count').textContent='· '+fill().length+' حرفاً'}
+const btn=document.getElementById('copy');btn.innerHTML=COPY_ICON+'نسخ';
+const toast=document.getElementById('toast');let tt;
+function say(m){toast.textContent=m;toast.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>toast.classList.remove('show'),1800)}
+function mark(){btn.classList.add('done');btn.innerHTML=COPY_ICON+'تم النسخ';setTimeout(()=>{btn.classList.remove('done');btn.innerHTML=COPY_ICON+'نسخ'},1600)}
+function fallback(text){const ta=document.getElementById('sel');ta.value=text;ta.focus();ta.select();ta.setSelectionRange(0,text.length);
+  let ok=false;try{ok=document.execCommand('copy')}catch(e){}
+  if(ok){mark();say('تم النسخ — الصقها في واتساب')}else{say('تعذّر النسخ التلقائي، حدّد النص وانسخه يدوياً');
+    const r=document.createRange();r.selectNodeContents(document.getElementById('bubble'));const s=getSelection();s.removeAllRanges();s.addRange(r)}}
+btn.onclick=()=>{const t=fill();if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(()=>{mark();say('تم النسخ — الصقها في واتساب')},()=>fallback(t))}else fallback(t)};
+render();
+</script>
