@@ -2,7 +2,7 @@
 import json,os,re
 D=os.path.dirname(os.path.abspath(__file__))
 md=open(D+'/consolidated-message.md',encoding='utf-8').read()
-msg=re.search(r'```\n(.*?)\n```',md,re.S).group(1)
+msg=[{'t':t,'b':x} for t,x in re.findall(r'### (.+?)\n```\n(.*?)\n```',md,re.S)]
 tpl=open(D+'/../src/template.html',encoding='utf-8').read()
 css=re.search(r'<style>\n(.*?)\n\.sel\{[^}]*\}',tpl,re.S).group(0).replace('<style>\n','')
 css=css[:css.rfind('.sel{')]+'.sel{position:fixed;opacity:0;pointer-events:none}'

@@ -73,7 +73,7 @@ h2{font-size:1.05rem;margin:26px 0 10px;color:var(--accent);font-weight:700}
   <header class="top">
     <span class="ver">الإصدار الثاني</span>
     <h1>رسالة الماسية المجمّعة</h1>
-    <p class="sub">رسالة واحدة تعرّف بكل خدمات شركة الماسية: الغازات الطبية والصناعية، وصيانة أجهزة المختبرات، والمعايرة. عبّئ بياناتك ثم اضغط «نسخ» والصقها في واتساب.</p>
+    <p class="sub">رسالتان (مختصرة وشاملة) تعرّفان بكل خدمات شركة الماسية: الغازات الطبية والصناعية، وصيانة أجهزة المختبرات، والمعايرة. عبّئ بياناتك ثم اضغط «نسخ» والصقها في واتساب.</p>
   </header>
   <details class="me" id="me" open>
     <summary>البيانات (تُعبّأ في الرسالة تلقائياً)</summary>
@@ -87,15 +87,12 @@ h2{font-size:1.05rem;margin:26px 0 10px;color:var(--accent);font-weight:700}
     <label class="toggle"><input type="checkbox" id="f-opt" checked><span>حذف السطر الاختياري الخاص باعتماد المعايرة عند النسخ</span></label>
     <p class="note">تُحفظ البيانات على جهازك فقط. الحقول المظللة بالأصفر تبقى في الرسالة لتعديلها قبل الإرسال.</p>
   </details>
-  <article class="card">
-    <div class="head"><h3>رسالة تعريفية شاملة <span class="count" id="count"></span></h3><button class="copy" type="button" id="copy"></button></div>
-    <div class="bubble" id="bubble"></div>
-  </article>
+  <main id="out"></main>
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <textarea class="sel" id="sel" aria-hidden="true" tabindex="-1"></textarea>
 <script>
-const MSG="السلام عليكم ورحمة الله وبركاته\nمرحباً بكم {{اسم_العميل}} 🌿\n\nيسرّنا في *شركة الماسية* أن نقدم لكم خدماتنا المتكاملة:\n\n🏥 *أولاً: الغازات الطبية*\n▫️ تصميم شبكات الغازات الطبية وتمديدها (الأكسجين، الهواء الطبي، الشفط، أكسيد النيتروز، ثاني أكسيد الكربون)\n▫️ توريد وتركيب المخارج ولوحات الإنذار وصناديق المحابس ومجمعات الأسطوانات\n▫️ الاختبار والتشغيل: اختبار الضغط والتسرب، وتطهير الخطوط، وفحص النقاء، والتحقق من عدم تداخل الغازات\n▫️ عقود صيانة وقائية، واستجابة للأعطال الطارئة\n\n🏭 *ثانياً: الغازات الصناعية والمختبرية*\n▫️ تمديد شبكات النيتروجين والأرجون والهيليوم والهيدروجين والهواء المضغوط وغيرها، بأنابيب الفولاذ المقاوم للصدأ أو النحاس\n▫️ مجمعات الأسطوانات ومنظمات الضغط ومحابس العزل وأجهزة كشف التسرب\n▫️ خطوط الغاز لأجهزة التحليل وأنظمة الغازات عالية النقاء، مع الصيانة الدورية\n\n🔬 *ثالثاً: صيانة أجهزة المختبرات*\n▫️ صيانة وقائية مجدولة وإصلاح الأعطال لأجهزة التحليل والطرد المركزي والحاضنات والأفران وأجهزة التعقيم وكبائن السلامة الحيوية والموازين وغيرها\n▫️ توفير قطع الغيار، وتقرير فني بعد كل زيارة، وسجل خاص بكل جهاز\n\n⚖️ *رابعاً: معايرة الأجهزة*\n▫️ معايرة الموازين وأجهزة الحرارة والماصات وأجهزة الطرد المركزي وأجهزة قياس الحموضة ومقاييس الضغط والرطوبة\n▫️ شهادة معايرة لكل جهاز تتضمن النتائج قبل الضبط وبعده ومقدار عدم اليقين\n▫️ خطة معايرة سنوية، مع تذكير منا قبل كل موعد\n[اختياري: المعايرة {{معتمدة من {{جهة_الاعتماد}} / تتم عن طريق مختبر شريك معتمد: {{اسم_المختبر}}}}]\n\n🤝 جهة واحدة لتمديد الشبكات وصيانة الأجهزة ومعايرتها، توفّر عليكم التنسيق بين أكثر من مقاول.\n\n📋 ولإعداد عرض سعر مناسب، نرجو تزويدنا بما يلي:\n1️⃣ اسم الجهة والمدينة أو الموقع\n2️⃣ الخدمة المطلوبة\n3️⃣ قائمة الأجهزة أو نقاط الغاز (النوع، الشركة المصنعة، الطراز، العدد)\n\n📞 للتواصل: {{رقم_التواصل}}\n🚨 للطوارئ: {{رقم_الطوارئ}}\n🌐 {{الموقع_الإلكتروني}}\n\nمع خالص التحية،\n{{اسم_الموظف}} – شركة الماسية";
+const MSGS=[{"t": "الرسالة المختصرة", "b": "السلام عليكم ورحمة الله وبركاته\nمرحباً بكم {{اسم_العميل}} 🌿\n\nتقدم لكم *شركة الماسية*:\n🏥 تمديد وصيانة شبكات الغازات الطبية\n🏭 تمديد وصيانة شبكات الغازات الصناعية والمختبرية\n🔬 صيانة أجهزة المختبرات الوقائية والإصلاحية\n⚖️ معايرة الأجهزة مع إصدار شهادات المعايرة\n\nيسعدنا خدمتكم، ونرجو تزويدنا باحتياجكم أو بقائمة الأجهزة لإعداد عرض السعر.\n📞 {{رقم_التواصل}}\n\n{{اسم_الموظف}} – شركة الماسية"}, {"t": "الرسالة الشاملة", "b": "السلام عليكم ورحمة الله وبركاته\nمرحباً بكم {{اسم_العميل}} 🌿\n\nيسرّنا في *شركة الماسية* أن نقدم لكم خدماتنا المتكاملة:\n\n🏥 *أولاً: الغازات الطبية*\n▫️ تصميم شبكات الغازات الطبية وتمديدها (الأكسجين، الهواء الطبي، الشفط، أكسيد النيتروز، ثاني أكسيد الكربون)\n▫️ توريد وتركيب المخارج ولوحات الإنذار وصناديق المحابس ومجمعات الأسطوانات\n▫️ الاختبار والتشغيل: اختبار الضغط والتسرب، وتطهير الخطوط، وفحص النقاء، والتحقق من عدم تداخل الغازات\n▫️ عقود صيانة وقائية، واستجابة للأعطال الطارئة\n\n🏭 *ثانياً: الغازات الصناعية والمختبرية*\n▫️ تمديد شبكات النيتروجين والأرجون والهيليوم والهيدروجين والهواء المضغوط وغيرها، بأنابيب الفولاذ المقاوم للصدأ أو النحاس\n▫️ مجمعات الأسطوانات ومنظمات الضغط ومحابس العزل وأجهزة كشف التسرب\n▫️ خطوط الغاز لأجهزة التحليل وأنظمة الغازات عالية النقاء، مع الصيانة الدورية\n\n🔬 *ثالثاً: صيانة أجهزة المختبرات*\n▫️ صيانة وقائية مجدولة وإصلاح الأعطال لأجهزة التحليل والطرد المركزي والحاضنات والأفران وأجهزة التعقيم وكبائن السلامة الحيوية والموازين وغيرها\n▫️ توفير قطع الغيار، وتقرير فني بعد كل زيارة، وسجل خاص بكل جهاز\n\n⚖️ *رابعاً: معايرة الأجهزة*\n▫️ معايرة الموازين وأجهزة الحرارة والماصات وأجهزة الطرد المركزي وأجهزة قياس الحموضة ومقاييس الضغط والرطوبة\n▫️ شهادة معايرة لكل جهاز تتضمن النتائج قبل الضبط وبعده ومقدار عدم اليقين\n▫️ خطة معايرة سنوية، مع تذكير منا قبل كل موعد\n[اختياري: المعايرة {{معتمدة من {{جهة_الاعتماد}} / تتم عن طريق مختبر شريك معتمد: {{اسم_المختبر}}}}]\n\n🤝 جهة واحدة لتمديد الشبكات وصيانة الأجهزة ومعايرتها، توفّر عليكم التنسيق بين أكثر من مقاول.\n\n📋 ولإعداد عرض سعر مناسب، نرجو تزويدنا بما يلي:\n1️⃣ اسم الجهة والمدينة أو الموقع\n2️⃣ الخدمة المطلوبة\n3️⃣ قائمة الأجهزة أو نقاط الغاز (النوع، الشركة المصنعة، الطراز، العدد)\n\n📞 للتواصل: {{رقم_التواصل}}\n🚨 للطوارئ: {{رقم_الطوارئ}}\n🌐 {{الموقع_الإلكتروني}}\n\nمع خالص التحية،\n{{اسم_الموظف}} – شركة الماسية"}];
 const COPY_ICON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>';
 const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
 const inputs=[...document.querySelectorAll('.me input[type=text]')];
@@ -104,23 +101,25 @@ const opt=document.getElementById('f-opt');const so=store.get('wa2-opt');if(so!=
 opt.addEventListener('change',()=>{store.set('wa2-opt',opt.checked?'1':'0');render()});
 function vals(){const v={};inputs.forEach(i=>{if(i.value.trim())v[i.dataset.k]=i.value.trim()});return v}
 const isOpt=l=>/^\s*\[اختياري/.test(l);
-function fill(){const v=vals();let t=MSG;if(opt.checked)t=t.split('\n').filter(l=>!isOpt(l)).join('\n');
-  return t.replace(/\{\{([^{}]+)\}\}/g,(m,k)=>v[k.trim()]!==undefined?v[k.trim()]:m)}
+function strip(t){return opt.checked?t.split('\n').filter(l=>!isOpt(l)).join('\n'):t}
+function fill(m){const v=vals();return strip(m).replace(/\{\{([^{}]+)\}\}/g,(x,k)=>v[k.trim()]!==undefined?v[k.trim()]:x)}
 const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-function render(){const v=vals();let raw=MSG;if(opt.checked)raw=raw.split('\n').filter(l=>!isOpt(l)).join('\n');
-  let h=esc(raw).replace(/\{\{([^{}]+)\}\}/g,(m,k)=>v[k.trim()]!==undefined?'<span class="filled">'+esc(v[k.trim()])+'</span>':'<span class="ph">'+k+'</span>');
+function pretty(m){const v=vals();
+  let h=esc(strip(m)).replace(/\{\{([^{}]+)\}\}/g,(x,k)=>v[k.trim()]!==undefined?'<span class="filled">'+esc(v[k.trim()])+'</span>':'<span class="ph">'+k+'</span>');
   h=h.replace(/(^|[\s(])\*([^*\n]+)\*/g,'$1<b>$2</b>');
-  h=h.split('\n').map(l=>isOpt(l)?'<span class="optl">'+l+'</span>':l).join('\n');
-  document.getElementById('bubble').innerHTML=h;document.getElementById('count').textContent='· '+fill().length+' حرفاً'}
-const btn=document.getElementById('copy');btn.innerHTML=COPY_ICON+'نسخ';
+  return h.split('\n').map(l=>isOpt(l)?'<span class="optl">'+l+'</span>':l).join('\n')}
 const toast=document.getElementById('toast');let tt;
 function say(m){toast.textContent=m;toast.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>toast.classList.remove('show'),1800)}
-function mark(){btn.classList.add('done');btn.innerHTML=COPY_ICON+'تم النسخ';setTimeout(()=>{btn.classList.remove('done');btn.innerHTML=COPY_ICON+'نسخ'},1600)}
-function fallback(text){const ta=document.getElementById('sel');ta.value=text;ta.focus();ta.select();ta.setSelectionRange(0,text.length);
+function mark(btn){btn.classList.add('done');btn.innerHTML=COPY_ICON+'تم النسخ';setTimeout(()=>{btn.classList.remove('done');btn.innerHTML=COPY_ICON+'نسخ'},1600)}
+function fallback(text,btn){const ta=document.getElementById('sel');ta.value=text;ta.focus();ta.select();ta.setSelectionRange(0,text.length);
   let ok=false;try{ok=document.execCommand('copy')}catch(e){}
-  if(ok){mark();say('تم النسخ — الصقها في واتساب')}else{say('تعذّر النسخ التلقائي، حدّد النص وانسخه يدوياً');
-    const r=document.createRange();r.selectNodeContents(document.getElementById('bubble'));const s=getSelection();s.removeAllRanges();s.addRange(r)}}
-btn.onclick=()=>{const t=fill();if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(()=>{mark();say('تم النسخ — الصقها في واتساب')},()=>fallback(t))}else fallback(t)};
+  if(ok){mark(btn);say('تم النسخ — الصقها في واتساب')}else{say('تعذّر النسخ التلقائي، حدّد النص وانسخه يدوياً');
+    const r=document.createRange();r.selectNodeContents(btn.closest('.card').querySelector('.bubble'));const s=getSelection();s.removeAllRanges();s.addRange(r)}}
+function render(){const out=document.getElementById('out');out.innerHTML='';
+  MSGS.forEach(m=>{const c=document.createElement('article');c.className='card';
+    c.innerHTML='<div class="head"><h3>'+esc(m.t)+' <span class="count">· '+fill(m.b).length+' حرفاً</span></h3><button class="copy" type="button">'+COPY_ICON+'نسخ</button></div><div class="bubble">'+pretty(m.b)+'</div>';
+    const btn=c.querySelector('.copy');btn.onclick=()=>{const t=fill(m.b);if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(()=>{mark(btn);say('تم النسخ — الصقها في واتساب')},()=>fallback(t,btn))}else fallback(t,btn)};
+    out.append(c)})}
 render();
 </script>
 
