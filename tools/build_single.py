@@ -7,7 +7,7 @@ they sit in the same folder. Fonts still load from Google Fonts when online,
 with system fallbacks offline.
 
 Usage: python3 tools/build_single.py [output-folder]
-Writes almasia.html (English) and almasia-ar.html (Arabic).
+Writes almasia.html (Arabic, the main page) and almasia-en.html (English).
 """
 import base64
 import mimetypes
@@ -23,8 +23,8 @@ js = (ROOT / "assets/js/main.js").read_text(encoding="utf-8")
 
 PAGES = [
     # source page, asset prefix used in it, output name, language-switch target
-    ("index.html", "", "almasia.html", ("ar/index.html", "almasia-ar.html")),
-    ("ar/index.html", "../", "almasia-ar.html", ("../index.html", "almasia.html")),
+    ("index.html", "", "almasia.html", ("en/index.html", "almasia-en.html")),
+    ("en/index.html", "../", "almasia-en.html", ("../index.html", "almasia.html")),
 ]
 
 
