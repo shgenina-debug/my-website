@@ -1,6 +1,6 @@
-# ALMASIA: Integrated Engineering Services
+# Al-Ahram Al-Masia: Integrated Engineering Services
 
-Corporate website for ALMASIA (الماسية للخدمات الهندسية المتكاملة). Static HTML, CSS and JavaScript with no build step and no runtime dependencies.
+Corporate website for Al-Ahram Al-Masia Advanced Company (شركة الأهرام الماسية المتطورة). Static HTML, CSS and JavaScript with no build step and no runtime dependencies.
 
 ## Run locally
 
@@ -32,17 +32,17 @@ assets/img/*.svg      Engineering-drawing artwork used as image placeholders
 
 ## Design reference
 
-The layout and motion follow the supplied reference video (Outcrowd's Resq.io concept). Each reference section was rebuilt for ALMASIA:
+The layout and motion follow the supplied reference video (Outcrowd's Resq.io concept). Each reference section was rebuilt for Al-Ahram Al-Masia:
 
-| Reference | ALMASIA |
+| Reference | Al-Ahram Al-Masia |
 | --- | --- |
 | Floating pill navigation | Same, turns solid with blur on scroll; full-width sheet on mobile |
-| Hero with tilted product dashboard and diagonal light beam | ALMASIA station monitoring console that straightens as you scroll |
+| Hero with tilted product dashboard and diagonal light beam | Al-Ahram Al-Masia station monitoring console that straightens as you scroll |
 | Client logo strip | Engineering disciplines strip |
 | "Issues arise every day" gradient card with node graph | About card with discipline graph, then animated stats |
 | Nodes flowing into a glowing "AI" chip | Eight services wired into an "Integrated engineering" core |
 | "All-in-one platform" bento grid | Featured solutions bento |
-| Tilted "solid foundation" tiles | "Why ALMASIA?" tiles that settle as you scroll |
+| Tilted "solid foundation" tiles | "Why Al-Ahram Al-Masia?" tiles that settle as you scroll |
 | "Book your demo" light-beam CTA | "Have an engineering project?" CTA |
 
 Sections not in the reference (industries, projects, process, contact) use the same visual language: pinned horizontal scroll for industries, a sticky image that swaps per project, and a process line that fills as you scroll.

@@ -1,4 +1,4 @@
-/* ALMASIA site behaviour. No dependencies. */
+/* Al-Ahram Al-Masia site behaviour. No dependencies. */
 (() => {
   'use strict';
 

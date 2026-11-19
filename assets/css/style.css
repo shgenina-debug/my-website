@@ -1,5 +1,5 @@
 /* ==========================================================================
-   ALMASIA, Integrated Engineering Services
+   Al-Ahram Al-Masia, Integrated Engineering Services
    Dark canvas, arc-blue light. Layout and motion follow the reference site:
    floating pill nav, beam-lit hero with tilted console, flow into a core chip,
    bento grid, settling tiles, beam CTA.
@@ -110,7 +110,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
   -webkit-backdrop-filter: blur(16px) saturate(140%);
   backdrop-filter: blur(16px) saturate(140%);
 }
-.brand { display: inline-flex; align-items: center; gap: 10px; font-weight: 700; letter-spacing: .14em; font-size: 1rem; }
+.brand { display: inline-flex; align-items: center; gap: 10px; white-space: nowrap; font-weight: 700; letter-spacing: .14em; font-size: 1rem; }
 .brand-logo { width: 44px; height: 44px; border-radius: 11px; box-shadow: 0 0 0 1px rgba(255,255,255,.12); }
 .footer-brand .brand-logo { width: 112px; height: 112px; border-radius: 24px; margin-bottom: 6px; }
 .nav-links { display: flex; gap: 4px; margin-inline: auto; }
@@ -498,7 +498,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
   .process-head { position: static; }
 }
 
-/* ---------- Why ALMASIA: settling tiles ---------- */
+/* ---------- Why Al-Ahram Al-Masia: settling tiles ---------- */
 .why { overflow-x: clip; }
 .found { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; max-width: 980px; margin-inline: auto; perspective: 1400px; }
 .ftile {
@@ -622,7 +622,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 [dir="rtl"] .h2 { font-size: calc(var(--fs-h2) * 1.25); line-height: 1.2; }
 [dir="rtl"] .tile h3, [dir="rtl"] .proj-item h3, [dir="rtl"] .step h3, [dir="rtl"] .ind h3, [dir="rtl"] .panel-title { font-weight: 600; }
 [dir="rtl"] .lead, [dir="rtl"] p { line-height: 1.8; }
-[dir="rtl"] .brand { flex-direction: row-reverse; }
+[dir="rtl"] .brand { letter-spacing: 0; font-family: var(--font-ar-display); font-weight: 800; font-size: 1.3rem; }
 [dir="rtl"] .footer-brand [dir="ltr"] { text-align: right; }
 [dir="rtl"] .beam-hero {
   left: auto; right: -12%; transform-origin: top right;
@@ -639,3 +639,8 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .lang-switch:hover { border-color: var(--arc-glow); }
 .lang-switch[lang="ar"] { font-family: var(--font-ar); }
 .lang-switch[lang="en"] { font-family: "Manrope", system-ui, sans-serif; }
+
+@media (max-width: 520px) {
+  .site-header .brand span { font-size: .74rem; letter-spacing: .04em; }
+  [dir="rtl"] .site-header .brand span { font-size: 1.15rem; letter-spacing: 0; }
+}
