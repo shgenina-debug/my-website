@@ -1,17 +1,47 @@
-"""سيرفر محلي بسيط (127.0.0.1) للواجهة والـ API."""
+"""السيرفر: على الكمبيوتر (127.0.0.1 بدون باسورد) أو على سيرفر على النت (بباسورد)."""
+import base64
+import io
 import json
 import os
 import time
 import urllib.parse
+import zipfile
+from http.cookies import SimpleCookie
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 from . import xlsx
+from .auth import COOKIE, SESSION_DAYS, Auth
 from .cities import DEFAULT_CITIES
 from .db import DB, STATUSES
 from .phones import extract_mobiles, wa_link
 from .worker import Worker
 
 STATIC = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "static")
+STATIC_FILES = {
+    "/manifest.webmanifest": ("manifest.webmanifest", "application/manifest+json; charset=utf-8"),
+    "/icon-192.png": ("icon-192.png", "image/png"),
+    "/icon-512.png": ("icon-512.png", "image/png"),
+}
+PUBLIC = {"/login", "/api/login", "/healthz", *STATIC_FILES}
+MAX_BODY = 25 * 1024 * 1024        # أقصى حجم لملف الواتساب المرفوع
+MAX_UNZIPPED = 60 * 1024 * 1024
+
+
+def text_from_upload(b):
+    """النص من طلب الاستبعاد: نص ملصوق و/أو ملف .zip من تصدير الواتساب."""
+    text = b.get("text") or ""
+    if b.get("zip_b64"):
+        raw = base64.b64decode(b["zip_b64"])
+        with zipfile.ZipFile(io.BytesIO(raw)) as z:
+            total = 0
+            for info in z.infolist():
+                if info.filename.lower().endswith(".txt"):
+                    total += info.file_size
+                    if total > MAX_UNZIPPED:
+                        raise ValueError("الملف كبير جداً")
+                    text += "\n" + z.read(info).decode("utf-8", "replace")
+    return text
+
 
 EXPORT_COLS = [
     ("name", "اسم المكان", 34), ("phone", "الرقم", 13), ("phone_type", "نوع الرقم", 9),
@@ -23,10 +53,36 @@ EXPORT_COLS = [
 ]
 
 
-def make_handler(db, worker):
+def make_handler(db, worker, auth):
     class H(BaseHTTPRequestHandler):
         def log_message(self, *a):
             pass
+
+        def _ip(self):
+            fwd = self.headers.get("X-Forwarded-For")
+            return fwd.split(",")[0].strip() if fwd else self.client_address[0]
+
+        def _authed(self):
+            c = SimpleCookie(self.headers.get("Cookie") or "")
+            return auth.valid(c[COOKIE].value if COOKIE in c else "")
+
+        def _guard(self, path):
+            """يرجع True لو الطلب مسموح، وإلا يرد بنفسه (تحويل لصفحة الدخول أو 401)."""
+            if path in PUBLIC or self._authed():
+                return True
+            if path.startswith("/api/"):
+                self._send(401, {"error": "لازم تسجلي دخول"})
+            else:
+                self.send_response(302)
+                self.send_header("Location", "/login")
+                self.send_header("Content-Length", "0")
+                self.end_headers()
+            return False
+
+        def _file(self, name, ctype, cache=False):
+            with open(os.path.join(STATIC, name), "rb") as f:
+                extra = {"Cache-Control": "public, max-age=86400"} if cache else None
+                return self._send(200, f.read(), ctype, extra)
 
         def _send(self, code, body, ctype="application/json; charset=utf-8", extra=None):
             if isinstance(body, (dict, list)):
@@ -36,23 +92,39 @@ def make_handler(db, worker):
             self.send_response(code)
             self.send_header("Content-Type", ctype)
             self.send_header("Content-Length", str(len(body)))
-            self.send_header("Cache-Control", "no-store")
-            for k, v in (extra or {}).items():
+            extra = dict(extra or {})
+            self.send_header("Cache-Control", extra.pop("Cache-Control", "no-store"))
+            self.send_header("X-Content-Type-Options", "nosniff")
+            self.send_header("X-Frame-Options", "DENY")
+            self.send_header("Referrer-Policy", "no-referrer")
+            for k, v in extra.items():
                 self.send_header(k, v)
             self.end_headers()
             self.wfile.write(body)
 
         def _json(self):
             n = int(self.headers.get("Content-Length") or 0)
+            if n > MAX_BODY:
+                raise ValueError("الملف كبير جداً")
             return json.loads(self.rfile.read(n).decode("utf-8") or "{}") if n else {}
 
         def do_GET(self):
             u = urllib.parse.urlparse(self.path)
+            if u.path == "/healthz":
+                return self._send(200, {"ok": True})
+            if u.path in STATIC_FILES:
+                return self._file(*STATIC_FILES[u.path], cache=True)
+            if u.path == "/login":
+                if not auth.enabled:
+                    return self._send(302, b"", extra={"Location": "/"})
+                return self._file("login.html", "text/html; charset=utf-8")
+            if not self._guard(u.path):
+                return
             if u.path in ("/", "/index.html"):
-                with open(os.path.join(STATIC, "index.html"), "rb") as f:
-                    return self._send(200, f.read(), "text/html; charset=utf-8")
+                return self._file("index.html", "text/html; charset=utf-8")
             if u.path == "/api/state":
                 return self._send(200, {
+                    "auth": auth.enabled,
                     "statuses": STATUSES, "default_cities": DEFAULT_CITIES,
                     "busy": worker.busy(), "current": worker.current,
                     "searches": db.searches(), "excluded": db.excluded_count(),
@@ -78,8 +150,25 @@ def make_handler(db, worker):
 
         def do_POST(self):
             u = urllib.parse.urlparse(self.path)
+            # حماية من الطلبات المزورة من مواقع تانية: كل الـ API بيقبل JSON بس
+            if not (self.headers.get("Content-Type") or "").startswith("application/json"):
+                return self._send(415, {"error": "نوع الطلب غلط"})
+            if not self._guard(u.path):
+                return
             try:
                 b = self._json()
+                if u.path == "/api/login":
+                    ip = self._ip()
+                    if auth.blocked(ip):
+                        return self._send(429, {"error": "محاولات كتير غلط — استني ربع ساعة"})
+                    if not auth.check_password(ip, b.get("password")):
+                        return self._send(401, {"error": "الباسورد غلط"})
+                    secure = "; Secure" if self.headers.get("X-Forwarded-Proto") == "https" else ""
+                    cookie = (f"{COOKIE}={auth.new_token()}; Path=/; HttpOnly; SameSite=Lax"
+                              f"; Max-Age={SESSION_DAYS * 86400}{secure}")
+                    return self._send(200, {"ok": True}, extra={"Set-Cookie": cookie})
+                if u.path == "/api/logout":
+                    return self._send(200, {"ok": True}, extra={"Set-Cookie": f"{COOKIE}=; Path=/; Max-Age=0"})
                 if u.path == "/api/search":
                     activity = (b.get("activity") or "").strip()
                     areas = [a.strip() for a in b.get("areas", []) if a.strip()]
@@ -107,21 +196,21 @@ def make_handler(db, worker):
                     db.update_lead(int(b["id"]), b)
                     return self._send(200, {"ok": True})
                 if u.path == "/api/exclusions":
-                    phones = extract_mobiles(b.get("text") or "")
+                    phones = extract_mobiles(text_from_upload(b))
                     added, in_leads = db.add_exclusions(phones, b.get("source") or "واتساب")
                     return self._send(200, {"found": len(phones), "added": added, "in_leads": in_leads,
                                             "total": db.excluded_count()})
             except RuntimeError as e:
                 return self._send(409, {"error": str(e)})
-            except (ValueError, KeyError) as e:
+            except (ValueError, KeyError, zipfile.BadZipFile) as e:
                 return self._send(400, {"error": str(e)})
             return self._send(404, {"error": "مش موجود"})
 
     return H
 
 
-def serve(db_path, host="127.0.0.1", port=8765):
+def serve(db_path, host="127.0.0.1", port=8765, password="", secret=b"dev"):
     db = DB(db_path)
     worker = Worker(db)
-    httpd = ThreadingHTTPServer((host, port), make_handler(db, worker))
+    httpd = ThreadingHTTPServer((host, port), make_handler(db, worker, Auth(password, secret)))
     return httpd, db, worker

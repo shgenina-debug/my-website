@@ -3,6 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0f766e">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="icon" href="/icon-192.png">
+<link rel="apple-touch-icon" href="/icon-192.png">
 <title>جامع أرقام العملاء</title>
 <style>
 :root{
@@ -18,6 +22,8 @@
 body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 "Segoe UI",Tahoma,"Noto Sans Arabic",Arial,sans-serif}
 header{background:var(--brand);color:var(--brand-ink);padding:14px 16px}
 header h1{margin:0;font-size:20px}
+header .top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+header .top button{background:transparent;color:var(--brand-ink);border-color:rgba(255,255,255,.5);padding:4px 10px;font-size:13px}
 header .stats{display:flex;gap:14px;flex-wrap:wrap;font-size:14px;opacity:.95;margin-top:4px}
 main{max-width:1400px;margin:0 auto;padding:16px;display:grid;gap:16px}
 .row2{display:grid;gap:16px;grid-template-columns:minmax(0,3fr) minmax(0,2fr)}
@@ -62,15 +68,30 @@ td .name a:hover{text-decoration:underline}
 .phone{direction:ltr;unicode-bidi:embed;font-family:Consolas,monospace;font-weight:700;white-space:nowrap}
 .cell-actions{display:flex;gap:6px;flex-wrap:wrap}
 tr.st-done td{opacity:.75}
-/* الجوال: كل صف يبقى كارت */
+/* الجوال: كل صف يبقى كارت مضغوط */
 @media (max-width:760px){
+  main{padding:10px;gap:10px}
+  .card{padding:12px}
   .table-wrap{border:0;overflow:visible}
-  table,thead,tbody,tr,td{display:block;width:100%}
+  table,thead,tbody{display:block;width:100%}
   thead{display:none}
-  tr{border:1px solid var(--line);border-radius:10px;margin-bottom:10px;padding:6px 10px;background:var(--card)}
-  td{border:0;padding:4px 0;display:grid;grid-template-columns:110px minmax(0,1fr);gap:8px;align-items:center}
-  td::before{content:attr(data-l);color:var(--muted);font-size:13px}
-  td input,td select{min-width:0}
+  tr{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:6px 10px;border:1px solid var(--line);border-radius:10px;margin-bottom:10px;padding:10px;background:var(--card)}
+  td{display:block;border:0;padding:0;min-width:0}
+  td input,td select{min-width:0;padding:9px 10px;font-size:15px}
+  td[data-l="#"]{display:none}
+  td[data-l="اسم المكان"]{grid-column:1/-1;order:1;font-size:16px}
+  td[data-l="الرقم"]{order:2;align-self:center;font-size:16px}
+  td[data-l="الحالة"]{order:3}
+  td[data-l="اسم الشخص / صفته"]{grid-column:1/-1;order:4}
+  td[data-l="ملاحظات"]{grid-column:1/-1;order:5}
+  td[data-l="التصنيف"]{order:6;color:var(--muted);font-size:13px}
+  td[data-l="التقييم"]{order:7;font-size:13px;text-align:left}
+  td[data-l="المدينة"]{grid-column:1/-1;order:8;font-size:13px}
+  td[data-l="الموقع"]{display:none}
+  td[data-l="إجراءات"]{grid-column:1/-1;order:9}
+  .cell-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .cell-actions .btn,.cell-actions button{justify-content:center;padding:10px;font-weight:700}
+  tr td[colspan]{grid-column:1/-1}
 }
 .more{text-align:center;margin-top:10px}
 .toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:8px 16px;border-radius:8px;opacity:0;transition:.2s;pointer-events:none;z-index:9;max-width:90vw}
@@ -79,7 +100,7 @@ tr.st-done td{opacity:.75}
 </head>
 <body>
 <header>
-  <h1>🌷 جامع أرقام العملاء من خرائط جوجل</h1>
+  <div class="top"><h1>🌷 جامع أرقام العملاء من خرائط جوجل</h1><button id="logoutBtn" hidden>خروج</button></div>
   <div class="stats" id="stats"></div>
 </header>
 <main>
@@ -114,8 +135,8 @@ tr.st-done td{opacity:.75}
     <section class="card">
       <h2>استبعاد أرقام اتعاملنا معاها</h2>
       <p class="muted" style="margin-top:0">ارفعي ملف تصدير جروب الواتساب (.txt) أو الصقي أي نص. الأداة هتطلّع كل أرقام الجوال اللي فيه، ومش هتجيبها تاني في أي بحث.</p>
-      <label for="exFile">ملف الواتساب (.txt)</label>
-      <input type="file" id="exFile" accept=".txt,text/plain">
+      <label for="exFile">ملف الواتساب (.txt أو .zip)</label>
+      <input type="file" id="exFile" accept=".txt,.zip,text/plain,application/zip">
       <label for="exText">أو الصقي النص هنا</label>
       <textarea id="exText" rows="5" placeholder="🌷 مصنع مياه ... &#10;0557717180"></textarea>
       <div class="actions"><button class="primary" id="exBtn">استبعد الأرقام دي</button></div>
@@ -159,6 +180,7 @@ const store = {get(k,d){try{const v=localStorage.getItem(k);return v===null?d:v}
 
 async function api(path, body){
   const r = await fetch(path, body === undefined ? {} : {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(body)});
+  if(r.status===401){location.href="/login";throw new Error("لازم تسجلي دخول")}
   const j = await r.json().catch(()=>({}));
   if(!r.ok) throw new Error(j.error || "حصل خطأ");
   return j;
@@ -217,12 +239,18 @@ function renderSearch(){
 
 /* ---------- الاستبعاد ---------- */
 $("#exBtn").onclick=async()=>{
-  let text=$("#exText").value, src="لصق";
+  let text=$("#exText").value, src="لصق", zip_b64="";
   const f=$("#exFile").files[0];
-  if(f){text+="\n"+await f.text();src=f.name}
-  if(!text.trim()){toast("ارفعي ملف أو الصقي نص الأول");return}
+  if(f){
+    const buf=new Uint8Array(await f.arrayBuffer()); src=f.name;
+    if(buf[0]===0x50&&buf[1]===0x4b){  // ملف zip (تصدير الواتساب من الموبايل ساعات بيطلع كده)
+      let bin="";for(let i=0;i<buf.length;i+=32768)bin+=String.fromCharCode.apply(null,buf.subarray(i,i+32768));
+      zip_b64=btoa(bin);
+    } else text+="\n"+new TextDecoder("utf-8").decode(buf);
+  }
+  if(!text.trim()&&!zip_b64){toast("ارفعي ملف أو الصقي نص الأول");return}
   try{
-    const r=await api("/api/exclusions",{text,source:src});
+    const r=await api("/api/exclusions",{text,zip_b64,source:src});
     $("#exMsg").textContent=`لقيت ${r.found} رقم جوال — اتضاف منهم ${r.added} جديد للاستبعاد (الباقي كان موجود). `+
       (r.in_leads?`منهم ${r.in_leads} موجودين في جدول النتايج وعليهم علامة "في الجروب". `:"")+`إجمالي المستبعد: ${r.total}`;
     $("#exText").value="";$("#exFile").value="";refresh(true);
@@ -252,7 +280,7 @@ function renderTable(){
     <td data-l="الرقم"><span class="phone">${esc(l.phone)}</span> <span class="badge ${l.phone_type==="جوال"?"":"gray"}">${esc(l.phone_type)}</span></td>
     <td data-l="اسم الشخص / صفته"><input type="text" data-f="person" value="${esc(l.person)}" placeholder="مثلاً: ابو بدر مدير"></td>
     <td data-l="الحالة"><select data-f="status">${STS.map(s=>`<option${s===l.status?" selected":""}>${s}</option>`).join("")}</select></td>
-    <td data-l="ملاحظات"><input type="text" data-f="notes" value="${esc(l.notes)}"></td>
+    <td data-l="ملاحظات"><input type="text" data-f="notes" value="${esc(l.notes)}" placeholder="ملاحظات"></td>
     <td data-l="التصنيف">${esc(l.category)}</td>
     <td data-l="المدينة">${esc(l.city)}<div class="muted">${esc(l.address)}</div></td>
     <td data-l="التقييم">${l.rating!=null?`⭐ ${l.rating}`:"—"} <span class="muted">(${l.reviews||0})</span></td>
@@ -290,12 +318,14 @@ $("#exportBtn").onclick=()=>{
 };
 
 /* ---------- التحديث ---------- */
+$("#logoutBtn").onclick=async()=>{await api("/api/logout",{});location.href="/login"};
 function renderStats(){
   const n=LEADS.length, nw=LEADS.filter(l=>l.status==="جديد").length, cl=LEADS.filter(l=>l.status==="عميل").length;
   $("#stats").innerHTML=`<span>إجمالي الأرقام: <b>${n}</b></span><span>جديد: <b>${nw}</b></span><span>عملاء: <b>${cl}</b></span><span>مستبعد من الجروب: <b>${STATE.excluded}</b></span>`;
 }
 async function refresh(forceLeads){
   STATE=await api("/api/state");
+  $("#logoutBtn").hidden=!STATE.auth;
   renderSearch();
   const sig=STATE.searches.map(s=>s.areas.reduce((a,x)=>a+x.saved,0)).join(",");
   if(forceLeads||sig!==lastSig||!LEADS.length){

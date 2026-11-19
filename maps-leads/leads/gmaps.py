@@ -48,6 +48,8 @@ def fetch(url, timeout=30):
         "Accept-Language": "ar-SA,ar;q=0.9",
         "Accept": "*/*",
         "Referer": "https://www.google.com/maps",
+        # موافقة الكوكيز: لو السيرفر في أوروبا جوجل بيحوّل لصفحة موافقة بدل النتايج
+        "Cookie": "CONSENT=YES+; SOCS=CAESEwgDEgk0ODE3Nzk3MjQaAmVuIAEaBgiA_LyaBg",
     })
     try:
         with urllib.request.urlopen(req, timeout=timeout) as r:

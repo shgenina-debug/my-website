@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0f766e">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="icon" href="/icon-192.png">
+<title>دخول — جامع أرقام العملاء</title>
+<style>
+:root{--bg:#f4f6f5;--card:#fff;--ink:#1c2523;--muted:#5f6b68;--line:#dde3e1;--brand:#0f766e;--brand-ink:#fff;--bad:#b42318}
+@media (prefers-color-scheme: dark){:root{--bg:#121716;--card:#1b2220;--ink:#e7eeec;--muted:#9aa8a4;--line:#2c3633;--brand:#2bb3a3;--brand-ink:#05201d;--bad:#f07a6e}}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;display:grid;place-items:center;background:var(--bg);color:var(--ink);font:16px/1.6 "Segoe UI",Tahoma,"Noto Sans Arabic",Arial,sans-serif;padding:16px}
+form{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:24px;width:100%;max-width:360px}
+h1{font-size:20px;margin:0 0 4px}
+p{color:var(--muted);margin:0 0 16px;font-size:14px}
+input{width:100%;padding:12px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);font:inherit}
+input:focus{outline:2px solid var(--brand);border-color:var(--brand)}
+button{width:100%;margin-top:12px;padding:12px;border:0;border-radius:8px;background:var(--brand);color:var(--brand-ink);font:inherit;font-weight:700;cursor:pointer}
+.err{color:var(--bad);font-size:14px;min-height:22px;margin-top:8px}
+</style>
+</head>
+<body>
+<form id="f">
+  <h1>🌷 جامع أرقام العملاء</h1>
+  <p>اكتبي الباسورد علشان تدخلي.</p>
+  <input type="password" id="pw" autocomplete="current-password" placeholder="الباسورد" required autofocus>
+  <button type="submit">دخول</button>
+  <div class="err" id="err"></div>
+</form>
+<script>
+document.getElementById("f").onsubmit = async e => {
+  e.preventDefault();
+  const r = await fetch("/api/login", {method:"POST", headers:{"Content-Type":"application/json"},
+    body: JSON.stringify({password: document.getElementById("pw").value})});
+  if (r.ok) { location.href = "/"; return; }
+  const j = await r.json().catch(() => ({}));
+  document.getElementById("err").textContent = j.error || "الباسورد غلط";
+};
+</script>
+</body>
+</html>
