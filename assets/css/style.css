@@ -111,7 +111,8 @@ button, input, select, textarea { font: inherit; color: inherit; }
   backdrop-filter: blur(16px) saturate(140%);
 }
 .brand { display: inline-flex; align-items: center; gap: 10px; font-weight: 700; letter-spacing: .14em; font-size: 1rem; }
-.brand-mark { width: 26px; height: 26px; color: var(--text); }
+.brand-logo { width: 44px; height: 44px; border-radius: 11px; box-shadow: 0 0 0 1px rgba(255,255,255,.12); }
+.footer-brand .brand-logo { width: 112px; height: 112px; border-radius: 24px; margin-bottom: 6px; }
 .nav-links { display: flex; gap: 4px; margin-inline: auto; }
 .nav-links a { display: block; padding: 8px 12px; border-radius: 999px; font-size: .9rem; color: #B7C0D1; transition: color .2s, background-color .2s; }
 .nav-links a:hover, .nav-links a[aria-current="true"] { color: var(--text); background: rgba(157,184,255,.08); }

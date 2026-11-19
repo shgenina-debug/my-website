@@ -60,5 +60,5 @@ Arabic is the main page at `/` and English lives at `/en/`, linked by the EN / Ø
 - **Contact details.** `info@almasia.sa` is a placeholder; the phone and WhatsApp number (+966 57 067 8482) are real. They appear in the contact section, footer, JSON-LD block and `assets/js/main.js` (the `mailto:` address).
 - **Domain.** `https://www.almasia.sa/` is used in the canonical, Open Graph and JSON-LD tags.
 - **Social links.** LinkedIn and Instagram links point at the platform home pages.
-- **OG image.** Add `assets/img/og-image.png` (1200Ã—630).
+- **Logo.** `assets/img/logo.webp` (site), `logo.png` (schema, Apple icon), `favicon.png` and `og-image.jpg` are cut from the company logo.
 - **Contact form.** There is no backend yet. On submit the form validates the fields, then opens the visitor's email app with the request filled in. To post to a backend instead (Formspree, a serverless function, a CRM), change the submit handler at the bottom of `main.js`.
