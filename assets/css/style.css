@@ -1,5 +1,5 @@
 /* ==========================================================================
-   ORITEC, Integrated Engineering Services
+   ALMASIA, Integrated Engineering Services
    Dark canvas, arc-blue light. Layout and motion follow the reference site:
    floating pill nav, beam-lit hero with tilted console, flow into a core chip,
    bento grid, settling tiles, beam CTA.
@@ -495,7 +495,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
   .process-head { position: static; }
 }
 
-/* ---------- Why ORITEC: settling tiles ---------- */
+/* ---------- Why ALMASIA: settling tiles ---------- */
 .why { overflow-x: clip; }
 .found { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; max-width: 980px; margin-inline: auto; perspective: 1400px; }
 .ftile {

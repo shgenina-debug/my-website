@@ -1,4 +1,4 @@
-/* ORITEC site behaviour. No dependencies. */
+/* ALMASIA site behaviour. No dependencies. */
 (() => {
   'use strict';
 
@@ -235,7 +235,7 @@
       '', f.message.value,
     ].join('\n');
     const subject = `Project request: ${f.type.value}`;
-    window.location.href = `mailto:info@oritec.sa?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    window.location.href = `mailto:info@almasia.sa?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     status.textContent = 'Project request ready in your email app. Press send there to deliver it.';
   });
 

@@ -14,7 +14,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-out = Path(sys.argv[1]) if len(sys.argv) > 1 else ROOT / "dist" / "oritec.html"
+out = Path(sys.argv[1]) if len(sys.argv) > 1 else ROOT / "dist" / "almasia.html"
 
 html = (ROOT / "index.html").read_text(encoding="utf-8")
 css = (ROOT / "assets/css/style.css").read_text(encoding="utf-8")
