@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>جامع أرقام العملاء</title>
+<style>
+:root{
+  --bg:#f4f6f5; --card:#fff; --ink:#1c2523; --muted:#5f6b68; --line:#dde3e1;
+  --brand:#0f766e; --brand-ink:#fff; --brand-soft:#e3f2ef; --warn:#b45309; --warn-soft:#fdf2e3;
+  --bad:#b42318; --ok:#15803d; --wa:#1f9d55; --radius:10px;
+}
+@media (prefers-color-scheme: dark){
+  :root{--bg:#121716; --card:#1b2220; --ink:#e7eeec; --muted:#9aa8a4; --line:#2c3633;
+    --brand:#2bb3a3; --brand-ink:#05201d; --brand-soft:#16302c; --warn:#f0a35a; --warn-soft:#33261a; --bad:#f07a6e; --ok:#5fd08a; --wa:#3ccf7a;}
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 "Segoe UI",Tahoma,"Noto Sans Arabic",Arial,sans-serif}
+header{background:var(--brand);color:var(--brand-ink);padding:14px 16px}
+header h1{margin:0;font-size:20px}
+header .stats{display:flex;gap:14px;flex-wrap:wrap;font-size:14px;opacity:.95;margin-top:4px}
+main{max-width:1400px;margin:0 auto;padding:16px;display:grid;gap:16px}
+.row2{display:grid;gap:16px;grid-template-columns:minmax(0,3fr) minmax(0,2fr)}
+@media (max-width:900px){.row2{grid-template-columns:minmax(0,1fr)}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px;min-width:0}
+.card h2{margin:0 0 12px;font-size:17px}
+label{display:block;font-weight:600;margin:10px 0 4px}
+input[type=text],input[type=number],input[type=search],select,textarea{
+  width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);font:inherit}
+textarea{resize:vertical}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--brand);outline-offset:0;border-color:var(--brand)}
+.grid-opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px 14px;align-items:end}
+.check{display:flex;gap:8px;align-items:center;font-weight:500;margin:6px 0}
+.check input{width:18px;height:18px}
+button,.btn{font:inherit;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:7px 12px;border-radius:8px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+button:hover,.btn:hover{border-color:var(--brand)}
+button.primary{background:var(--brand);color:var(--brand-ink);border-color:var(--brand);font-weight:700}
+button.danger{color:var(--bad)}
+button:disabled{opacity:.5;cursor:not-allowed}
+.btn.wa{color:var(--wa);border-color:var(--wa)}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.muted{color:var(--muted);font-size:13px}
+.msg{padding:8px 12px;border-radius:8px;background:var(--brand-soft);margin-top:10px;font-size:14px}
+.msg.warn{background:var(--warn-soft);color:var(--warn)}
+.msg:empty{display:none}
+.progress{display:grid;gap:6px;margin-top:10px;max-height:260px;overflow:auto}
+.area{display:flex;justify-content:space-between;gap:8px;border-bottom:1px dashed var(--line);padding:3px 0;font-size:14px}
+.history{margin-top:12px;display:grid;gap:8px}
+.hist{border:1px solid var(--line);border-radius:8px;padding:8px 10px;display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}
+.badge{display:inline-block;font-size:12px;padding:1px 8px;border-radius:999px;background:var(--brand-soft);color:var(--brand);font-weight:600}
+.badge.warn{background:var(--warn-soft);color:var(--warn)}
+.badge.gray{background:var(--line);color:var(--muted)}
+.toolbar{display:grid;grid-template-columns:2fr repeat(4,1fr);gap:8px}
+@media (max-width:900px){.toolbar{grid-template-columns:1fr 1fr}.toolbar .q{grid-column:1/-1}}
+.table-wrap{overflow-x:auto;margin-top:12px;border:1px solid var(--line);border-radius:8px}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{padding:8px;border-bottom:1px solid var(--line);text-align:right;vertical-align:top}
+th{background:var(--brand-soft);position:sticky;top:0;font-size:13px;white-space:nowrap}
+td input,td select{padding:5px 7px;font-size:14px;min-width:120px}
+td .name a{color:var(--ink);font-weight:700;text-decoration:none}
+td .name a:hover{text-decoration:underline}
+.phone{direction:ltr;unicode-bidi:embed;font-family:Consolas,monospace;font-weight:700;white-space:nowrap}
+.cell-actions{display:flex;gap:6px;flex-wrap:wrap}
+tr.st-done td{opacity:.75}
+/* الجوال: كل صف يبقى كارت */
+@media (max-width:760px){
+  .table-wrap{border:0;overflow:visible}
+  table,thead,tbody,tr,td{display:block;width:100%}
+  thead{display:none}
+  tr{border:1px solid var(--line);border-radius:10px;margin-bottom:10px;padding:6px 10px;background:var(--card)}
+  td{border:0;padding:4px 0;display:grid;grid-template-columns:110px minmax(0,1fr);gap:8px;align-items:center}
+  td::before{content:attr(data-l);color:var(--muted);font-size:13px}
+  td input,td select{min-width:0}
+}
+.more{text-align:center;margin-top:10px}
+.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:8px 16px;border-radius:8px;opacity:0;transition:.2s;pointer-events:none;z-index:9;max-width:90vw}
+.toast.show{opacity:1}
+</style>
+</head>
+<body>
+<header>
+  <h1>🌷 جامع أرقام العملاء من خرائط جوجل</h1>
+  <div class="stats" id="stats"></div>
+</header>
+<main>
+  <div class="row2">
+    <section class="card">
+      <h2>بحث جديد</h2>
+      <label for="activity">النشاط</label>
+      <input type="text" id="activity" placeholder="مثلاً: مصنع مياه">
+      <label for="areas">المدن أو الأحياء <span class="muted">(كل واحدة في سطر — تقدري تعدّلي القايمة)</span></label>
+      <textarea id="areas" rows="7"></textarea>
+      <div class="actions" style="margin-top:6px">
+        <button type="button" id="resetAreas">رجّعي أشهر 20 مدينة</button>
+        <button type="button" id="clearAreas">فضّي القايمة</button>
+      </div>
+      <div class="grid-opts" style="margin-top:8px">
+        <div>
+          <label class="check"><input type="checkbox" id="mobileOnly" checked> جوال بس</label>
+          <label class="check"><input type="checkbox" id="excludeClosed" checked> استبعاد الأماكن المقفولة</label>
+        </div>
+        <div><label for="minRating">أقل تقييم</label><input type="number" id="minRating" min="0" max="5" step="0.1" value="0"></div>
+        <div><label for="minReviews">أقل عدد مراجعات</label><input type="number" id="minReviews" min="0" step="1" value="0"></div>
+      </div>
+      <div class="actions">
+        <button class="primary" id="startBtn">ابدأ البحث</button>
+        <button class="danger" id="stopBtn" disabled>وقّف</button>
+      </div>
+      <div class="msg" id="searchMsg"></div>
+      <div class="progress" id="progress"></div>
+      <details style="margin-top:10px"><summary>عمليات البحث السابقة</summary><div class="history" id="history"></div></details>
+    </section>
+
+    <section class="card">
+      <h2>استبعاد أرقام اتعاملنا معاها</h2>
+      <p class="muted" style="margin-top:0">ارفعي ملف تصدير جروب الواتساب (.txt) أو الصقي أي نص. الأداة هتطلّع كل أرقام الجوال اللي فيه، ومش هتجيبها تاني في أي بحث.</p>
+      <label for="exFile">ملف الواتساب (.txt)</label>
+      <input type="file" id="exFile" accept=".txt,text/plain">
+      <label for="exText">أو الصقي النص هنا</label>
+      <textarea id="exText" rows="5" placeholder="🌷 مصنع مياه ... &#10;0557717180"></textarea>
+      <div class="actions"><button class="primary" id="exBtn">استبعد الأرقام دي</button></div>
+      <div class="msg" id="exMsg"></div>
+    </section>
+  </div>
+
+  <section class="card">
+    <h2>النتايج</h2>
+    <div class="toolbar">
+      <input class="q" type="search" id="fq" placeholder="ابحثي بالاسم أو الرقم أو العنوان أو الملاحظات...">
+      <select id="fStatus"><option value="">كل الحالات</option></select>
+      <select id="fType"><option value="">كل الأنواع</option></select>
+      <select id="fCity"><option value="">كل المدن</option></select>
+      <select id="fActivity"><option value="">كل الأنشطة</option></select>
+    </div>
+    <div class="actions">
+      <button class="primary" id="copyNew">نسخ كل الجديد للجروب</button>
+      <button id="exportBtn">تصدير Excel</button>
+      <span class="muted" id="countLbl" style="align-self:center"></span>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr>
+          <th>#</th><th>اسم المكان</th><th>الرقم</th><th>اسم الشخص / صفته</th><th>الحالة</th><th>ملاحظات</th>
+          <th>التصنيف</th><th>المدينة</th><th>التقييم</th><th>الموقع</th><th>إجراءات</th>
+        </tr></thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+    <div class="more"><button id="moreBtn" hidden>عرض المزيد</button></div>
+  </section>
+</main>
+<div class="toast" id="toast"></div>
+
+<script>
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+let STATE = null, LEADS = [], SHOWN = 200, lastSig = "";
+const store = {get(k,d){try{const v=localStorage.getItem(k);return v===null?d:v}catch(e){return d}}, set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+
+async function api(path, body){
+  const r = await fetch(path, body === undefined ? {} : {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(body)});
+  const j = await r.json().catch(()=>({}));
+  if(!r.ok) throw new Error(j.error || "حصل خطأ");
+  return j;
+}
+function toast(t){const e=$("#toast");e.textContent=t;e.classList.add("show");clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove("show"),2200)}
+async function copy(text){
+  try{await navigator.clipboard.writeText(text)}catch(e){
+    const ta=document.createElement("textarea");ta.value=text;document.body.appendChild(ta);ta.select();document.execCommand("copy");ta.remove();
+  }
+}
+function groupText(l){
+  const parts=[l.name,(l.person||"").trim(),l.city].filter(Boolean);
+  return "🌷 "+parts.join(" . ")+"\n"+l.phone;
+}
+const waLink = p => p.startsWith("05") ? "https://wa.me/966"+p.slice(1) : "";
+
+/* ---------- البحث ---------- */
+function setAreas(list){$("#areas").value=list.join("\n");store.set("areas",$("#areas").value)}
+$("#areas").addEventListener("input",()=>store.set("areas",$("#areas").value));
+$("#activity").addEventListener("input",()=>store.set("activity",$("#activity").value));
+$("#resetAreas").onclick=()=>setAreas(STATE.default_cities);
+$("#clearAreas").onclick=()=>setAreas([]);
+$("#startBtn").onclick=async()=>{
+  try{
+    await api("/api/search",{activity:$("#activity").value,areas:$("#areas").value.split(/\n|،|,/),
+      mobile_only:$("#mobileOnly").checked,exclude_closed:$("#excludeClosed").checked,
+      min_rating:$("#minRating").value,min_reviews:$("#minReviews").value});
+    toast("البحث بدأ");refresh();
+  }catch(e){toast(e.message)}
+};
+$("#stopBtn").onclick=async()=>{await api("/api/stop",{});toast("هيقف بعد الطلب الحالي")};
+async function resume(id){try{await api("/api/resume",{id});toast("بيكمّل من مكان ما وقف");refresh()}catch(e){toast(e.message)}}
+
+const SKIP_ORDER=["مكرر/متعامل معاه","مش جوال","بدون رقم","مقفول","تقييم أقل","مراجعات أقل"];
+function skippedTxt(sk){return SKIP_ORDER.filter(k=>sk[k]).map(k=>`${k}: ${sk[k]}`).join(" • ")}
+function renderSearch(){
+  const s=STATE.searches.find(x=>x.id===STATE.current) || STATE.searches[0];
+  $("#startBtn").disabled=STATE.busy; $("#stopBtn").disabled=!STATE.busy;
+  const m=$("#searchMsg");
+  if(!s){m.textContent="";$("#progress").innerHTML="";}
+  else{
+    const tot=s.areas.reduce((a,x)=>a+x.saved,0), done=s.areas.filter(x=>x.done).length;
+    m.className="msg"+(s.state==="paused"?" warn":"");
+    m.innerHTML=`<b>${esc(s.activity)}</b> — ${esc(s.message||"")} — اتحفظ ${tot} رقم جديد • ${done}/${s.areas.length} منطقة`+
+      (s.state==="paused"&&!STATE.busy?` <button onclick="resume(${s.id})">كمّل</button>`:"");
+    $("#progress").innerHTML=s.areas.map(a=>`<div class="area"><span>${a.done?"✅":(a.next_offset?"⏳":"•")} ${esc(a.area)}</span>
+      <span class="muted">جديد ${a.saved} من ${a.found}${a.found?` — ${esc(skippedTxt(a.skipped))}`:""}</span></div>`).join("");
+  }
+  $("#history").innerHTML=STATE.searches.map(h=>{
+    const tot=h.areas.reduce((a,x)=>a+x.saved,0);
+    const st={running:"شغال",paused:"متوقف",done:"خلص"}[h.state];
+    return `<div class="hist"><span><b>${esc(h.activity)}</b> <span class="badge ${h.state==="paused"?"warn":h.state==="done"?"gray":""}">${st}</span>
+      <span class="muted">${h.areas.length} منطقة • ${tot} رقم • ${new Date(h.created_at*1000).toLocaleString("ar-EG")}</span></span>
+      ${h.state==="paused"&&!STATE.busy?`<button onclick="resume(${h.id})">كمّل</button>`:""}</div>`}).join("")||'<span class="muted">مفيش لسه</span>';
+}
+
+/* ---------- الاستبعاد ---------- */
+$("#exBtn").onclick=async()=>{
+  let text=$("#exText").value, src="لصق";
+  const f=$("#exFile").files[0];
+  if(f){text+="\n"+await f.text();src=f.name}
+  if(!text.trim()){toast("ارفعي ملف أو الصقي نص الأول");return}
+  try{
+    const r=await api("/api/exclusions",{text,source:src});
+    $("#exMsg").textContent=`لقيت ${r.found} رقم جوال — اتضاف منهم ${r.added} جديد للاستبعاد (الباقي كان موجود). `+
+      (r.in_leads?`منهم ${r.in_leads} موجودين في جدول النتايج وعليهم علامة "في الجروب". `:"")+`إجمالي المستبعد: ${r.total}`;
+    $("#exText").value="";$("#exFile").value="";refresh(true);
+  }catch(e){toast(e.message)}
+};
+
+/* ---------- الجدول ---------- */
+function fillSelect(sel, values, keep){
+  const cur=sel.value, first=sel.options[0].outerHTML;
+  sel.innerHTML=first+values.map(v=>`<option>${esc(v)}</option>`).join("");
+  if(values.includes(cur)||keep) sel.value=cur;
+}
+function filtered(){
+  const q=$("#fq").value.trim().toLowerCase(), st=$("#fStatus").value, ty=$("#fType").value, ci=$("#fCity").value, ac=$("#fActivity").value;
+  return LEADS.filter(l=>(!st||l.status===st)&&(!ty||l.phone_type===ty)&&(!ci||l.city===ci)&&(!ac||l.activity===ac)&&
+    (!q||[l.name,l.phone,l.address,l.notes,l.person,l.category,l.city].join(" ").toLowerCase().includes(q)));
+}
+function renderTable(){
+  const rows=filtered(), STS=STATE.statuses;
+  $("#countLbl").textContent=`${rows.length} نتيجة`+(rows.length!==LEADS.length?` من ${LEADS.length}`:"");
+  $("#tbody").innerHTML=rows.slice(0,SHOWN).map((l,i)=>{
+    const wa=waLink(l.phone);
+    return `<tr data-id="${l.id}" class="${["عميل","مش مهتم"].includes(l.status)?"st-done":""}">
+    <td data-l="#">${i+1}</td>
+    <td data-l="اسم المكان" class="name"><a href="${esc(l.maps_url)}" target="_blank" rel="noopener">${esc(l.name)}</a>
+      ${l.in_group?' <span class="badge warn">في الجروب</span>':""}</td>
+    <td data-l="الرقم"><span class="phone">${esc(l.phone)}</span> <span class="badge ${l.phone_type==="جوال"?"":"gray"}">${esc(l.phone_type)}</span></td>
+    <td data-l="اسم الشخص / صفته"><input type="text" data-f="person" value="${esc(l.person)}" placeholder="مثلاً: ابو بدر مدير"></td>
+    <td data-l="الحالة"><select data-f="status">${STS.map(s=>`<option${s===l.status?" selected":""}>${s}</option>`).join("")}</select></td>
+    <td data-l="ملاحظات"><input type="text" data-f="notes" value="${esc(l.notes)}"></td>
+    <td data-l="التصنيف">${esc(l.category)}</td>
+    <td data-l="المدينة">${esc(l.city)}<div class="muted">${esc(l.address)}</div></td>
+    <td data-l="التقييم">${l.rating!=null?`⭐ ${l.rating}`:"—"} <span class="muted">(${l.reviews||0})</span></td>
+    <td data-l="الموقع">${l.website?`<a href="${esc(l.website)}" target="_blank" rel="noopener">فتح</a>`:"—"}</td>
+    <td data-l="إجراءات"><div class="cell-actions">
+      <button data-act="copy">نسخ للجروب</button>
+      ${wa?`<a class="btn wa" href="${wa}" target="_blank" rel="noopener">واتساب</a>`:""}
+    </div></td></tr>`}).join("") || `<tr><td colspan="11" class="muted">مفيش نتايج لسه — ابدأي بحث من فوق</td></tr>`;
+  $("#moreBtn").hidden=rows.length<=SHOWN;
+}
+$("#moreBtn").onclick=()=>{SHOWN+=200;renderTable()};
+["#fq","#fStatus","#fType","#fCity","#fActivity"].forEach(s=>$(s).addEventListener("input",()=>{SHOWN=200;renderTable()}));
+
+$("#tbody").addEventListener("change",async e=>{
+  const f=e.target.dataset.f; if(!f) return;
+  const tr=e.target.closest("tr"), id=+tr.dataset.id, l=LEADS.find(x=>x.id===id);
+  try{await api("/api/lead",{id,[f]:e.target.value});l[f]=e.target.value;toast("اتحفظ");
+    if(f==="status") tr.className=["عميل","مش مهتم"].includes(l.status)?"st-done":"";
+  }catch(err){toast(err.message)}
+});
+$("#tbody").addEventListener("click",async e=>{
+  const b=e.target.closest("[data-act=copy]"); if(!b) return;
+  const tr=b.closest("tr"), l=LEADS.find(x=>x.id===+tr.dataset.id);
+  const person=tr.querySelector("[data-f=person]").value; l.person=person;
+  await copy(groupText(l)); toast("اتنسخ — الصقيه في الجروب");
+});
+$("#copyNew").onclick=async()=>{
+  const rows=filtered().filter(l=>l.status==="جديد"&&!l.in_group);
+  if(!rows.length){toast("مفيش أرقام جديدة في العرض الحالي");return}
+  await copy(rows.map(groupText).join("\n\n")); toast(`اتنسخ ${rows.length} رقم جديد`);
+};
+$("#exportBtn").onclick=()=>{
+  const rows=filtered(); const all=rows.length===LEADS.length;
+  location.href="/api/export.xlsx"+(all?"":"?ids="+rows.map(r=>r.id).join(","));
+};
+
+/* ---------- التحديث ---------- */
+function renderStats(){
+  const n=LEADS.length, nw=LEADS.filter(l=>l.status==="جديد").length, cl=LEADS.filter(l=>l.status==="عميل").length;
+  $("#stats").innerHTML=`<span>إجمالي الأرقام: <b>${n}</b></span><span>جديد: <b>${nw}</b></span><span>عملاء: <b>${cl}</b></span><span>مستبعد من الجروب: <b>${STATE.excluded}</b></span>`;
+}
+async function refresh(forceLeads){
+  STATE=await api("/api/state");
+  renderSearch();
+  const sig=STATE.searches.map(s=>s.areas.reduce((a,x)=>a+x.saved,0)).join(",");
+  if(forceLeads||sig!==lastSig||!LEADS.length){
+    lastSig=sig;
+    const active=document.activeElement; const editing=active&&active.closest&&active.closest("#tbody");
+    LEADS=await api("/api/leads");
+    fillSelect($("#fStatus"),STATE.statuses,true);
+    fillSelect($("#fType"),[...new Set(LEADS.map(l=>l.phone_type))]);
+    fillSelect($("#fCity"),[...new Set(LEADS.map(l=>l.city).filter(Boolean))].sort());
+    fillSelect($("#fActivity"),[...new Set(LEADS.map(l=>l.activity).filter(Boolean))]);
+    if(!editing) renderTable();
+  }
+  renderStats();
+}
+(async()=>{
+  await refresh(true);
+  $("#activity").value=store.get("activity","");
+  const saved=store.get("areas",null);
+  if(saved===null) setAreas(STATE.default_cities); else $("#areas").value=saved;
+  setInterval(()=>refresh().catch(()=>{}), 2500);
+})();
+</script>
+</body>
+</html>
