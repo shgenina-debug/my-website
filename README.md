@@ -52,7 +52,7 @@ All motion respects `prefers-reduced-motion`.
 
 - **Photography.** The `assets/img/*.svg` drawings stand in for real photos. To replace one, drop a photo (WebP or JPEG, about 1600px wide) into `assets/img/` and update the `src` and `alt` in `index.html`. Keep the `width`/`height` attributes at the photo's real ratio.
 - **Projects.** The six projects in `#projects` are samples. Replace them with real project names, locations and scopes.
-- **Contact details.** `info@almasia.sa`, `+966 50 000 0000` and the WhatsApp link are placeholders. They appear in the contact section, footer, JSON-LD block and `assets/js/main.js` (the `mailto:` address).
+- **Contact details.** `info@almasia.sa` is a placeholder; the phone and WhatsApp number (+966 57 067 8482) are real. They appear in the contact section, footer, JSON-LD block and `assets/js/main.js` (the `mailto:` address).
 - **Domain.** `https://www.almasia.sa/` is used in the canonical, Open Graph and JSON-LD tags.
 - **Social links.** LinkedIn and Instagram links point at the platform home pages.
 - **OG image.** Add `assets/img/og-image.png` (1200×630).
