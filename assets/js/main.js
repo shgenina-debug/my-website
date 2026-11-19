@@ -4,6 +4,20 @@
 
   const doc = document.documentElement;
   doc.classList.add('js');
+  const AR = doc.lang === 'ar';
+  const T = AR ? {
+    openMenu: 'فتح القائمة', closeMenu: 'إغلاق القائمة',
+    name: 'أدخل اسمك.', email: 'أدخل بريداً إلكترونياً صحيحاً مثل name@company.com.',
+    type: 'اختر نوع المشروع.', message: 'صف المشروع في جملة أو جملتين.',
+    subject: 'طلب مشروع', ready: 'طلب المشروع جاهز في تطبيق البريد. اضغط إرسال هناك لإرساله.',
+    labels: ['الاسم', 'الشركة', 'البريد الإلكتروني', 'الهاتف', 'نوع المشروع', 'موقع المشروع'],
+  } : {
+    openMenu: 'Open menu', closeMenu: 'Close menu',
+    name: 'Enter your name.', email: 'Enter an email address like name@company.com.',
+    type: 'Choose the type of project.', message: 'Describe the project in a sentence or two.',
+    subject: 'Project request', ready: 'Project request ready in your email app. Press send there to deliver it.',
+    labels: ['Name', 'Company', 'Email', 'Phone', 'Project type', 'Project location'],
+  };
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
 
@@ -14,7 +28,7 @@
 
   const setMenu = (open) => {
     toggle.setAttribute('aria-expanded', String(open));
-    toggle.querySelector('.sr-only').textContent = open ? 'Close menu' : 'Open menu';
+    toggle.querySelector('.sr-only').textContent = open ? T.closeMenu : T.openMenu;
     menu.hidden = !open;
     header.classList.toggle('is-scrolled', open || window.scrollY > 24);
   };
@@ -107,7 +121,7 @@
       const total = hs.offsetHeight - window.innerHeight;
       const p = total > 0 ? clamp(-r.top / total) : 0;
       const extra = hsTrack.scrollWidth - window.innerWidth;
-      hsTrack.style.transform = `translate3d(${(-extra * p).toFixed(1)}px,0,0)`;
+      hsTrack.style.transform = `translate3d(${((AR ? 1 : -1) * extra * p).toFixed(1)}px,0,0)`;
     }
 
     if (steps) {
@@ -222,21 +236,20 @@
     const f = form.elements;
     let first = null;
     const check = (field, ok, msg) => { if (!ok) { showError(field, msg); first ||= field; } };
-    check(f.name, f.name.value.trim(), 'Enter your name.');
-    check(f.email, /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(f.email.value.trim()), 'Enter an email address like name@company.com.');
-    check(f.type, f.type.value, 'Choose the type of project.');
-    check(f.message, f.message.value.trim().length >= 10, 'Describe the project in a sentence or two.');
+    check(f.name, f.name.value.trim(), T.name);
+    check(f.email, /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(f.email.value.trim()), T.email);
+    check(f.type, f.type.value, T.type);
+    check(f.message, f.message.value.trim().length >= 10, T.message);
     if (first) { first.focus(); status.textContent = ''; return; }
 
     // No backend yet: hand the request to the visitor's email app.
     const body = [
-      `Name: ${f.name.value}`, `Company: ${f.company.value}`, `Email: ${f.email.value}`,
-      `Phone: ${f.phone.value}`, `Project type: ${f.type.value}`, `Project location: ${f.location.value}`,
+      ...[f.name, f.company, f.email, f.phone, f.type, f.location].map((el, i) => `${T.labels[i]}: ${el.value}`),
       '', f.message.value,
     ].join('\n');
-    const subject = `Project request: ${f.type.value}`;
+    const subject = `${T.subject}: ${f.type.value}`;
     window.location.href = `mailto:info@almasia.sa?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    status.textContent = 'Project request ready in your email app. Press send there to deliver it.';
+    status.textContent = T.ready;
   });
 
   /* ---------- Misc ---------- */

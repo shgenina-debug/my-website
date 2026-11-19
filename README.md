@@ -14,15 +14,16 @@ Any static host works (Netlify, Vercel, GitHub Pages, S3, Nginx).
 ## Single-file version
 
 ```bash
-python3 tools/build_single.py   # writes dist/almasia.html
+python3 tools/build_single.py   # writes dist/almasia.html and dist/almasia-ar.html
 ```
 
-Bundles the stylesheet, script and images into one HTML file that opens directly on a phone or tablet, or can be emailed or shared as one file.
+Bundles the stylesheet, script and images into one HTML file per language that opens directly on a phone or tablet, or can be emailed or shared. Keep both files in the same folder so the language switch works.
 
 ## Structure
 
 ```
-index.html            All sections, SEO meta, Open Graph, schema.org Organization
+index.html            English page: all sections, SEO meta, Open Graph, schema.org Organization
+ar/index.html         Arabic page (right-to-left), same sections and structure
 assets/css/style.css  Design tokens (top of file), layout, components, motion
 assets/js/main.js     Header states, mobile menu, reveals, counters, scroll-linked motion,
                       service traces, project image swap, form validation
@@ -47,6 +48,10 @@ The layout and motion follow the supplied reference video (Outcrowd's Resq.io co
 Sections not in the reference (industries, projects, process, contact) use the same visual language: pinned horizontal scroll for industries, a sticky image that swaps per project, and a process line that fills as you scroll.
 
 All motion respects `prefers-reduced-motion`.
+
+## Languages
+
+English lives at `/` and Arabic at `/ar/`, linked by the EN / عربي switch in the header and by `hreflang` tags. The Arabic page uses Beiruti for headings and Readex Pro for text. Any content change must be made in both `index.html` and `ar/index.html`.
 
 ## Before launch: replace placeholder content
 
